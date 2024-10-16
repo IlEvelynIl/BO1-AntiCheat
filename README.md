@@ -1,5 +1,5 @@
 # BO1-AntiCheat
-An anticheat program for Black Ops 1 Zombies to serve as an alternative to the showing files rule.
+An anticheat program for Black Ops 1 Zombies to serve as an unofficial alternative to the showing files rule.
 
 This works with Steam and the latest version of BGamer.
 
