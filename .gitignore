@@ -1,0 +1,6 @@
+**/.vs/*
+**/x64/*
+*.aps
+*.rc
+*.vcxproj.user
+resource.h
