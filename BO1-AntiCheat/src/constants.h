@@ -9,6 +9,9 @@ using std::string;
 
 const static int C_MAPADDRESS = 0x02F67B6C;
 
+// Game_Mod
+const static string GAME_MOD_FRONTEND = "06e3b0de38ef784d9bf3fd087187c502";
+
 // Zombies
 const static string COMMON_ZOMBIE = "d869783a3ea5529769f2abcc624ca19d";
 const static string COMMON_ZOMBIE_PATCH = "05cd72982feeaa51c64b6d4fcdb39a6e";

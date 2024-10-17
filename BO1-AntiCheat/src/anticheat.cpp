@@ -21,21 +21,21 @@ bool cheating = false;
 int lastMapId = 0;
 int latestMapId = 0;
 
-map<int, string> maps;
+vector<string> scannable_maps;
 
 static void init()
 {
-    // map ids to map codename
-    maps[3] = "zombie_cod5_prototype";
-    maps[37] = "zombie_theater";
-    maps[77] = "zombie_pentagon";
-    maps[50] = "zombie_cod5_asylum";
-    maps[85] = "zombie_coast";
-    maps[90] = "zombie_cod5_factory";
-    maps[99] = "zombie_cod5_sumpf";
-    maps[129] = "zombie_temple";
-    maps[163] = "zombie_moon";
-    maps[189] = "zombie_cosmodrome";
+    // define all bo1 map codenames
+    scannable_maps.push_back("zombie_theater");
+    scannable_maps.push_back("zombie_pentagon");
+    scannable_maps.push_back("zombie_cosmodrome");
+    scannable_maps.push_back("zombie_coast");
+    scannable_maps.push_back("zombie_temple");
+    scannable_maps.push_back("zombie_moon");
+    scannable_maps.push_back("zombie_cod5_prototype");
+    scannable_maps.push_back("zombie_cod5_asylum");
+    scannable_maps.push_back("zombie_cod5_sumpf");
+    scannable_maps.push_back("zombie_cod5_factory");
 
     Verification v;
     v.init();
@@ -88,24 +88,33 @@ static void tick()
         {
             display.UpdateStatus(DisplayStatuses::PERFORMING_SCANS);
             performedScans = true;
-            Sleep(1000); // Wait to scan, so that it puts it during the map load
+            Sleep(1000); // Wait to scan, this puts us during the map load where the fastfiles are extracted
 
+            // check the common zombie patch
             if (!fastfiles.CommonZombiePatchValid())
             {
                 onDetected("common_zombie_patch.ff was modified.");
                 return;
             }
 
-            for (auto const& [key, val] : maps)
+            // check every single "_patch" fastfile
+            for (string map : scannable_maps)
             {
-                string map = val;
                 if (!fastfiles.MapFastFileValid(map))
                 {
-                    onDetected("One of the map patches was modified.");
+                    onDetected("One of the map fastfiles were modified.");
                     return;
                 }
             }
 
+            // prevent frontend_patch cheating
+            if (!fastfiles.Game_ModFrontendPatchValid())
+            {
+                onDetected("frontend_patch.ff was modified.");
+                return;
+            }
+
+            // check for anything that shouldnt be there
             if (fastfiles.ExtraFilesExist())
             {
                 onDetected("Extra files found in zone/Common, could be a stealth patch.");
@@ -115,9 +124,11 @@ static void tick()
             display.UpdateStatus(DisplayStatuses::NO_CHEATING_DETECTED);
         }
     }
-    else if (gh.GetMapId() == 5) // main menu
+    
+    // reset scan toggle on the main menu
+    if (gh.GetMapId() == 5)
     {
-        display.UpdateStatus(DisplayStatuses::GAME_CONNECTED_WAITING);
+        display.UpdateStatus(DisplayStatuses::WAITING_FOR_MAP_LOAD);
         performedScans = false;
     }
 }
@@ -158,7 +169,7 @@ int main()
 
         if (!initialized)
         {
-            display.UpdateStatus(DisplayStatuses::GAME_CONNECTED_WAITING);
+            display.UpdateStatus(DisplayStatuses::GAME_CONNECTED);
             initialized = true;
         }
 

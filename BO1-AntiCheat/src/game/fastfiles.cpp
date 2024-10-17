@@ -21,7 +21,7 @@ vector<string> validFiles;
 
 void FastFiles::init()
 {
-    // base maps
+    // base scannable_maps
     fastFileHashes["zombie_theater.ff"] = Constants::ZOMBIE_THEATER;
     fastFileHashes["zombie_theater_patch.ff"] = Constants::ZOMBIE_THEATER_PATCH;
 
@@ -152,11 +152,11 @@ void FastFiles::init()
 
 bool FastFiles::MapFastFileValid(string map)
 {
-    GameHandler gl;
+    GameHandler gh;
     bool modded = false;
 
     string mapPatch = map + "_patch.ff";
-    string zoneCommon = gl.GetZoneCommon() + mapPatch;
+    string zoneCommon = gh.GetZoneCommon() + mapPatch;
 
     bool modified = false;
 
@@ -171,8 +171,8 @@ bool FastFiles::MapFastFileValid(string map)
 
 bool FastFiles::CommonZombiePatchValid()
 {
-    GameHandler gl;
-    string patch = gl.GetZoneCommon() + "common_zombie_patch.ff";
+    GameHandler gh;
+    string patch = gh.GetZoneCommon() + "common_zombie_patch.ff";
 
     if (!std::filesystem::exists(patch))
     {
@@ -183,10 +183,29 @@ bool FastFiles::CommonZombiePatchValid()
     return hash == Constants::COMMON_ZOMBIE_PATCH;
 }
 
+bool FastFiles::Game_ModFrontendPatchValid()
+{
+    GameHandler gh;
+    string frontend_patch = gh.GetZoneCommon() + "frontend_patch.ff";
+
+    if (!std::filesystem::exists(frontend_patch))
+    {
+        return true;
+    }
+
+    string hash = GetPatchMD5(frontend_patch.c_str());
+    return hash == Constants::GAME_MOD_FRONTEND;
+}
+
 bool FastFiles::ExtraFilesExist()
 {
-    GameHandler gl;
-    string zoneCommon = gl.GetZoneCommon();
+    GameHandler gh;
+    string zoneCommon = gh.GetZoneCommon();
+
+    if (!gh.IsGameOpen())
+    {
+        return false;
+    }
 
     for (const auto& entry : std::filesystem::directory_iterator(zoneCommon))
     {
