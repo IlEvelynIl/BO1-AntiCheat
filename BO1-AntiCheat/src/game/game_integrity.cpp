@@ -21,14 +21,15 @@ vector<string> valid_common_files;
 
 void GameIntegrity::init()
 {
-    // base scannable_maps
     fastfile_hashes["zombie_theater.ff"] = Constants::ZOMBIE_THEATER;
     fastfile_hashes["zombie_theater_patch.ff"] = Constants::ZOMBIE_THEATER_PATCH;
 
     fastfile_hashes["zombie_pentagon.ff"] = Constants::ZOMBIE_PENTAGON;
     fastfile_hashes["zombie_pentagon_patch.ff"] = Constants::ZOMBIE_PENTAGON_PATCH;
 
-    // dlc
+    fastfile_hashes["zombietron.ff"] = Constants::ZOMBIETRON;
+    fastfile_hashes["zombietron_patch.ff"] = Constants::ZOMBIETRON_PATCH;
+
     fastfile_hashes["zombie_cosmodrome.ff"] = Constants::ZOMBIE_COSMODROME;
     fastfile_hashes["zombie_cosmodrome_patch.ff"] = Constants::ZOMBIE_COSMODROME_PATCH;
 
@@ -41,7 +42,6 @@ void GameIntegrity::init()
     fastfile_hashes["zombie_moon.ff"] = Constants::ZOMBIE_MOON;
     fastfile_hashes["zombie_moon_patch.ff"] = Constants::ZOMBIE_MOON_PATCH;
 
-    // waw remasters
     fastfile_hashes["zombie_cod5_prototype.ff"] = Constants::ZOMBIE_COD5_PROTOTYPE;
     fastfile_hashes["zombie_cod5_prototype_patch.ff"] = Constants::ZOMBIE_COD5_PROTOTYPE_PATCH;
 
@@ -54,7 +54,6 @@ void GameIntegrity::init()
     fastfile_hashes["zombie_cod5_factory.ff"] = Constants::ZOMBIE_COD5_FACTORY;
     fastfile_hashes["zombie_cod5_factory_patch.ff"] = Constants::ZOMBIE_COD5_FACTORY_PATCH;
 
-    // 86 files
     valid_common_files = {
         "code_post_gfx.ff",
         "code_post_gfx_mp.ff",

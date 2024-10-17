@@ -25,9 +25,9 @@ vector<string> scannable_maps;
 
 static void init()
 {
-    // define all bo1 map codenames
     scannable_maps.push_back("zombie_theater");
     scannable_maps.push_back("zombie_pentagon");
+    scannable_maps.push_back("zombietron");
     scannable_maps.push_back("zombie_cosmodrome");
     scannable_maps.push_back("zombie_coast");
     scannable_maps.push_back("zombie_temple");
@@ -37,7 +37,6 @@ static void init()
     scannable_maps.push_back("zombie_cod5_sumpf");
     scannable_maps.push_back("zombie_cod5_factory");
 
-    // initialize verification method
     Verification v;
     v.init();
 }
@@ -61,13 +60,13 @@ static void onDetected(const char* reason)
     Display display;
     GameHandler gl;
 
-    string combinedStatus = string(DisplayStatuses::CHEATING_DETECTED) + "\nReason: " + reason;
-    display.UpdateStatus(combinedStatus.c_str());
+    string combined_status = string(DisplayStatuses::CHEATING_DETECTED) + "\nReason: " + reason;
+    display.UpdateStatus(combined_status.c_str());
 
     gl.CloseBlackOps();
 }
 
-static void waitForIntegrityCheck()
+static void WaitForIntegrityCheck()
 {
     Display display;
     GameIntegrity gi;
@@ -76,54 +75,49 @@ static void waitForIntegrityCheck()
     last_map_id = current_map_id;
     current_map_id = gh.GetMapId();
 
-    // Ensures to rescan when a map bind is used
-    if (performed_integrity_check && last_map_id != 0 && current_map_id == 0)
+    bool map_id_changed = performed_integrity_check && last_map_id != 0 && current_map_id == 0;
+    if (map_id_changed)
     {
         performed_integrity_check = false;
     }
 
     if (!performed_integrity_check)
     {
-        bool lastMapIdValid = last_map_id != 0 && last_map_id != -1;
-        if (lastMapIdValid && current_map_id == 0)
+        bool last_map_id_valid = last_map_id != 0 && last_map_id != -1;
+        if (last_map_id_valid && current_map_id == 0)
         {
             display.UpdateStatus(DisplayStatuses::PERFORMING_SCANS);
             performed_integrity_check = true;
-            Sleep(1000); // we wait to scan as this puts us during the map load (fastfile extraction, script compilation, etc.)
+            Sleep(1000); // this puts us during the map load (fastfile extraction, script compilation, etc.)
 
-            // first we need to check for a stealth patch dll injection
             if (gi.IsStealthPatchDLLPresent())
             {
                 onDetected("A known stealth patch DLL was injected.");
                 return;
             }
 
-            // check the common zombie patch
-            if (!gi.CommonZombiePatchValid())
+            if (!gi.IsCommonZombiePatchValid())
             {
                 onDetected("common_zombie_patch.ff was modified.");
                 return;
             }
 
-            // check every zombies fastfile patch
             for (string map : scannable_maps)
             {
-                if (!gi.MapFastFileValid(map))
+                if (!gi.IsMapFastFileValid(map))
                 {
                     onDetected("One of the map fastfiles were modified.");
                     return;
                 }
             }
 
-            // prevent frontend_patch cheating
-            if (!gi.Game_ModFrontendPatchValid())
+            if (!gi.IsGameModFrontendPatchValid())
             {
                 onDetected("frontend_patch.ff was modified.");
                 return;
             }
 
-            // check for anything that shouldnt be there
-            if (gi.ExtraFilesExist())
+            if (gi.DoExtraFilesExist())
             {
                 onDetected("Extra files found in zone/Common, could be a stealth patch.");
                 return;
@@ -133,8 +127,8 @@ static void waitForIntegrityCheck()
         }
     }
     
-    // reset scan toggle on the main menu
-    if (gh.GetMapId() == 5)
+    int main_menu_id = 5;
+    if (gh.GetMapId() == main_menu_id)
     {
         display.UpdateStatus(DisplayStatuses::WAITING_FOR_MAP_LOAD);
         performed_integrity_check = false;
@@ -181,8 +175,8 @@ int main()
             initialized = true;
         }
 
-        waitForIntegrityCheck();
-        Sleep(1000); // 1 second sleep so we don't slow down systems.
+        WaitForIntegrityCheck();
+        Sleep(1000);
     }
 
     return 0;
