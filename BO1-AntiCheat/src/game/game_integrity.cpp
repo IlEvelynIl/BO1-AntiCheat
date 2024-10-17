@@ -145,7 +145,7 @@ void GameIntegrity::init()
     };
 }
 
-bool GameIntegrity::MapFastFileValid(string map)
+bool GameIntegrity::IsMapFastFileValid(string map)
 {
     GameHandler gh;
     bool modded = false;
@@ -164,7 +164,7 @@ bool GameIntegrity::MapFastFileValid(string map)
     return hash == fastfile_hashes.at(mapPatch);
 }
 
-bool GameIntegrity::CommonZombiePatchValid()
+bool GameIntegrity::IsCommonZombiePatchValid()
 {
     GameHandler gh;
     string patch = gh.GetZoneCommon() + "common_zombie_patch.ff";
@@ -178,7 +178,7 @@ bool GameIntegrity::CommonZombiePatchValid()
     return hash == Constants::COMMON_ZOMBIE_PATCH;
 }
 
-bool GameIntegrity::Game_ModFrontendPatchValid()
+bool GameIntegrity::IsGameModFrontendPatchValid()
 {
     GameHandler gh;
     string frontend_patch = gh.GetZoneCommon() + "frontend_patch.ff";
@@ -192,7 +192,7 @@ bool GameIntegrity::Game_ModFrontendPatchValid()
     return hash == Constants::GAME_MOD_FRONTEND;
 }
 
-bool GameIntegrity::ExtraFilesExist()
+bool GameIntegrity::DoExtraFilesExist()
 {
     GameHandler gh;
     string zone_common = gh.GetZoneCommon();

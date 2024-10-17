@@ -13,10 +13,10 @@ class GameIntegrity
 {
 public:
 	void init();
-	bool CommonZombiePatchValid();
-	bool Game_ModFrontendPatchValid();
-	bool MapFastFileValid(string map);
-	bool ExtraFilesExist();
+	bool IsCommonZombiePatchValid();
+	bool IsGameModFrontendPatchValid();
+	bool IsMapFastFileValid(string map);
+	bool DoExtraFilesExist();
 	string GetFileMD5(string path);
 	bool IsStealthPatchDLLPresent();
 };
