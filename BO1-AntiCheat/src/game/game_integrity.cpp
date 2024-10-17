@@ -10,9 +10,9 @@
 
 #include "../display/statuses.h"
 
-#include <fstream>
+#include "../utilities/memory.hpp"
 
-#include <unordered_set>
+#include <fstream>
 
 using namespace std;
 
@@ -238,4 +238,38 @@ string GameIntegrity::GetFileMD5(string path)
     delete[] fileData;
 
     return hash.c_str();
+}
+
+// a very hacky detection method for this but it works
+bool GameIntegrity::IsStealthPatchDLLPresent()
+{
+    Memory mem;
+    GameHandler gh;
+    HANDLE handle = gh.GetBlackOpsProcess();
+
+    if (handle == NULL)
+    {
+        return false;
+    }
+
+    std::vector<HMODULE> hMods(1024);
+    DWORD cbNeeded;
+
+    if (EnumProcessModulesEx(handle, hMods.data(), hMods.size() * sizeof(HMODULE), &cbNeeded, LIST_MODULES_ALL)) {
+        size_t moduleCount = cbNeeded / sizeof(HMODULE);
+        for (size_t i = 0; i < moduleCount; i++) {
+            TCHAR szModName[MAX_PATH];
+            MODULEINFO modInfo;
+
+            if (GetModuleFileNameEx(handle, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
+                if (GetModuleInformation(handle, hMods[i], &modInfo, sizeof(modInfo))) {
+                    if (modInfo.SizeOfImage == 327680) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
 }

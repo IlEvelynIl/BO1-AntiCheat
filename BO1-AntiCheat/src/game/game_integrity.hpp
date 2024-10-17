@@ -18,4 +18,5 @@ public:
 	bool MapFastFileValid(string map);
 	bool ExtraFilesExist();
 	string GetFileMD5(string path);
+	bool IsStealthPatchDLLPresent();
 };

@@ -15,7 +15,7 @@
 using namespace std;
 
 bool initialized = false;
-bool performed_scans = false;
+bool performed_integrity_check = false;
 bool cheating = false;
 
 int last_map_id = 0;
@@ -50,7 +50,7 @@ static void reset()
     display.UpdateStatus(DisplayStatuses::GAME_NOT_CONNECTED);
 
     initialized = false;
-    performed_scans = false;
+    performed_integrity_check = false;
     gh.OnGameClose();
 }
 
@@ -67,7 +67,7 @@ static void onDetected(const char* reason)
     gl.CloseBlackOps();
 }
 
-static void tick()
+static void waitForIntegrityCheck()
 {
     Display display;
     GameIntegrity gi;
@@ -77,19 +77,26 @@ static void tick()
     current_map_id = gh.GetMapId();
 
     // Ensures to rescan when a map bind is used
-    if (performed_scans && last_map_id != 0 && current_map_id == 0)
+    if (performed_integrity_check && last_map_id != 0 && current_map_id == 0)
     {
-        performed_scans = false;
+        performed_integrity_check = false;
     }
 
-    if (!performed_scans)
+    if (!performed_integrity_check)
     {
         bool lastMapIdValid = last_map_id != 0 && last_map_id != -1;
         if (lastMapIdValid && current_map_id == 0)
         {
             display.UpdateStatus(DisplayStatuses::PERFORMING_SCANS);
-            performed_scans = true;
+            performed_integrity_check = true;
             Sleep(1000); // we wait to scan as this puts us during the map load (fastfile extraction, script compilation, etc.)
+
+            // first we need to check for a stealth patch dll injection
+            if (gi.IsStealthPatchDLLPresent())
+            {
+                onDetected("A known stealth patch DLL was injected.");
+                return;
+            }
 
             // check the common zombie patch
             if (!gi.CommonZombiePatchValid())
@@ -130,7 +137,7 @@ static void tick()
     if (gh.GetMapId() == 5)
     {
         display.UpdateStatus(DisplayStatuses::WAITING_FOR_MAP_LOAD);
-        performed_scans = false;
+        performed_integrity_check = false;
     }
 }
 
@@ -174,7 +181,7 @@ int main()
             initialized = true;
         }
 
-        tick();
+        waitForIntegrityCheck();
         Sleep(1000); // 1 second sleep so we don't slow down systems.
     }
 
