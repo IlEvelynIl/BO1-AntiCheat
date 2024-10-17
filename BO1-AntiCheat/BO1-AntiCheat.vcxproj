@@ -132,7 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\game\fastfiles.cpp" />
+    <ClCompile Include="src\game\game_integrity.cpp" />
     <ClCompile Include="src\anticheat.cpp" />
     <ClCompile Include="src\display\display.cpp" />
     <ClCompile Include="src\game\game_handler.cpp" />
@@ -142,7 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="src\game\fastfiles.hpp" />
+    <ClInclude Include="src\game\game_integrity.hpp" />
     <ClInclude Include="src\display\statuses.h" />
     <ClInclude Include="src\display\display.hpp" />
     <ClInclude Include="src\game\game_handler.hpp" />

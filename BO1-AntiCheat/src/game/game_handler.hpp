@@ -9,7 +9,7 @@ public:
 	void CloseBlackOps();
 	string GetZoneCommon();
 	string GetBlackOpsPath();
-	string GetProcessPathFromHandle(HANDLE handle);
+	string GetPathToExe();
 	DWORD GetProcessIdByName(const std::wstring& procName);
 	void CheckIfOpen();
 	void OnGameClose();

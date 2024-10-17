@@ -1,4 +1,4 @@
-#include "../game/fastfiles.hpp"
+#include "../game/game_integrity.hpp"
 
 #include "../game/game_handler.hpp"
 
@@ -19,7 +19,7 @@ using namespace std;
 map<string, string> fastFileHashes;
 vector<string> validFiles;
 
-void FastFiles::init()
+void GameIntegrity::init()
 {
     // base scannable_maps
     fastFileHashes["zombie_theater.ff"] = Constants::ZOMBIE_THEATER;
@@ -150,7 +150,7 @@ void FastFiles::init()
     }
 }
 
-bool FastFiles::MapFastFileValid(string map)
+bool GameIntegrity::MapFastFileValid(string map)
 {
     GameHandler gh;
     bool modded = false;
@@ -165,11 +165,11 @@ bool FastFiles::MapFastFileValid(string map)
         return true;
     }
 
-    string hash = GetPatchMD5(zoneCommon.c_str());
+    string hash = GetFileMD5(zoneCommon.c_str());
     return hash == fastFileHashes.at(mapPatch);
 }
 
-bool FastFiles::CommonZombiePatchValid()
+bool GameIntegrity::CommonZombiePatchValid()
 {
     GameHandler gh;
     string patch = gh.GetZoneCommon() + "common_zombie_patch.ff";
@@ -179,11 +179,11 @@ bool FastFiles::CommonZombiePatchValid()
         return true;
     }
 
-    string hash = GetPatchMD5(patch.c_str());
+    string hash = GetFileMD5(patch.c_str());
     return hash == Constants::COMMON_ZOMBIE_PATCH;
 }
 
-bool FastFiles::Game_ModFrontendPatchValid()
+bool GameIntegrity::Game_ModFrontendPatchValid()
 {
     GameHandler gh;
     string frontend_patch = gh.GetZoneCommon() + "frontend_patch.ff";
@@ -193,11 +193,11 @@ bool FastFiles::Game_ModFrontendPatchValid()
         return true;
     }
 
-    string hash = GetPatchMD5(frontend_patch.c_str());
+    string hash = GetFileMD5(frontend_patch.c_str());
     return hash == Constants::GAME_MOD_FRONTEND;
 }
 
-bool FastFiles::ExtraFilesExist()
+bool GameIntegrity::ExtraFilesExist()
 {
     GameHandler gh;
     string zoneCommon = gh.GetZoneCommon();
@@ -225,8 +225,7 @@ bool FastFiles::ExtraFilesExist()
     return false;
 }
 
-
-string FastFiles::GetPatchMD5(string path)
+string GameIntegrity::GetFileMD5(string path)
 {
     ifstream inBigArrayfile;
     inBigArrayfile.open(path, std::ios::binary | std::ios::in);

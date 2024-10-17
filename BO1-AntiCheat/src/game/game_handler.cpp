@@ -10,7 +10,6 @@
 
 using namespace std;
 
-bool isBgamer = false;
 bool sessionValid = true;
 bool hasCheckedSession = false;
 
@@ -54,13 +53,14 @@ string GameHandler::GetZoneCommon()
 
 string GameHandler::GetBlackOpsPath()
 {
-	HANDLE blackOpsProcess = GetBlackOpsProcess();
-	string blackOpsPath = GetProcessPathFromHandle(blackOpsProcess);
+	string blackOpsPath = GetPathToExe();
 	string::size_type pos = blackOpsPath.find_last_of("\\/");
 	return blackOpsPath.substr(0, pos);
 }
 
-string GameHandler::GetProcessPathFromHandle(HANDLE hProcess) {
+string GameHandler::GetPathToExe() {
+    HANDLE hProcess = GetBlackOpsProcess();
+
 	if (hProcess == NULL) {
 		return "";
 	}

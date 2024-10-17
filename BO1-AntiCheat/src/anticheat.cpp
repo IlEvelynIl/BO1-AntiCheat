@@ -2,7 +2,7 @@
 
 #include "game/game_handler.hpp"
 
-#include "game/fastfiles.hpp"
+#include "game/game_integrity.hpp"
 
 #include "display/display.hpp"
 
@@ -69,7 +69,7 @@ static void onDetected(const char* reason)
 static void tick()
 {
     Display display;
-    FastFiles fastfiles;
+    GameIntegrity gi;
     GameHandler gh;
 
     lastMapId = latestMapId;
@@ -88,19 +88,19 @@ static void tick()
         {
             display.UpdateStatus(DisplayStatuses::PERFORMING_SCANS);
             performedScans = true;
-            Sleep(1000); // Wait to scan, this puts us during the map load where the fastfiles are extracted
+            Sleep(1000); // we wait to scan as this puts us during the map load (fastfile extraction, script compilation, etc.)
 
             // check the common zombie patch
-            if (!fastfiles.CommonZombiePatchValid())
+            if (!gi.CommonZombiePatchValid())
             {
                 onDetected("common_zombie_patch.ff was modified.");
                 return;
             }
 
-            // check every single "_patch" fastfile
+            // check every zombies fastfile patch
             for (string map : scannable_maps)
             {
-                if (!fastfiles.MapFastFileValid(map))
+                if (!gi.MapFastFileValid(map))
                 {
                     onDetected("One of the map fastfiles were modified.");
                     return;
@@ -108,14 +108,14 @@ static void tick()
             }
 
             // prevent frontend_patch cheating
-            if (!fastfiles.Game_ModFrontendPatchValid())
+            if (!gi.Game_ModFrontendPatchValid())
             {
                 onDetected("frontend_patch.ff was modified.");
                 return;
             }
 
             // check for anything that shouldnt be there
-            if (fastfiles.ExtraFilesExist())
+            if (gi.ExtraFilesExist())
             {
                 onDetected("Extra files found in zone/Common, could be a stealth patch.");
                 return;
@@ -138,8 +138,8 @@ int main()
     SetConsoleTitle(DisplayStatuses::TITLE);
     init();
     
-    FastFiles ffHandler;
-    ffHandler.init();
+    GameIntegrity gi;
+    gi.init();
 
     GameHandler gh;
     gh.CheckIfOpen();
