@@ -16,46 +16,46 @@
 
 using namespace std;
 
-map<string, string> fastFileHashes;
-vector<string> validFiles;
+map<string, string> fastfile_hashes;
+vector<string> valid_common_files;
 
 void GameIntegrity::init()
 {
     // base scannable_maps
-    fastFileHashes["zombie_theater.ff"] = Constants::ZOMBIE_THEATER;
-    fastFileHashes["zombie_theater_patch.ff"] = Constants::ZOMBIE_THEATER_PATCH;
+    fastfile_hashes["zombie_theater.ff"] = Constants::ZOMBIE_THEATER;
+    fastfile_hashes["zombie_theater_patch.ff"] = Constants::ZOMBIE_THEATER_PATCH;
 
-    fastFileHashes["zombie_pentagon.ff"] = Constants::ZOMBIE_PENTAGON;
-    fastFileHashes["zombie_pentagon_patch.ff"] = Constants::ZOMBIE_PENTAGON_PATCH;
+    fastfile_hashes["zombie_pentagon.ff"] = Constants::ZOMBIE_PENTAGON;
+    fastfile_hashes["zombie_pentagon_patch.ff"] = Constants::ZOMBIE_PENTAGON_PATCH;
 
     // dlc
-    fastFileHashes["zombie_cosmodrome.ff"] = Constants::ZOMBIE_COSMODROME;
-    fastFileHashes["zombie_cosmodrome_patch.ff"] = Constants::ZOMBIE_COSMODROME_PATCH;
+    fastfile_hashes["zombie_cosmodrome.ff"] = Constants::ZOMBIE_COSMODROME;
+    fastfile_hashes["zombie_cosmodrome_patch.ff"] = Constants::ZOMBIE_COSMODROME_PATCH;
 
-    fastFileHashes["zombie_coast.ff"] = Constants::ZOMBIE_COAST;
-    fastFileHashes["zombie_coast_patch.ff"] = Constants::ZOMBIE_COAST_PATCH;
+    fastfile_hashes["zombie_coast.ff"] = Constants::ZOMBIE_COAST;
+    fastfile_hashes["zombie_coast_patch.ff"] = Constants::ZOMBIE_COAST_PATCH;
 
-    fastFileHashes["zombie_temple.ff"] = Constants::ZOMBIE_TEMPLE;
-    fastFileHashes["zombie_temple_patch.ff"] = Constants::ZOMBIE_TEMPLE_PATCH;
+    fastfile_hashes["zombie_temple.ff"] = Constants::ZOMBIE_TEMPLE;
+    fastfile_hashes["zombie_temple_patch.ff"] = Constants::ZOMBIE_TEMPLE_PATCH;
 
-    fastFileHashes["zombie_moon.ff"] = Constants::ZOMBIE_MOON;
-    fastFileHashes["zombie_moon_patch.ff"] = Constants::ZOMBIE_MOON_PATCH;
+    fastfile_hashes["zombie_moon.ff"] = Constants::ZOMBIE_MOON;
+    fastfile_hashes["zombie_moon_patch.ff"] = Constants::ZOMBIE_MOON_PATCH;
 
     // waw remasters
-    fastFileHashes["zombie_cod5_prototype.ff"] = Constants::ZOMBIE_COD5_PROTOTYPE;
-    fastFileHashes["zombie_cod5_prototype_patch.ff"] = Constants::ZOMBIE_COD5_PROTOTYPE_PATCH;
+    fastfile_hashes["zombie_cod5_prototype.ff"] = Constants::ZOMBIE_COD5_PROTOTYPE;
+    fastfile_hashes["zombie_cod5_prototype_patch.ff"] = Constants::ZOMBIE_COD5_PROTOTYPE_PATCH;
 
-    fastFileHashes["zombie_cod5_asylum.ff"] = Constants::ZOMBIE_COD5_ASYLUM;
-    fastFileHashes["zombie_cod5_asylum_patch.ff"] = Constants::ZOMBIE_COD5_ASYLUM_PATCH;
+    fastfile_hashes["zombie_cod5_asylum.ff"] = Constants::ZOMBIE_COD5_ASYLUM;
+    fastfile_hashes["zombie_cod5_asylum_patch.ff"] = Constants::ZOMBIE_COD5_ASYLUM_PATCH;
 
-    fastFileHashes["zombie_cod5_sumpf.ff"] = Constants::ZOMBIE_COD5_SUMPF;
-    fastFileHashes["zombie_cod5_sumpf_patch.ff"] = Constants::ZOMBIE_COD5_SUMPF_PATCH;
+    fastfile_hashes["zombie_cod5_sumpf.ff"] = Constants::ZOMBIE_COD5_SUMPF;
+    fastfile_hashes["zombie_cod5_sumpf_patch.ff"] = Constants::ZOMBIE_COD5_SUMPF_PATCH;
 
-    fastFileHashes["zombie_cod5_factory.ff"] = Constants::ZOMBIE_COD5_FACTORY;
-    fastFileHashes["zombie_cod5_factory_patch.ff"] = Constants::ZOMBIE_COD5_FACTORY_PATCH;
+    fastfile_hashes["zombie_cod5_factory.ff"] = Constants::ZOMBIE_COD5_FACTORY;
+    fastfile_hashes["zombie_cod5_factory_patch.ff"] = Constants::ZOMBIE_COD5_FACTORY_PATCH;
 
     // 86 files
-    std::vector<std::string> filesToAdd = {
+    valid_common_files = {
         "code_post_gfx.ff",
         "code_post_gfx_mp.ff",
         "code_pre_gfx.ff",
@@ -144,10 +144,6 @@ void GameIntegrity::init()
         "zombie_theater.ff",
         "zombie_theater_patch.ff"
     };
-
-    for (const auto& file : filesToAdd) {
-        validFiles.push_back(file);
-    }
 }
 
 bool GameIntegrity::MapFastFileValid(string map)
@@ -166,7 +162,7 @@ bool GameIntegrity::MapFastFileValid(string map)
     }
 
     string hash = GetFileMD5(zoneCommon.c_str());
-    return hash == fastFileHashes.at(mapPatch);
+    return hash == fastfile_hashes.at(mapPatch);
 }
 
 bool GameIntegrity::CommonZombiePatchValid()
@@ -200,23 +196,23 @@ bool GameIntegrity::Game_ModFrontendPatchValid()
 bool GameIntegrity::ExtraFilesExist()
 {
     GameHandler gh;
-    string zoneCommon = gh.GetZoneCommon();
+    string zone_common = gh.GetZoneCommon();
 
     if (!gh.IsGameOpen())
     {
         return false;
     }
 
-    for (const auto& entry : std::filesystem::directory_iterator(zoneCommon))
+    for (const auto& entry : std::filesystem::directory_iterator(zone_common))
     {
         string fileName = entry.path().filename().string();
 
-        if (!std::filesystem::exists(zoneCommon + fileName))
+        if (!std::filesystem::exists(zone_common + fileName))
         {
             continue;
         }
 
-        if (std::find(validFiles.begin(), validFiles.end(), fileName) == validFiles.end())
+        if (std::find(valid_common_files.begin(), valid_common_files.end(), fileName) == valid_common_files.end())
         {
             return true;
         }
@@ -229,7 +225,6 @@ string GameIntegrity::GetFileMD5(string path)
 {
     ifstream inBigArrayfile;
     inBigArrayfile.open(path, std::ios::binary | std::ios::in);
-    
     
     inBigArrayfile.seekg(0, std::ios::end);
     long length = inBigArrayfile.tellg();

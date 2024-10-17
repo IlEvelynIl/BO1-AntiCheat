@@ -10,8 +10,8 @@
 
 using namespace std;
 
-bool sessionValid = true;
-bool hasCheckedSession = false;
+bool session_valid = true;
+bool session_checked = false;
 
 int GameHandler::GetMapId()
 {
@@ -106,16 +106,16 @@ void GameHandler::CheckIfOpen()
 {
     if (IsGameOpen())
     {
-        sessionValid = false;
+        session_valid = false;
     }
 }
 
 void GameHandler::OnGameClose()
 {
-    sessionValid = true;
+    session_valid = true;
 }
 
 bool GameHandler::GameAlreadyOpen()
 {
-    return sessionValid;
+    return session_valid;
 }

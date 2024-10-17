@@ -15,11 +15,11 @@
 using namespace std;
 
 bool initialized = false;
-bool performedScans = false;
+bool performed_scans = false;
 bool cheating = false;
 
-int lastMapId = 0;
-int latestMapId = 0;
+int last_map_id = 0;
+int current_map_id = 0;
 
 vector<string> scannable_maps;
 
@@ -37,6 +37,7 @@ static void init()
     scannable_maps.push_back("zombie_cod5_sumpf");
     scannable_maps.push_back("zombie_cod5_factory");
 
+    // initialize verification method
     Verification v;
     v.init();
 }
@@ -49,7 +50,7 @@ static void reset()
     display.UpdateStatus(DisplayStatuses::GAME_NOT_CONNECTED);
 
     initialized = false;
-    performedScans = false;
+    performed_scans = false;
     gh.OnGameClose();
 }
 
@@ -72,22 +73,22 @@ static void tick()
     GameIntegrity gi;
     GameHandler gh;
 
-    lastMapId = latestMapId;
-    latestMapId = gh.GetMapId();
+    last_map_id = current_map_id;
+    current_map_id = gh.GetMapId();
 
     // Ensures to rescan when a map bind is used
-    if (performedScans && lastMapId != 0 && latestMapId == 0)
+    if (performed_scans && last_map_id != 0 && current_map_id == 0)
     {
-        performedScans = false;
+        performed_scans = false;
     }
 
-    if (!performedScans)
+    if (!performed_scans)
     {
-        bool lastMapIdValid = lastMapId != 0 && lastMapId != -1;
-        if (lastMapIdValid && latestMapId == 0)
+        bool lastMapIdValid = last_map_id != 0 && last_map_id != -1;
+        if (lastMapIdValid && current_map_id == 0)
         {
             display.UpdateStatus(DisplayStatuses::PERFORMING_SCANS);
-            performedScans = true;
+            performed_scans = true;
             Sleep(1000); // we wait to scan as this puts us during the map load (fastfile extraction, script compilation, etc.)
 
             // check the common zombie patch
@@ -129,7 +130,7 @@ static void tick()
     if (gh.GetMapId() == 5)
     {
         display.UpdateStatus(DisplayStatuses::WAITING_FOR_MAP_LOAD);
-        performedScans = false;
+        performed_scans = false;
     }
 }
 
