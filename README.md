@@ -14,7 +14,6 @@ This tool can also be updated to verify setup patches if the community votes on 
 
 ## Planned features
 - Automatic updates.
-- Verify the integrity of a select few custom patches, this would only be added if the community voted for patches to be allowed, such as first box patches.
 - If a community leaderboard mod is being used, verify the integrity of the mod files. Additionally may check the integrity of game_mod itself, but only if necessary.
 
 ## People who helped
