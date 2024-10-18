@@ -2,7 +2,7 @@
 An anticheat program for Black Ops 1 Zombies to serve as an unofficial alternative to the showing files rule.
 
 ## Why?
-Cheating has never been easier in this game, and just showing how you start the game has proven to not be 100% reliable as you can inject the stealth patch mid game, which allows the use of a custom fastfile with any name.
+Cheating has never been easier in this game, and just showing how you start the game is not the most reliable way to detect cheating as you can inject the stealth patch mid game, which allows the use of a custom fastfile with any name.
 
 ## Detection methods
 - Disallows modification of vanilla fastfile patches related to zombies.
