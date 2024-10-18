@@ -8,7 +8,7 @@ Cheating has never been easier in this game, and just showing how you start the 
 - Disallows modification of vanilla fastfile patches related to zombies.
 - Disallows any extra files in the `zone/Common` folder, as those could be stealth patches.
 - Checks the integrity of `frontend_patch.ff` as that is a mod loader file and could be used to cheat on community leaderboards if changed.
-- (Experimental) Searches for known stealth patch files injected into the game.
+- Searches for known stealth patches injected into the game.
 
 ## People who helped
 - [lveez](https://github.com/lveez) - Verification method so that the program can be open source.

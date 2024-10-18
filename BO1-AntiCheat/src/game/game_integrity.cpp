@@ -19,6 +19,8 @@ using namespace std;
 map<string, string> fastfile_hashes;
 vector<string> valid_common_files;
 
+vector<string> stealth_patch_hashes;
+
 void GameIntegrity::init()
 {
     fastfile_hashes["zombie_theater.ff"] = Constants::ZOMBIE_THEATER;
@@ -53,6 +55,10 @@ void GameIntegrity::init()
 
     fastfile_hashes["zombie_cod5_factory.ff"] = Constants::ZOMBIE_COD5_FACTORY;
     fastfile_hashes["zombie_cod5_factory_patch.ff"] = Constants::ZOMBIE_COD5_FACTORY_PATCH;
+
+    stealth_patch_hashes = {
+        "c3ceab590eb62f593a9cbdd59d588243"
+    };
 
     valid_common_files = {
         "code_post_gfx.ff",
@@ -155,7 +161,7 @@ bool GameIntegrity::IsMapFastFileValid(string map)
 
     bool modified = false;
 
-    if (!std::filesystem::exists(zoneCommon))
+    if (!filesystem::exists(zoneCommon))
     {
         return true;
     }
@@ -169,7 +175,7 @@ bool GameIntegrity::IsCommonZombiePatchValid()
     GameHandler gh;
     string patch = gh.GetZoneCommon() + "common_zombie_patch.ff";
 
-    if (!std::filesystem::exists(patch))
+    if (!filesystem::exists(patch))
     {
         return true;
     }
@@ -183,7 +189,7 @@ bool GameIntegrity::IsGameModFrontendPatchValid()
     GameHandler gh;
     string frontend_patch = gh.GetZoneCommon() + "frontend_patch.ff";
 
-    if (!std::filesystem::exists(frontend_patch))
+    if (!filesystem::exists(frontend_patch))
     {
         return true;
     }
@@ -202,16 +208,16 @@ bool GameIntegrity::DoExtraFilesExist()
         return false;
     }
 
-    for (const auto& entry : std::filesystem::directory_iterator(zone_common))
+    for (const auto& entry : filesystem::directory_iterator(zone_common))
     {
         string fileName = entry.path().filename().string();
 
-        if (!std::filesystem::exists(zone_common + fileName))
+        if (!filesystem::exists(zone_common + fileName))
         {
             continue;
         }
 
-        if (std::find(valid_common_files.begin(), valid_common_files.end(), fileName) == valid_common_files.end())
+        if (find(valid_common_files.begin(), valid_common_files.end(), fileName) == valid_common_files.end())
         {
             return true;
         }
@@ -220,26 +226,6 @@ bool GameIntegrity::DoExtraFilesExist()
     return false;
 }
 
-string GameIntegrity::GetFileMD5(string path)
-{
-    ifstream inBigArrayfile;
-    inBigArrayfile.open(path, std::ios::binary | std::ios::in);
-    
-    inBigArrayfile.seekg(0, std::ios::end);
-    long length = inBigArrayfile.tellg();
-    inBigArrayfile.seekg(0, std::ios::beg);
-
-    char* fileData = new char[length];
-    inBigArrayfile.read(fileData, length);
-
-    std::string hash = md5(fileData, length);
-
-    delete[] fileData;
-
-    return hash.c_str();
-}
-
-// a very hacky detection method for this but it works
 bool GameIntegrity::IsStealthPatchDLLPresent()
 {
     Memory mem;
@@ -251,7 +237,7 @@ bool GameIntegrity::IsStealthPatchDLLPresent()
         return false;
     }
 
-    std::vector<HMODULE> hMods(1024);
+    vector<HMODULE> hMods(1024);
     DWORD cbNeeded;
 
     if (EnumProcessModulesEx(handle, hMods.data(), hMods.size() * sizeof(HMODULE), &cbNeeded, LIST_MODULES_ALL)) {
@@ -262,7 +248,26 @@ bool GameIntegrity::IsStealthPatchDLLPresent()
 
             if (GetModuleFileNameEx(handle, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
                 if (GetModuleInformation(handle, hMods[i], &modInfo, sizeof(modInfo))) {
+                    char modulePath[MAX_PATH];
+                    size_t convertedChars = 0;
+                    wcstombs_s(&convertedChars, modulePath, szModName, sizeof(modulePath));
+                    modulePath[sizeof(modulePath) - 1] = '\0';
+                    string dllPath = string(modulePath);
+
+                    for (string dllHash : stealth_patch_hashes)
+                    {
+                        if (GetFileMD5(dllPath) == dllHash)
+                        {
+                            return true;
+                        }
+                    }
+
                     if (modInfo.SizeOfImage == 327680) {
+                        return true;
+                    }
+
+                    if (dllPath.find("stealth_patch") != string::npos)
+                    {
                         return true;
                     }
                 }
@@ -271,4 +276,31 @@ bool GameIntegrity::IsStealthPatchDLLPresent()
     }
 
     return false;
+}
+
+string GameIntegrity::GetFileMD5(string path)
+{
+    ifstream inFile(path, ios::binary);
+
+    if (!inFile) {
+        return "";
+    }
+
+    inFile.seekg(0, ios::end);
+    long length = inFile.tellg();
+    inFile.seekg(0, ios::beg);
+
+    if (length <= 0) {
+        return "";
+    }
+
+    vector<char> fileData(length);
+    inFile.read(fileData.data(), length);
+
+    if (!inFile) {
+        return "";
+    }
+
+    string hash = md5(fileData.data(), length);
+    return hash;
 }
