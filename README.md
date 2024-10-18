@@ -2,7 +2,9 @@
 An anticheat program for Black Ops 1 Zombies to serve as an unofficial alternative to the showing files rule.
 
 ## Why?
-Firstly, it is good to have more than one solution to cheating, no matter how big or small, there should always be more than one way. Secondly, cheating has never been easier in this game, and showing how you start the game is not the most reliable way to detect cheating, as that may not last forever due to workarounds being found.
+Modern problems require modern solutions. While the current solution may be a good way to catch cheaters one way, there are others that are not accounted for. Based a few players opinions in the community, something like this seems to be the only way to solve all of the current cheating issues, as anti cheat programs can evolve like the cheating methods themselves.
+
+This could also provide a solution to other related topics, such as mandating patches for the game, if they were to be allowed.
 
 ## Detection methods
 - Disallows modification of vanilla fastfile patches related to zombies.
