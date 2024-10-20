@@ -22,4 +22,5 @@ public:
 	bool DoExtraFilesExist();
 	string GetFileMD5(string path);
 	bool IsStealthPatchDLLPresent();
+	bool IsModFileValid();
 };

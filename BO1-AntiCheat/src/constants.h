@@ -8,8 +8,7 @@ using std::string;
 #define Constants
 
 const static int C_MAPADDRESS = 0x02F67B6C;
-
-const static string GAME_MOD_FRONTEND = "06e3b0de38ef784d9bf3fd087187c502";
+const static int C_MODADDRESS = 0x025FE010;
 
 const static string COMMON_ZOMBIE = "d869783a3ea5529769f2abcc624ca19d";
 const static string COMMON_ZOMBIE_PATCH = "05cd72982feeaa51c64b6d4fcdb39a6e";
@@ -46,5 +45,12 @@ const static string ZOMBIE_COD5_SUMPF_PATCH = "169e3d63b2e8b03f37fc57171720c099"
 
 const static string ZOMBIE_COD5_FACTORY = "41c15a520ece8735261722e45f2734ad";
 const static string ZOMBIE_COD5_FACTORY_PATCH = "4cadaa0fb9871347affaf3b222117859";
+
+const static string GAME_MOD_FRONTEND = "06e3b0de38ef784d9bf3fd087187c502";
+const static string GAME_MOD_DLL = "015c2fc598947895929ee629ae74bbe2";
+
+const static string REMIX_MOD = "0eab4b4bb87c07a2bcf5343cc41377ad";
+const static string FIRSTROOMS_MOD = "6f1c4a8bccad34e5ec783a5f16a55663";
+const static string SONG_TIMING_MOD = "2962c5e032598b5888ae97df18313d76";
 
 #endif

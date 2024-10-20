@@ -11,6 +11,7 @@ This tool can also be updated to verify setup patches if the community votes on 
 - Disallows any extra files in the `zone/Common` folder, as they could be a form of stealth patch.
 - Checks the integrity of `frontend_patch.ff` as that is a mod loader file and could be used to cheat on community leaderboards if changed.
 - Searches for known stealth patches injected into the game.
+- Checks the integrity of all community leaderboard mods. Also makes sure the mod loader is not modified.
 
 ## People who helped
 - [lveez](https://github.com/lveez) - Verification method so that the program can be open source.

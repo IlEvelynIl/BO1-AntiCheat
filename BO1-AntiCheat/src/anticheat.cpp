@@ -44,7 +44,7 @@ static void init()
     v.init();
 }
 
-static void reset()
+static void NotifyGameClosed()
 {
     Display display;
     GameHandler gh;
@@ -72,6 +72,7 @@ static void NotifyCheatsDetected()
         display.AddToStatus("- " + found_cheat);
     }
 
+    display.AddToStatus("\n");
     display.Update();
 
     GameHandler gl;
@@ -100,18 +101,26 @@ static void WaitForIntegrityCheck()
         {
             display.UpdateStatus(DisplayStatuses::PERFORMING_SCANS);
             performed_integrity_check = true;
-            Sleep(1000); // this puts us during the map load (fastfile extraction, script compilation, etc.)
+            Sleep(1000);
 
             if (gi.IsStealthPatchDLLPresent())
             {
                 AddCheatsFound("A known stealth patch DLL was injected.");
             }
 
+            if (gh.IsGameModLoaded() && gh.IsModLoaded())
+            {
+                if (!gi.IsModFileValid())
+                {
+                    AddCheatsFound("mod.ff was found to be modified.");
+                }
+            }
+
             for (string map : scannable_maps)
             {
                 if (!gi.IsFastfilePatchValid(map))
                 {
-                    AddCheatsFound("" + map + "_patch.ff was found to be modified.");
+                    AddCheatsFound(map + "_patch.ff was found to be modified.");
                 }
             }
 
@@ -161,16 +170,16 @@ int main()
 
         if (!gh.IsGameOpen())
         {
-            reset();
+            NotifyGameClosed();
             display.UpdateStatus(DisplayStatuses::GAME_NOT_CONNECTED);
             continue;
         }
 
-        if (!gh.GameAlreadyOpen())
+        /*if (!gh.GameAlreadyOpen())
         {
             display.UpdateStatus(DisplayStatuses::GAME_ALREADY_OPEN);
             continue;
-        }
+        }*/
 
         if (!initialized)
         {

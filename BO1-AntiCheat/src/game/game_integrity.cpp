@@ -14,11 +14,13 @@
 
 #include <fstream>
 
+#include <sstream>
+
 using namespace std;
 
 map<string, string> fastfile_hashes;
+map<string, string> mod_fastfile_hashes;
 vector<string> valid_common_files;
-
 vector<string> stealth_patch_hashes;
 
 void GameIntegrity::init()
@@ -39,106 +41,50 @@ void GameIntegrity::init()
     fastfile_hashes["zombie_cod5_sumpf_patch.ff"] = Constants::ZOMBIE_COD5_SUMPF_PATCH;
     fastfile_hashes["zombie_cod5_factory_patch.ff"] = Constants::ZOMBIE_COD5_FACTORY_PATCH;
 
+    mod_fastfile_hashes["mods/Remix"] = Constants::REMIX_MOD;
+    mod_fastfile_hashes["mods/FirstRooms"] = Constants::FIRSTROOMS_MOD;
+    mod_fastfile_hashes["mods/Song Timing Mod V3"] = Constants::SONG_TIMING_MOD;
+
     stealth_patch_hashes = {
         "c3ceab590eb62f593a9cbdd59d588243"
     };
 
     valid_common_files = {
-        "code_post_gfx.ff",
-        "code_post_gfx_mp.ff",
-        "code_pre_gfx.ff",
-        "code_pre_gfx_mp.ff",
-        "common.ff",
-        "common_mp.ff",
-        "common_zombie.ff",
-        "common_zombie_patch.ff",
-        "creek_1.ff",
-        "cuba.ff",
-        "flashpoint.ff",
-        "frontend.ff",
-        "frontend_patch.ff",
-        "fullahead.ff",
-        "hue_city.ff",
-        "int_escape.ff",
-        "khe_sanh.ff",
-        "kowloon.ff",
-        "mp_area51.ff",
-        "mp_array.ff",
-        "mp_berlinwall2.ff",
-        "mp_cairo.ff",
-        "mp_cosmodrome.ff",
-        "mp_cracked.ff",
-        "mp_crisis.ff",
-        "mp_discovery.ff",
-        "mp_drivein.ff",
-        "mp_duga.ff",
-        "mp_firingrange.ff",
-        "mp_golfcourse.ff",
-        "mp_gridlock.ff",
-        "mp_hanoi.ff",
-        "mp_havoc.ff",
-        "mp_hotel.ff",
-        "mp_kowloon.ff",
-        "mp_mountain.ff",
-        "mp_nuked.ff",
-        "mp_outskirts.ff",
-        "mp_radiation.ff",
-        "mp_russianbase.ff",
-        "mp_silo.ff",
-        "mp_stadium.ff",
-        "mp_villa.ff",
-        "mp_zoo.ff",
-        "outro.ff",
-        "patch.ff",
-        "patch_mp.ff",
-        "patch_ui_mp.ff",
-        "pentagon.ff",
-        "pow.ff",
-        "rebirth.ff",
-        "river.ff",
-        "so_narrative1_frontend.ff",
-        "so_narrative2_frontend.ff",
-        "so_narrative3_frontend.ff",
-        "so_narrative4_frontend.ff",
-        "so_narrative5_frontend.ff",
-        "so_narrative6_frontend.ff",
-        "terminal.ff",
-        "ui_mp.ff",
-        "ui_viewer_mp.ff",
-        "underwaterbase.ff",
-        "vorkuta.ff",
-        "wmd.ff",
-        "wmd_sr71.ff",
-        "zombietron.ff",
-        "zombietron_patch.ff",
-        "zombie_coast.ff",
-        "zombie_coast_patch.ff",
-        "zombie_cod5_asylum.ff",
-        "zombie_cod5_asylum_patch.ff",
-        "zombie_cod5_factory.ff",
-        "zombie_cod5_factory_patch.ff",
-        "zombie_cod5_prototype.ff",
-        "zombie_cod5_prototype_patch.ff",
-        "zombie_cod5_sumpf.ff",
-        "zombie_cod5_sumpf_patch.ff",
-        "zombie_cosmodrome.ff",
-        "zombie_cosmodrome_patch.ff",
-        "zombie_moon.ff",
-        "zombie_moon_patch.ff",
-        "zombie_pentagon.ff",
-        "zombie_pentagon_patch.ff",
-        "zombie_temple.ff",
-        "zombie_temple_patch.ff",
-        "zombie_theater.ff",
-        "zombie_theater_patch.ff"
+        "code_post_gfx.ff", "code_post_gfx_mp.ff", "code_pre_gfx.ff",
+        "code_pre_gfx_mp.ff", "common.ff", "common_mp.ff",
+        "common_zombie.ff", "common_zombie_patch.ff", "creek_1.ff",
+        "cuba.ff", "flashpoint.ff", "frontend.ff",
+        "frontend_patch.ff" /* game_mod related */, "fullahead.ff", "hue_city.ff",
+        "int_escape.ff", "khe_sanh.ff", "kowloon.ff",
+        "mp_area51.ff", "mp_array.ff", "mp_berlinwall2.ff",
+        "mp_cairo.ff", "mp_cosmodrome.ff", "mp_cracked.ff",
+        "mp_crisis.ff", "mp_discovery.ff", "mp_drivein.ff",
+        "mp_duga.ff", "mp_firingrange.ff", "mp_golfcourse.ff",
+        "mp_gridlock.ff", "mp_hanoi.ff", "mp_havoc.ff",
+        "mp_hotel.ff", "mp_kowloon.ff", "mp_mountain.ff",
+        "mp_nuked.ff", "mp_outskirts.ff", "mp_radiation.ff",
+        "mp_russianbase.ff", "mp_silo.ff", "mp_stadium.ff",
+        "mp_villa.ff", "mp_zoo.ff", "outro.ff",
+        "patch.ff", "patch_mp.ff", "patch_ui_mp.ff",
+        "pentagon.ff", "pow.ff", "rebirth.ff",
+        "river.ff", "so_narrative1_frontend.ff", "so_narrative2_frontend.ff",
+        "so_narrative3_frontend.ff", "so_narrative4_frontend.ff", "so_narrative5_frontend.ff",
+        "so_narrative6_frontend.ff", "terminal.ff", "ui_mp.ff",
+        "ui_viewer_mp.ff","underwaterbase.ff", "vorkuta.ff",
+        "wmd.ff", "wmd_sr71.ff", "zombietron.ff",
+        "zombietron_patch.ff", "zombie_coast.ff", "zombie_coast_patch.ff",
+        "zombie_cod5_asylum.ff", "zombie_cod5_asylum_patch.ff", "zombie_cod5_factory.ff",
+        "zombie_cod5_factory_patch.ff", "zombie_cod5_prototype.ff", "zombie_cod5_prototype_patch.ff",
+        "zombie_cod5_sumpf.ff", "zombie_cod5_sumpf_patch.ff", "zombie_cosmodrome.ff",
+        "zombie_cosmodrome_patch.ff", "zombie_moon.ff", "zombie_moon_patch.ff",
+        "zombie_pentagon.ff", "zombie_pentagon_patch.ff", "zombie_temple.ff",
+        "zombie_temple_patch.ff", "zombie_theater.ff", "zombie_theater_patch.ff"
     };
 }
 
 bool GameIntegrity::IsFastfilePatchValid(string map)
 {
     GameHandler gh;
-    bool modded = false;
-
     string mapPatch = map + "_patch.ff";
     string zoneCommon = gh.GetZoneCommon() + mapPatch;
 
@@ -231,6 +177,23 @@ bool GameIntegrity::IsStealthPatchDLLPresent()
     }
 
     return false;
+}
+
+bool GameIntegrity::IsModFileValid()
+{
+    GameHandler gh;
+    string mod_name = gh.GetModName();
+    string mod_folder = gh.GetBlackOpsPath() + "/" + mod_name;
+    string mod_fastfile = mod_folder + "/mod.ff";
+    string actual_md5 = mod_fastfile_hashes[mod_name];
+    string local_md5 = GetFileMD5(mod_fastfile);
+
+    if (actual_md5 == "" || !filesystem::exists(mod_fastfile))
+    {
+        return true;
+    }
+
+    return local_md5 == actual_md5;
 }
 
 string GameIntegrity::GetFileMD5(string path)

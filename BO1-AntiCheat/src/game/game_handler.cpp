@@ -1,12 +1,22 @@
 #include <Windows.h>
+
 #include <TlHelp32.h>
+
 #include <string>
+
 #include <psapi.h>
+
 #include <map>
 
 #include "game_handler.hpp"
+
+#include "game_integrity.hpp"
+
 #include "../utilities/memory.hpp"
+
 #include "../constants.h"
+
+#include <vector>
 
 using namespace std;
 
@@ -17,6 +27,57 @@ int GameHandler::GetMapId()
 {
     Memory mem;
     return mem.ReadInt(GetBlackOpsProcess(), Constants::C_MAPADDRESS);
+}
+
+string GameHandler::GetModName()
+{
+    Memory mem;
+    return mem.ReadString(GetBlackOpsProcess(), Constants::C_MODADDRESS);
+}
+
+bool GameHandler::IsModLoaded()
+{
+    return GetModName() != "";
+}
+
+bool GameHandler::IsGameModLoaded()
+{
+    Memory mem;
+    GameIntegrity gi;
+    HANDLE handle = GetBlackOpsProcess();
+
+    if (handle == NULL)
+    {
+        return false;
+    }
+
+    vector<HMODULE> hMods(1024);
+    DWORD cbNeeded;
+
+    if (EnumProcessModulesEx(handle, hMods.data(), hMods.size() * sizeof(HMODULE), &cbNeeded, LIST_MODULES_ALL)) {
+        size_t moduleCount = cbNeeded / sizeof(HMODULE);
+        for (size_t i = 0; i < moduleCount; i++) {
+            TCHAR szModName[MAX_PATH];
+            MODULEINFO modInfo;
+
+            if (GetModuleFileNameEx(handle, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
+                if (GetModuleInformation(handle, hMods[i], &modInfo, sizeof(modInfo))) {
+                    char modulePath[MAX_PATH];
+                    size_t convertedChars = 0;
+                    wcstombs_s(&convertedChars, modulePath, szModName, sizeof(modulePath));
+                    modulePath[sizeof(modulePath) - 1] = '\0';
+                    string dllPath = string(modulePath);
+
+                    if (gi.GetFileMD5(dllPath) == Constants::GAME_MOD_DLL)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 bool GameHandler::IsGameOpen()
