@@ -1,6 +1,12 @@
+#include <string>
+
+using std::string;
+
 class Display
 {
 public:
-	void UpdateStatus(const char* statusIn);
-	void UpdateDisplay();
+	void PreUpdateStatus(string newStatus);
+	void UpdateStatus(string newStatus);
+	void Update();
+	void AddToStatus(string extraStatus);
 };

@@ -16,15 +16,18 @@ using namespace std;
 
 bool initialized = false;
 bool performed_integrity_check = false;
-bool cheating = false;
+bool cheats_detected = false;
 
 int last_map_id = 0;
 int current_map_id = 0;
 
 vector<string> scannable_maps;
+vector<string> cheats_found;
 
 static void init()
 {
+    scannable_maps.push_back("frontend");
+    scannable_maps.push_back("common_zombie");
     scannable_maps.push_back("zombie_theater");
     scannable_maps.push_back("zombie_pentagon");
     scannable_maps.push_back("zombietron");
@@ -53,16 +56,25 @@ static void reset()
     gh.OnGameClose();
 }
 
-static void onDetected(const char* reason)
+static void AddCheatsFound(string found_cheat)
 {
-    cheating = true;
+    cheats_detected = true;
+    cheats_found.push_back(found_cheat);
+}
 
+static void NotifyCheatsDetected()
+{
     Display display;
+    display.PreUpdateStatus(Constants::CHEATING_DETECTED);
+
+    for (string found_cheat : cheats_found)
+    {
+        display.AddToStatus("- " + found_cheat);
+    }
+
+    display.Update();
+
     GameHandler gl;
-
-    string combined_status = string(DisplayStatuses::CHEATING_DETECTED) + "\nReason: " + reason;
-    display.UpdateStatus(combined_status.c_str());
-
     gl.CloseBlackOps();
 }
 
@@ -92,34 +104,25 @@ static void WaitForIntegrityCheck()
 
             if (gi.IsStealthPatchDLLPresent())
             {
-                onDetected("A known stealth patch DLL was injected.");
-                return;
-            }
-
-            if (!gi.IsCommonZombiePatchValid())
-            {
-                onDetected("common_zombie_patch.ff was modified.");
-                return;
+                AddCheatsFound("A known stealth patch DLL was injected.");
             }
 
             for (string map : scannable_maps)
             {
-                if (!gi.IsMapFastFileValid(map))
+                if (!gi.IsFastfilePatchValid(map))
                 {
-                    onDetected("One of the map fastfiles were modified.");
-                    return;
+                    AddCheatsFound("" + map + "_patch.ff was found to be modified.");
                 }
-            }
-
-            if (!gi.IsGameModFrontendPatchValid())
-            {
-                onDetected("frontend_patch.ff was modified.");
-                return;
             }
 
             if (gi.DoExtraFilesExist())
             {
-                onDetected("Extra files found in zone/Common, could be a stealth patch.");
+                AddCheatsFound("Extra files found in zone/Common, could be a stealth patch.");
+            }
+
+            if (cheats_detected)
+            {
+                NotifyCheatsDetected();
                 return;
             }
 
@@ -147,11 +150,11 @@ int main()
     gh.CheckIfOpen();
 
     Display display;
-    display.UpdateDisplay();
+    display.Update();
 
     while (true)
     {
-        if (cheating)
+        if (cheats_detected)
         {
             continue;
         }

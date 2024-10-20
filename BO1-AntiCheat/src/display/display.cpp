@@ -6,19 +6,30 @@
 
 using namespace std;
 
-const char* status = DisplayStatuses::GAME_NOT_CONNECTED;
+string status = DisplayStatuses::GAME_NOT_CONNECTED;
 
-void Display::UpdateStatus(const char* newStatus)
+void Display::PreUpdateStatus(string newStatus)
 {
 	if (status == newStatus)
 	{
 		return;
 	}
+
 	status = newStatus;
-	UpdateDisplay();
 }
 
-void Display::UpdateDisplay()
+void Display::UpdateStatus(string newStatus)
+{
+	if (status == newStatus)
+	{
+		return;
+	}
+
+	status = newStatus;
+	Update();
+}
+
+void Display::Update()
 {
 	system("cls");
 	cout << "============================================================================\n";
@@ -29,9 +40,14 @@ void Display::UpdateDisplay()
 	cout << "    / /_/ / /_/ / /  / ___ |/ / / / /_/ /  / /___/ / / /  __/ /_/ / /_\n";
 	cout << "   /_____/\\____/_/  /_/  |_/_/ /_/\\__/_/   \\____/_/ /_/\\___/\\__,_/\\__/\n\n\n";
 
-	cout << "Status: " << status << "\n\n";
+	cout << status << "\n\n";
 	Verification v;
 	v.print_verification();
 
 	cout << "============================================================================\n";
+}
+
+void Display::AddToStatus(string extraStatus)
+{
+	status += "\n" + extraStatus;
 }

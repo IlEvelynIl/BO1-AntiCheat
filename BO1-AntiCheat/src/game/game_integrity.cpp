@@ -23,37 +23,20 @@ vector<string> stealth_patch_hashes;
 
 void GameIntegrity::init()
 {
-    fastfile_hashes["zombie_theater.ff"] = Constants::ZOMBIE_THEATER;
+
+    fastfile_hashes["frontend_patch.ff"] = Constants::GAME_MOD_FRONTEND;
+    fastfile_hashes["common_zombie_patch.ff"] = Constants::COMMON_ZOMBIE_PATCH;
     fastfile_hashes["zombie_theater_patch.ff"] = Constants::ZOMBIE_THEATER_PATCH;
-
-    fastfile_hashes["zombie_pentagon.ff"] = Constants::ZOMBIE_PENTAGON;
+    fastfile_hashes["zombie_theater_patch.ff"] = Constants::ZOMBIE_THEATER_PATCH;
     fastfile_hashes["zombie_pentagon_patch.ff"] = Constants::ZOMBIE_PENTAGON_PATCH;
-
-    fastfile_hashes["zombietron.ff"] = Constants::ZOMBIETRON;
     fastfile_hashes["zombietron_patch.ff"] = Constants::ZOMBIETRON_PATCH;
-
-    fastfile_hashes["zombie_cosmodrome.ff"] = Constants::ZOMBIE_COSMODROME;
     fastfile_hashes["zombie_cosmodrome_patch.ff"] = Constants::ZOMBIE_COSMODROME_PATCH;
-
-    fastfile_hashes["zombie_coast.ff"] = Constants::ZOMBIE_COAST;
     fastfile_hashes["zombie_coast_patch.ff"] = Constants::ZOMBIE_COAST_PATCH;
-
-    fastfile_hashes["zombie_temple.ff"] = Constants::ZOMBIE_TEMPLE;
     fastfile_hashes["zombie_temple_patch.ff"] = Constants::ZOMBIE_TEMPLE_PATCH;
-
-    fastfile_hashes["zombie_moon.ff"] = Constants::ZOMBIE_MOON;
     fastfile_hashes["zombie_moon_patch.ff"] = Constants::ZOMBIE_MOON_PATCH;
-
-    fastfile_hashes["zombie_cod5_prototype.ff"] = Constants::ZOMBIE_COD5_PROTOTYPE;
     fastfile_hashes["zombie_cod5_prototype_patch.ff"] = Constants::ZOMBIE_COD5_PROTOTYPE_PATCH;
-
-    fastfile_hashes["zombie_cod5_asylum.ff"] = Constants::ZOMBIE_COD5_ASYLUM;
     fastfile_hashes["zombie_cod5_asylum_patch.ff"] = Constants::ZOMBIE_COD5_ASYLUM_PATCH;
-
-    fastfile_hashes["zombie_cod5_sumpf.ff"] = Constants::ZOMBIE_COD5_SUMPF;
     fastfile_hashes["zombie_cod5_sumpf_patch.ff"] = Constants::ZOMBIE_COD5_SUMPF_PATCH;
-
-    fastfile_hashes["zombie_cod5_factory.ff"] = Constants::ZOMBIE_COD5_FACTORY;
     fastfile_hashes["zombie_cod5_factory_patch.ff"] = Constants::ZOMBIE_COD5_FACTORY_PATCH;
 
     stealth_patch_hashes = {
@@ -151,7 +134,7 @@ void GameIntegrity::init()
     };
 }
 
-bool GameIntegrity::IsMapFastFileValid(string map)
+bool GameIntegrity::IsFastfilePatchValid(string map)
 {
     GameHandler gh;
     bool modded = false;
@@ -168,34 +151,6 @@ bool GameIntegrity::IsMapFastFileValid(string map)
 
     string hash = GetFileMD5(zoneCommon.c_str());
     return hash == fastfile_hashes.at(mapPatch);
-}
-
-bool GameIntegrity::IsCommonZombiePatchValid()
-{
-    GameHandler gh;
-    string patch = gh.GetZoneCommon() + "common_zombie_patch.ff";
-
-    if (!filesystem::exists(patch))
-    {
-        return true;
-    }
-
-    string hash = GetFileMD5(patch.c_str());
-    return hash == Constants::COMMON_ZOMBIE_PATCH;
-}
-
-bool GameIntegrity::IsGameModFrontendPatchValid()
-{
-    GameHandler gh;
-    string frontend_patch = gh.GetZoneCommon() + "frontend_patch.ff";
-
-    if (!filesystem::exists(frontend_patch))
-    {
-        return true;
-    }
-
-    string hash = GetFileMD5(frontend_patch.c_str());
-    return hash == Constants::GAME_MOD_FRONTEND;
 }
 
 bool GameIntegrity::DoExtraFilesExist()
