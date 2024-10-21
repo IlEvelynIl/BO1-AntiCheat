@@ -175,12 +175,6 @@ int main()
             continue;
         }
 
-        if (!gh.GameAlreadyOpen())
-        {
-            display.UpdateStatus(DisplayStatuses::GAME_ALREADY_OPEN);
-            continue;
-        }
-
         if (!initialized)
         {
             display.UpdateStatus(DisplayStatuses::GAME_CONNECTED);
