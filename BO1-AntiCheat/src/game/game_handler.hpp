@@ -14,7 +14,4 @@ public:
 	string GetBlackOpsPath();
 	string GetPathToExe();
 	DWORD GetProcessIdByName(const std::wstring& procName);
-	void CheckIfOpen();
-	void OnGameClose();
-	bool GameAlreadyOpen();
 };

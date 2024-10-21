@@ -48,12 +48,9 @@ static void NotifyGameClosed()
 {
     Display display;
     GameHandler gh;
-
     display.UpdateStatus(DisplayStatuses::GAME_NOT_CONNECTED);
-
     initialized = false;
     performed_integrity_check = false;
-    gh.OnGameClose();
 }
 
 static void AddCheatsFound(string found_cheat)
@@ -79,7 +76,7 @@ static void NotifyCheatsDetected()
     gl.CloseBlackOps();
 }
 
-static void WaitForIntegrityCheck()
+static void AttemptIntegrityCheck()
 {
     Display display;
     GameIntegrity gi;
@@ -155,11 +152,10 @@ int main()
     GameIntegrity gi;
     gi.init();
 
-    GameHandler gh;
-    gh.CheckIfOpen();
-
     Display display;
     display.Update();
+
+    GameHandler gh;
 
     while (true)
     {
@@ -181,7 +177,7 @@ int main()
             initialized = true;
         }
 
-        WaitForIntegrityCheck();
+        AttemptIntegrityCheck();
         Sleep(1000);
     }
 

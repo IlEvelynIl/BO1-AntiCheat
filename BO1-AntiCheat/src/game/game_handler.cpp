@@ -20,9 +20,6 @@
 
 using namespace std;
 
-bool session_valid = true;
-bool session_checked = false;
-
 int GameHandler::GetMapId()
 {
     Memory mem;
@@ -161,22 +158,4 @@ DWORD GameHandler::GetProcessIdByName(const std::wstring& procName)
 
     CloseHandle(processesSnapshot);
     return 0;
-}
-
-void GameHandler::CheckIfOpen()
-{
-    if (IsGameOpen())
-    {
-        session_valid = false;
-    }
-}
-
-void GameHandler::OnGameClose()
-{
-    session_valid = true;
-}
-
-bool GameHandler::GameAlreadyOpen()
-{
-    return session_valid;
 }

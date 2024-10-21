@@ -10,7 +10,6 @@ const static LPCWSTR TITLE = L"BO1 Anti Cheat v1.0";
 
 const static string GAME_CONNECTED = "Game connected.";
 const static string GAME_NOT_CONNECTED = "Game not connected.";
-const static string GAME_ALREADY_OPEN = "Call of Duty: Black Ops must not be open beforehand. Please reopen it.";
 const static string WAITING_FOR_MAP_LOAD = "Waiting for a map load.";
 const static string PERFORMING_SCANS = "Checking game integrity.";
 const static string NO_CHEATING_DETECTED = "No known cheating methods detected.";
