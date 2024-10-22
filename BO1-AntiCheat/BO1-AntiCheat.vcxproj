@@ -103,7 +103,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -139,6 +139,7 @@
     <ClCompile Include="src\utilities\md5.cpp" />
     <ClCompile Include="src\utilities\memory.cpp" />
     <ClCompile Include="src\display\verification.cpp" />
+    <ClCompile Include="src\utilities\updater.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="src\utilities\md5.h" />
     <ClInclude Include="src\utilities\memory.hpp" />
     <ClInclude Include="src\display\verification.hpp" />
+    <ClInclude Include="src\utilities\updater.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="GoldBlackOps.ico" />

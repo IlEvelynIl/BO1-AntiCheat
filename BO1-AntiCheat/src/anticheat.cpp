@@ -12,6 +12,8 @@
 
 #include "utilities/memory.hpp"
 
+#include "utilities/updater.hpp"
+
 using namespace std;
 
 bool initialized = false;
@@ -146,7 +148,7 @@ static void AttemptIntegrityCheck()
 
 int main()
 {
-    SetConsoleTitle(DisplayStatuses::TITLE);
+    SetConsoleTitle(Constants::TITLE);
     init();
     
     GameIntegrity gi;
@@ -156,6 +158,9 @@ int main()
     display.Update();
 
     GameHandler gh;
+
+    Updater updater;
+    updater.CheckForUpdates();
 
     while (true)
     {
