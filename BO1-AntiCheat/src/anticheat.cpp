@@ -71,7 +71,6 @@ static void NotifyCheatsDetected()
         display.AddToStatus("- " + found_cheat);
     }
 
-    display.AddToStatus("\n");
     display.Update();
 
     GameHandler gl;
