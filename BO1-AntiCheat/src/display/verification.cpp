@@ -35,6 +35,9 @@ void Verification::init()
 
 void Verification::print_verification()
 {
+	cout << "\n";
+	cout << "seed: " << seed1 << "\n";
 	cout << "uid1: " << seed << " | " << uid1 << "\n";
-	cout << "uid2: " << seed << " | " << uid2 << "\n\n";
+	cout << "seed: " << seed2 << "\n";
+	cout << "uid2: " << seed << " | " << uid2 << "\n";
 }
