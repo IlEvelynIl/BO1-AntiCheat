@@ -1,12 +1,18 @@
 #include "updater.hpp"
 
 #include <cpprest/http_client.h>
+
 #include <cpprest/json.h>
+
 #include <iostream>
+
 #include <windows.h>
+
 #include <shellapi.h>
 
 #include "../constants.h"
+
+#include "../display/statuses.h"
 
 using namespace web;
 using namespace web::http;
@@ -24,7 +30,7 @@ void Updater::CheckForUpdates() {
                 return response.extract_json();
             }
             else {
-                MessageBox(NULL, L"There was a problem checking for updates.", L"Error", MB_OK);
+                MessageBox(NULL, DisplayStatuses::COULDNT_CHECK_UPDATES, L"Error", MB_OK);
                 return pplx::task_from_result(json::value());
             }
         }).then([](pplx::task<json::value> jsonTask) {
@@ -35,7 +41,7 @@ void Updater::CheckForUpdates() {
                     string tag_name = utility::conversions::to_utf8string(json_response[U("tag_name")].as_string());
 
                     if (tag_name != Constants::VERSION) {
-                        int result = MessageBox(NULL, L"A new update is available!\nWould you like to open the download page?", Constants::TITLE, MB_YESNO | MB_ICONINFORMATION);
+                        int result = MessageBox(NULL, DisplayStatuses::NEW_UPDATE_AVAILABLE, Constants::TITLE, MB_YESNO | MB_ICONINFORMATION);
 
                         if (result == IDYES) {
                             ShellExecute(NULL, L"open", L"https://github.com/IlEvelynIl/BO1-AntiCheat/releases", NULL, NULL, SW_SHOWNORMAL);
@@ -44,11 +50,11 @@ void Updater::CheckForUpdates() {
                 }
             }
             catch (const exception&) {
-                MessageBox(NULL, L"There was a problem processing the update information.", L"Error", MB_OK);
+                MessageBox(NULL, DisplayStatuses::COULDNT_PROCESS_UPDATE, L"Error", MB_OK);
             }
         }).wait();
     }
     catch (const exception&) {
-        MessageBox(NULL, L"There was a problem checking for updates.", L"Error", MB_OK);
+        MessageBox(NULL, DisplayStatuses::COULDNT_CHECK_UPDATES, L"Error", MB_OK);
     }
 }
