@@ -10,6 +10,8 @@
 
 #include "../constants.h"
 
+#include "../utilities/updater.hpp"
+
 using namespace std;
 
 string status = DisplayStatuses::GAME_NOT_CONNECTED;
@@ -35,13 +37,15 @@ void Display::UpdateStatus(string newStatus)
 	Update();
 }
 
-Memory mem;
-GameHandler gh;
-Verification v;
-
 void Display::Update()
 {
 	system("cls");
+
+	Memory mem;
+	GameHandler gh;
+	Verification v;
+	Updater updater;
+
 	cout << "============================================================================\n";
 
 	cout << "       ____  ____ ___   ___          __  _    ________               __\n";
@@ -49,6 +53,11 @@ void Display::Update()
 	cout << "     / __  / / / / /  / /| | / __ \\/ __/ /  / /   / __ \\/ _ \\/ __ `/ __/\n";
 	cout << "    / /_/ / /_/ / /  / ___ |/ / / / /_/ /  / /___/ / / /  __/ /_/ / /_\n";
 	cout << "   /_____/\\____/_/  /_/  |_/_/ /_/\\__/_/   \\____/_/ /_/\\___/\\__,_/\\__/\n\n\n";
+
+	if (updater.DeclinedUpdate())
+	{
+		cout << "Updated declined, running version \"" << Constants::VERSION << "\".\n";
+	}
 
 	cout << status << "\n";
 

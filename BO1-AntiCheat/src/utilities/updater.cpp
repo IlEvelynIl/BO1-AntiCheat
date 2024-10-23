@@ -14,11 +14,15 @@
 
 #include "../display/statuses.h"
 
+#include "../display/display.hpp"
+
 using namespace web;
 using namespace web::http;
 using namespace web::http::client;
 
 using namespace std;
+
+bool declined_update = false;
 
 void Updater::CheckForUpdates() {
     http_client client(U("https://api.github.com/repos/IlEvelynIl/BO1-AntiCheat/releases/latest"));
@@ -46,6 +50,13 @@ void Updater::CheckForUpdates() {
                         if (result == IDYES) {
                             ShellExecute(NULL, L"open", L"https://github.com/IlEvelynIl/BO1-AntiCheat/releases", NULL, NULL, SW_SHOWNORMAL);
                         }
+
+                        if (result == IDNO)
+                        {
+                            declined_update = true;
+                            Display display;
+                            display.Update();
+                        }
                     }
                 }
             }
@@ -57,4 +68,9 @@ void Updater::CheckForUpdates() {
     catch (const exception&) {
         MessageBox(NULL, DisplayStatuses::COULDNT_CHECK_UPDATES, L"Error", MB_OK);
     }
+}
+
+bool Updater::DeclinedUpdate()
+{
+    return declined_update;
 }
