@@ -15,5 +15,9 @@ A game is verified by this tool when it has performed an integrity check on a ma
 - Searches for known stealth patches injected into the game.
 - Checks the integrity of all community leaderboard mods.
 
+## Why did my antivirus block the download?
+This is likely due to Windows Defender's sensitivity to programs without a signature. Rest assured, there's nothing harmful in the tool, hence why its open source. 
+If you want to verify that, you can build it from source, its virtually the same thing, just missing proper verification values. However, without those verification values, the build can't be verified that its not modified further.
+
 ## People who helped
 - [lveez](https://github.com/lveez) - Verification method so that the program can be open source.
