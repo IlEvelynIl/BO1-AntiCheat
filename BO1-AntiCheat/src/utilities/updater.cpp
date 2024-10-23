@@ -23,23 +23,32 @@ void Updater::CheckForUpdates() {
             if (response.status_code() == status_codes::OK) {
                 return response.extract_json();
             }
-            MessageBox(NULL, L"There was a problem checking for updates.", L"Error", MB_OK);
-            }).then([](json::value jsonResponse) {
-                if (jsonResponse.has_field(U("tag_name"))) {
-                    utility::string_t tagName = jsonResponse[U("tag_name")].as_string();
-                    string tagNameStr = utility::conversions::to_utf8string(tagName);
+            else {
+                MessageBox(NULL, L"There was a problem checking for updates.", L"Error", MB_OK);
+                return pplx::task_from_result(json::value());
+            }
+        }).then([](pplx::task<json::value> jsonTask) {
+            try {
+                json::value json_response = jsonTask.get();
 
-                    if (tagNameStr != Constants::VERSION) {
-                        int result = MessageBox(NULL, L"A new update is available!\nWould you like to open the release page?", Constants::TITLE, MB_YESNO | MB_ICONINFORMATION);
+                if (json_response.has_field(U("tag_name"))) {
+                    string tag_name = utility::conversions::to_utf8string(json_response[U("tag_name")].as_string());
+
+                    if (tag_name != Constants::VERSION) {
+                        int result = MessageBox(NULL, L"A new update is available!\nWould you like to open the download page?", Constants::TITLE, MB_YESNO | MB_ICONINFORMATION);
 
                         if (result == IDYES) {
                             ShellExecute(NULL, L"open", L"https://github.com/IlEvelynIl/BO1-AntiCheat/releases", NULL, NULL, SW_SHOWNORMAL);
                         }
                     }
                 }
-                }).wait();
+            }
+            catch (const exception&) {
+                MessageBox(NULL, L"There was a problem processing the update information.", L"Error", MB_OK);
+            }
+        }).wait();
     }
-    catch (const exception& e) {
+    catch (const exception&) {
         MessageBox(NULL, L"There was a problem checking for updates.", L"Error", MB_OK);
     }
 }
