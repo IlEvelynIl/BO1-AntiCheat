@@ -36,8 +36,6 @@ void Verification::init()
 void Verification::print_verification()
 {
 	cout << "\n";
-	cout << "seed: " << seed1 << "\n";
-	cout << "uid1: " << init_time << " | " << uid1 << "\n";
-	cout << "seed: " << seed2 << "\n";
-	cout << "uid2: " << init_time << " | " << uid2 << "\n";
+	cout << "uid 1: " << seed1 << " | " << init_time << " | " << uid1 << "\n";
+	cout << "uid 2: " << seed2 << " | " << init_time << " | " << uid2 << "\n";
 }
