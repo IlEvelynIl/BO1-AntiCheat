@@ -13,6 +13,8 @@ const static LPCWSTR TITLE = L"BO1 Anti Cheat v1.0";
 const static int C_MAPADDRESS = 0x02F67B6C;
 const static int C_MODADDRESS = 0x025FE010;
 
+const static int MAIN_MENU_ID = 5;
+
 const static string COMMON_ZOMBIE = "d869783a3ea5529769f2abcc624ca19d";
 const static string COMMON_ZOMBIE_PATCH = "05cd72982feeaa51c64b6d4fcdb39a6e";
 

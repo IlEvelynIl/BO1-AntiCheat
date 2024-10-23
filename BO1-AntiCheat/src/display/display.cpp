@@ -35,6 +35,10 @@ void Display::UpdateStatus(string newStatus)
 	Update();
 }
 
+Memory mem;
+GameHandler gh;
+Verification v;
+
 void Display::Update()
 {
 	system("cls");
@@ -48,17 +52,12 @@ void Display::Update()
 
 	cout << status << "\n";
 
-	Memory mem;
-	GameHandler gh;
 	string mod_name = gh.GetModName();
 	if (gh.IsGameModLoaded() && mod_name != "")
 	{
 		cout << "Mod: " << mod_name << "\n";
 	}
 
-	cout << "\n";
-
-	Verification v;
 	v.print_verification();
 
 	cout << "============================================================================\n";

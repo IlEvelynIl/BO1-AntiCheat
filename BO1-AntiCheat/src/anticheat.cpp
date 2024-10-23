@@ -138,8 +138,7 @@ static void AttemptIntegrityCheck()
         }
     }
     
-    int main_menu_id = 5;
-    if (gh.GetMapId() == main_menu_id)
+    if (gh.GetMapId() == Constants::MAIN_MENU_ID)
     {
         display.UpdateStatus(DisplayStatuses::WAITING_FOR_MAP_LOAD);
         performed_integrity_check = false;
@@ -173,17 +172,23 @@ int main()
         {
             NotifyGameClosed();
             display.UpdateStatus(DisplayStatuses::GAME_NOT_CONNECTED);
+            gh.CheckGameMod();
             continue;
         }
 
         if (!initialized)
         {
-            display.UpdateStatus(DisplayStatuses::GAME_CONNECTED);
+            if (gh.GetMapId() != Constants::MAIN_MENU_ID)
+            {
+                display.UpdateStatus(DisplayStatuses::GAME_CONNECTED);
+            }
+            
+            gh.CheckGameMod();
             initialized = true;
         }
 
         AttemptIntegrityCheck();
-        Sleep(1000);
+        Sleep(50);
     }
 
     return 0;

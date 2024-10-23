@@ -20,6 +20,18 @@
 
 using namespace std;
 
+bool game_mod_loaded = false;
+
+void GameHandler::CheckGameMod()
+{
+    game_mod_loaded = CheckForGameModDLL();
+}
+
+bool GameHandler::IsGameModLoaded()
+{
+    return game_mod_loaded;
+}
+
 int GameHandler::GetMapId()
 {
     Memory mem;
@@ -28,6 +40,11 @@ int GameHandler::GetMapId()
 
 string GameHandler::GetModName()
 {
+    if (!game_mod_loaded)
+    {
+        return "";
+    }
+
     Memory mem;
     return mem.ReadString(GetBlackOpsProcess(), Constants::C_MODADDRESS);
 }
@@ -37,7 +54,7 @@ bool GameHandler::IsModLoaded()
     return GetModName() != "";
 }
 
-bool GameHandler::IsGameModLoaded()
+bool GameHandler::CheckForGameModDLL()
 {
     Memory mem;
     GameIntegrity gi;
