@@ -6,11 +6,9 @@
 
 #include "game/game_integrity.hpp"
 
-#include "display/display.hpp"
+#include "statuses.h"
 
-#include "display/statuses.h"
-
-#include "display/verification.hpp"
+#include "utilities/verification.hpp"
 
 #include "utilities/memory.hpp"
 
@@ -21,12 +19,15 @@ using namespace std;
 bool initialized = false;
 bool performed_integrity_check = false;
 bool cheats_detected = false;
+bool notified_cheats_detected = false;
 
 int last_map_id = 0;
 int current_map_id = 0;
 
 vector<string> scannable_maps;
 vector<string> cheats_found;
+
+string gameStatus = Statuses::GAME_NOT_CONNECTED;
 
 static void init()
 {
@@ -47,9 +48,7 @@ static void init()
 
 static void NotifyGameClosed()
 {
-    Display display;
-    GameHandler gh;
-    display.UpdateStatus(DisplayStatuses::GAME_NOT_CONNECTED);
+    gameStatus = Statuses::GAME_NOT_CONNECTED;
     initialized = false;
     performed_integrity_check = false;
 }
@@ -62,26 +61,33 @@ static void AddCheatsFound(string found_cheat)
 
 static void NotifyCheatsDetected()
 {
-    Display display;
-    /*display.PreUpdateStatus(Constants::CHEATING_DETECTED);
-
-    for (string found_cheat : cheats_found)
-    {
-        display.AddToStatus("- " + found_cheat);
-    }
-
-    display.Update();*/
-
-    string cheats = "A known cheating method was detected.";
-    display.UpdateStatus(cheats);
-
+    gameStatus = "A known cheating method was detected.";
+    notified_cheats_detected = true;
     GameHandler gl;
     gl.CloseBlackOps();
+
+    string cheats = "The following cheating methods were detected:\n";
+
+    for (string cheat_found : cheats_found)
+    {
+        cheats += "\n- " + cheat_found;
+    }
+    MessageBoxA(NULL, cheats.c_str(), "BO1 Anti Cheat (Detections)", MB_OK);
+}
+
+static void OnGameReopen()
+{
+    notified_cheats_detected = false;
+    if (cheats_detected)
+    {
+        cheats_detected = false;
+    }
+    initialized = false;
+    cheats_found.clear();
 }
 
 static void AttemptIntegrityCheck()
 {
-    Display display;
     GameIntegrity gi;
     GameHandler gh;
 
@@ -99,7 +105,7 @@ static void AttemptIntegrityCheck()
         bool last_map_id_valid = last_map_id != 0 && last_map_id != -1;
         if (last_map_id_valid && current_map_id == 0)
         {
-            display.UpdateStatus(DisplayStatuses::PERFORMING_SCANS);
+            gameStatus = Statuses::PERFORMING_SCANS;
             performed_integrity_check = true;
             Sleep(1000);
 
@@ -135,40 +141,39 @@ static void AttemptIntegrityCheck()
                 return;
             }
 
-            display.UpdateStatus(DisplayStatuses::NO_CHEATING_DETECTED);
+            gameStatus = Statuses::NO_CHEATING_DETECTED;
         }
     }
     
     if (gh.GetMapId() == Constants::MAIN_MENU_ID)
     {
-        display.UpdateStatus(DisplayStatuses::WAITING_FOR_MAP_LOAD);
+        gameStatus = Statuses::WAITING_FOR_MAP_LOAD;
         performed_integrity_check = false;
     }
 }
 
 static void CheckForBlackOpsProcess()
 {
-    Display display;
     GameHandler gh;
 
-    if (cheats_detected)
+    if (!gh.IsGameOpen() && !cheats_detected)
     {
+        NotifyGameClosed();
+        gameStatus = Statuses::GAME_NOT_CONNECTED;
+        gh.CheckGameMod();
         return;
     }
 
-    if (!gh.IsGameOpen())
+    if (notified_cheats_detected && gh.IsGameOpen())
     {
-        NotifyGameClosed();
-        display.UpdateStatus(DisplayStatuses::GAME_NOT_CONNECTED);
-        gh.CheckGameMod();
-        return;
+        OnGameReopen();
     }
 
     if (!initialized)
     {
         if (gh.GetMapId() != Constants::MAIN_MENU_ID)
         {
-            display.UpdateStatus(DisplayStatuses::GAME_CONNECTED);
+            gameStatus = Statuses::GAME_CONNECTED;
         }
 
         gh.CheckGameMod();
@@ -193,10 +198,6 @@ static void CheckForBlackOpsProcessThread()
     }
 }
 
-#define IDR_IMAGE 101
-#define IDR_FONT1 102
-#define IDR_FONT2 103
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     init();
@@ -207,15 +208,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     GameIntegrity gi;
     gi.init();
 
-    Display display;
     GameHandler gh;
+
     Updater updater;
     updater.CheckForUpdates();
 
     int windowWidth = 650;
     int windowHeight = 215;
 
-    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), Constants::TITLE, sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), L"BO1 Anti Cheat", sf::Style::Titlebar | sf::Style::Close);
     window.setFramerateLimit(60);
 
     sf::Image icon;
@@ -295,7 +296,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             }
         }
 
-        statusText.setString(display.GetStatus());
+        statusText.setString(gameStatus);
         float statusTextWidth = statusText.getGlobalBounds().width;
         statusText.setPosition((windowWidth - statusTextWidth) / 2, 59);
 
@@ -303,11 +304,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         {
             statusText.setFillColor(sf::Color(255, 58, 58));
         }
+        else
+        {
+            statusText.setFillColor(sf::Color::White);
+        }
 
         window.clear(sf::Color(10, 10, 10));
         window.draw(anticheatText);
         window.draw(bo1Sprite);
         window.draw(statusText);
+
         window.draw(uidsBackground);
         window.draw(verificationText);
         window.draw(uid1Text);
