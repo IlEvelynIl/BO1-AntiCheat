@@ -7,8 +7,8 @@ using std::string;
 #ifndef Constants
 #define Constants
 
-const static string VERSION = "1.0";
-const static LPCWSTR TITLE = L"BO1 Anti Cheat v1.0";
+const static string VERSION = "1.1";
+const static LPCWSTR TITLE = L"BO1 Anti Cheat v1.1";
 
 const static int C_MAPADDRESS = 0x02F67B6C;
 const static int C_MODADDRESS = 0x025FE010;

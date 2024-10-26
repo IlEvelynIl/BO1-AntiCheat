@@ -50,13 +50,6 @@ void Updater::CheckForUpdates() {
                         if (result == IDYES) {
                             ShellExecute(NULL, L"open", L"https://github.com/IlEvelynIl/BO1-AntiCheat/releases", NULL, NULL, SW_SHOWNORMAL);
                         }
-
-                        if (result == IDNO)
-                        {
-                            declined_update = true;
-                            Display display;
-                            display.Update();
-                        }
                     }
                 }
             }
