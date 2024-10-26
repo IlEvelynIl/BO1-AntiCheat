@@ -33,9 +33,12 @@ void Verification::init()
 	uid2 = engine2();
 }
 
-void Verification::print_verification()
+string Verification::GetUID_1()
 {
-	cout << "\n";
-	cout << "uid 1: " << seed1 << " | " << init_time << " | " << uid1 << "\n";
-	cout << "uid 2: " << seed2 << " | " << init_time << " | " << uid2 << "\n";
+	return "UID 1: " + to_string(seed1) + " | " + to_string(init_time) + " | " + to_string(uid1);
+}
+
+string Verification::GetUID_2()
+{
+	return "UID 2: " + to_string(seed2) + " | " + to_string(init_time) + " | " + to_string(uid2);
 }

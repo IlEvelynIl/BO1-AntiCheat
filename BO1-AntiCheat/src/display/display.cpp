@@ -34,12 +34,12 @@ void Display::UpdateStatus(string newStatus)
 	}
 
 	status = newStatus;
-	Update();
+	//Update();
 }
 
 void Display::Update()
 {
-	system("cls");
+	/*system("cls");
 
 	Memory mem;
 	GameHandler gh;
@@ -56,7 +56,7 @@ void Display::Update()
 
 	if (updater.DeclinedUpdate())
 	{
-		cout << "Updated declined, running version \"" << Constants::VERSION << "\".\n";
+		cout << "Updated declined, processThreadRunning version \"" << Constants::VERSION << "\".\n";
 	}
 
 	cout << status << "\n";
@@ -69,10 +69,15 @@ void Display::Update()
 
 	v.print_verification();
 
-	cout << "============================================================================\n";
+	cout << "============================================================================\n";*/
 }
 
 void Display::AddToStatus(string extraStatus)
 {
 	status += "\n" + extraStatus;
+}
+
+string Display::GetStatus()
+{
+	return status;
 }

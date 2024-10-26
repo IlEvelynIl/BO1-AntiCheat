@@ -9,4 +9,5 @@ public:
 	void UpdateStatus(string newStatus);
 	void Update();
 	void AddToStatus(string extraStatus);
+	string GetStatus();
 };

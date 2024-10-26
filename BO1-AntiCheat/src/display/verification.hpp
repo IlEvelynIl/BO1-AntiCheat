@@ -11,5 +11,6 @@ class Verification
 {
 public:
 	void init();
-	void print_verification();
+	string GetUID_1();
+	string GetUID_2();
 };
