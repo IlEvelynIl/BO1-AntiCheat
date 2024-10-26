@@ -12,10 +12,6 @@
 
 #include "../constants.h"
 
-#include "../display/statuses.h"
-
-#include "../display/display.hpp"
-
 using namespace web;
 using namespace web::http;
 using namespace web::http::client;

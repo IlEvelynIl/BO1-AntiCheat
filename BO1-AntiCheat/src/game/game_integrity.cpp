@@ -6,10 +6,6 @@
 
 #include "../utilities/md5.h"
 
-#include "../display/display.hpp"
-
-#include "../display/statuses.h"
-
 #include "../utilities/memory.hpp"
 
 #include <fstream>
