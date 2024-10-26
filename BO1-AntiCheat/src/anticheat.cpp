@@ -72,7 +72,7 @@ static void NotifyCheatsDetected()
 
     display.Update();*/
 
-    string cheats = "A method of cheating was detected.";
+    string cheats = "A known cheating method was detected.";
     display.UpdateStatus(cheats);
 
     GameHandler gl;
@@ -193,6 +193,10 @@ static void CheckForBlackOpsProcessThread()
     }
 }
 
+#define IDR_IMAGE 101
+#define IDR_FONT1 102
+#define IDR_FONT2 103
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     init();
@@ -215,13 +219,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     window.setFramerateLimit(60);
 
     sf::Font boldFont;
-    if (!boldFont.loadFromFile("res/KodeMono-Bold.ttf"))
+    if (!boldFont.loadFromFile("main/Bold.ttf"))
     {
         return -1;
     }
 
     sf::Font semiBoldFont;
-    if (!semiBoldFont.loadFromFile("res/KodeMono-SemiBold.ttf"))
+    if (!semiBoldFont.loadFromFile("main/SemiBold.ttf"))
     {
         return -1;
     }
@@ -235,7 +239,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     anticheatText.setPosition(((windowWidth - anticheatTextWidth) / 2) + padding, 20);
 
     sf::Texture blackOpsLogo;
-    if (!blackOpsLogo.loadFromFile("res/bo1.png")) {
+    if (!blackOpsLogo.loadFromFile("main/bo1.png")) {
         return -1;
     }
     blackOpsLogo.setSmooth(true);
