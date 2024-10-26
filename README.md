@@ -1,6 +1,8 @@
 # BO1-AntiCheat
 An anticheat tool for Black Ops 1 Zombies to serve as an unofficial alternative to the showing files rule.
 
+![image](https://github.com/user-attachments/assets/b12e7510-c616-4e77-89d7-d2e47292767d)
+
 ## Why?
 Modern problems require modern solutions. While the current solution may be a good way to catch cheaters one way, there are others that are not accounted for. Based a few players opinions in the community, something like this seems to be the only way to solve all of the current cheating issues, as anti cheat programs can evolve like the cheating methods themselves.
 
