@@ -238,6 +238,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (!blackOpsLogo.loadFromFile("res/bo1.png")) {
         return -1;
     }
+    blackOpsLogo.setSmooth(true);
     sf::Sprite bo1Sprite(blackOpsLogo);
     bo1Sprite.setPosition(anticheatText.getGlobalBounds().left - (padding + 19), 18);
 
