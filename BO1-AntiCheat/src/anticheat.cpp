@@ -218,19 +218,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), Constants::TITLE, sf::Style::Titlebar | sf::Style::Close);
     window.setFramerateLimit(60);
 
-    sf::Font boldFont;
-    if (!boldFont.loadFromFile("main/Bold.ttf"))
+    sf::Image icon;
+    if (!icon.loadFromFile("main/icon.png"))
     {
+        MessageBox(NULL, L"Could not load \"icon.png\".", L"Error", MB_OK);
+        return -1;
+    }
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
+    // Fonts
+    sf::Font boldFont, semiBoldFont;
+    if (!boldFont.loadFromFile("main/Bold.ttf") || !semiBoldFont.loadFromFile("main/SemiBold.ttf"))
+    {
+        MessageBox(NULL, L"Could not load \"Bold.ttf\" or \"SemiBold.ttf\".", L"Error", MB_OK);
         return -1;
     }
 
-    sf::Font semiBoldFont;
-    if (!semiBoldFont.loadFromFile("main/SemiBold.ttf"))
-    {
-        return -1;
-    }
-
-    // Logo "BO1 Anti Cheat v1.0"
+    // "BO1 Anti Cheat"
     sf::Text anticheatText(Constants::TITLE, semiBoldFont, 20);
     anticheatText.setFillColor(sf::Color(255, 255, 255, 155));
 
@@ -238,8 +242,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     float anticheatTextWidth = anticheatText.getGlobalBounds().width;
     anticheatText.setPosition(((windowWidth - anticheatTextWidth) / 2) + padding, 20);
 
+    // Black Ops Icon
     sf::Texture blackOpsLogo;
     if (!blackOpsLogo.loadFromFile("main/bo1.png")) {
+        MessageBox(NULL, L"Could not load \"bo1.png\".", L"Error", MB_OK);
         return -1;
     }
     blackOpsLogo.setSmooth(true);

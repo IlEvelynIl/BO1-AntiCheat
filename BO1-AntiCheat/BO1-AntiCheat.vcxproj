@@ -158,10 +158,17 @@
     <ClInclude Include="src\utilities\updater.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="GoldBlackOps.ico" />
+    <Image Include="BlackOps.ico" />
+    <Image Include="main\bo1.png" />
+    <Image Include="main\icon.png" />
+    <Image Include="main\icon2.png" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BO1-AntiCheat.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="main\Bold.ttf" />
+    <Font Include="main\SemiBold.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
