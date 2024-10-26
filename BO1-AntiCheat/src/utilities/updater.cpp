@@ -12,6 +12,8 @@
 
 #include "../constants.h"
 
+#include "../statuses.h"
+
 using namespace web;
 using namespace web::http;
 using namespace web::http::client;
@@ -30,7 +32,7 @@ void Updater::CheckForUpdates() {
                 return response.extract_json();
             }
             else {
-                MessageBox(NULL, DisplayStatuses::COULDNT_CHECK_UPDATES, L"Error", MB_OK);
+                MessageBox(NULL, Statuses::COULDNT_CHECK_UPDATES, L"Error", MB_OK);
                 return pplx::task_from_result(json::value());
             }
         }).then([](pplx::task<json::value> jsonTask) {
@@ -41,7 +43,7 @@ void Updater::CheckForUpdates() {
                     string tag_name = utility::conversions::to_utf8string(json_response[U("tag_name")].as_string());
 
                     if (tag_name != Constants::VERSION) {
-                        int result = MessageBox(NULL, DisplayStatuses::NEW_UPDATE_AVAILABLE, Constants::TITLE, MB_YESNO | MB_ICONINFORMATION);
+                        int result = MessageBox(NULL, Statuses::NEW_UPDATE_AVAILABLE, Constants::TITLE, MB_YESNO | MB_ICONINFORMATION);
 
                         if (result == IDYES) {
                             ShellExecute(NULL, L"open", L"https://github.com/IlEvelynIl/BO1-AntiCheat/releases", NULL, NULL, SW_SHOWNORMAL);
@@ -50,12 +52,12 @@ void Updater::CheckForUpdates() {
                 }
             }
             catch (const exception&) {
-                MessageBox(NULL, DisplayStatuses::COULDNT_PROCESS_UPDATE, L"Error", MB_OK);
+                MessageBox(NULL, Statuses::COULDNT_PROCESS_UPDATE, L"Error", MB_OK);
             }
         }).wait();
     }
     catch (const exception&) {
-        MessageBox(NULL, DisplayStatuses::COULDNT_CHECK_UPDATES, L"Error", MB_OK);
+        MessageBox(NULL, Statuses::COULDNT_CHECK_UPDATES, L"Error", MB_OK);
     }
 }
 

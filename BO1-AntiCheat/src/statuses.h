@@ -3,8 +3,8 @@
 
 using namespace std;
 
-#ifndef DisplayStatuses
-#define DisplayStatuses
+#ifndef Statuses
+#define Statuses
 
 const static string GAME_CONNECTED = "Game connected.";
 const static string GAME_NOT_CONNECTED = "Game not connected.";
