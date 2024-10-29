@@ -182,7 +182,8 @@ bool GameIntegrity::IsStealthPatchDLLPresent()
 }
 
 // makes sure that the game values like god mode, no target, etc. are as they should be
-// currently reads solo values for now until coop is extensively tested
+// currently reads solo values for now until coop is able to be extensively tested
+// also i believe for this to properly work in coop, it will need to be run by the host
 bool GameIntegrity::GameValuesValid()
 {
     Memory mem;
