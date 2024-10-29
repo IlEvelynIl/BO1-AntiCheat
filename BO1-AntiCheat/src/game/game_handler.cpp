@@ -22,22 +22,26 @@ using namespace std;
 
 bool game_mod_loaded = false;
 
+// acts as an initializer for the game_mod_loaded boolean
 void GameHandler::CheckGameMod()
 {
     game_mod_loaded = CheckForGameModDLL();
 }
 
+// just a getter for the value of game_mod_loaded
 bool GameHandler::IsGameModLoaded()
 {
     return game_mod_loaded;
 }
 
+// reads the map id from memory, Furret's box tracker uses this same method for setting up the weapons list
 int GameHandler::GetMapId()
 {
     Memory mem;
     return mem.ReadInt(GetBlackOpsProcess(), Constants::C_MAPADDRESS);
 }
 
+// gets the current mod name from memory
 string GameHandler::GetModName()
 {
     if (!game_mod_loaded)
@@ -49,11 +53,13 @@ string GameHandler::GetModName()
     return mem.ReadString(GetBlackOpsProcess(), Constants::C_MODADDRESS);
 }
 
+// simple check for if a mod is loaded or not
 bool GameHandler::IsModLoaded()
 {
     return GetModName() != "";
 }
 
+// checks for the game_mod.dll file in the modules list of bo1
 bool GameHandler::CheckForGameModDLL()
 {
     Memory mem;
@@ -94,11 +100,13 @@ bool GameHandler::CheckForGameModDLL()
     return false;
 }
 
+// checks if the game is open
 bool GameHandler::IsGameOpen()
 {
     return GetBlackOpsProcess() != NULL;
 }
 
+// gets the bo1 process so we can utilize it
 HANDLE GameHandler::GetBlackOpsProcess()
 {
     DWORD pId = GetProcessIdByName(L"BlackOps.exe");
@@ -111,6 +119,7 @@ HANDLE GameHandler::GetBlackOpsProcess()
     return hProc;
 }
 
+// closes the game, this is primarily gonna be used to "crash" the game
 void GameHandler::CloseBlackOps()
 {
     if (IsGameOpen())
@@ -121,11 +130,13 @@ void GameHandler::CloseBlackOps()
     }
 }
 
+// gets the path to zone/Common
 string GameHandler::GetZoneCommon()
 {
 	return GetBlackOpsPath() + "/zone/Common/";
 }
 
+// gets the path to the executable thats being run
 string GameHandler::GetBlackOpsPath()
 {
 	string blackOpsPath = GetPathToExe();
@@ -133,6 +144,7 @@ string GameHandler::GetBlackOpsPath()
 	return blackOpsPath.substr(0, pos);
 }
 
+// gets the path to the actual bo1 executable, with the .exe name included
 string GameHandler::GetPathToExe() {
     HANDLE hProcess = GetBlackOpsProcess();
 
@@ -154,6 +166,7 @@ string GameHandler::GetPathToExe() {
 	}
 }
 
+// finds a process id by name
 DWORD GameHandler::GetProcessIdByName(const std::wstring& procName)
 {
     PROCESSENTRY32 processInfo;

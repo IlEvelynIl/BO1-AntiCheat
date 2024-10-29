@@ -20,8 +20,7 @@ using namespace web::http::client;
 
 using namespace std;
 
-bool declined_update = false;
-
+// just simply looks at the latest github release tag and if it doesnt match then they arent up to date obviously
 void Updater::CheckForUpdates() {
     http_client client(U("https://api.github.com/repos/IlEvelynIl/BO1-AntiCheat/releases/latest"));
     http_request request(methods::GET);
@@ -45,8 +44,9 @@ void Updater::CheckForUpdates() {
                     if (tag_name != Constants::VERSION) {
                         int result = MessageBox(NULL, Statuses::NEW_UPDATE_AVAILABLE, Constants::TITLE, MB_YESNO | MB_ICONINFORMATION);
 
+                        // when they click yes to wanting to open the download page, open the github release url
                         if (result == IDYES) {
-                            ShellExecute(NULL, L"open", L"https://github.com/IlEvelynIl/BO1-AntiCheat/releases", NULL, NULL, SW_SHOWNORMAL);
+                            ShellExecute(NULL, L"open", L"https://github.com/IlEvelynIl/BO1-AntiCheat/releases/latest", NULL, NULL, SW_SHOWNORMAL);
                         }
                     }
                 }
@@ -59,9 +59,4 @@ void Updater::CheckForUpdates() {
     catch (const exception&) {
         MessageBox(NULL, Statuses::COULDNT_CHECK_UPDATES, L"Error", MB_OK);
     }
-}
-
-bool Updater::DeclinedUpdate()
-{
-    return declined_update;
 }

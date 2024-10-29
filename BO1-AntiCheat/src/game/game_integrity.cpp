@@ -19,6 +19,7 @@ map<string, string> mod_fastfile_hashes;
 vector<string> valid_common_files;
 vector<string> stealth_patch_hashes;
 
+// initializes everything that we need to check on the game, such as hashes of fastfiles, stealth patch dll hashes, etc.
 void GameIntegrity::init()
 {
 
@@ -78,6 +79,7 @@ void GameIntegrity::init()
     };
 }
 
+// checks a specific hash of a fastfile but only if it has "_patch.ff"
 bool GameIntegrity::IsFastfilePatchValid(string map)
 {
     GameHandler gh;
@@ -86,6 +88,7 @@ bool GameIntegrity::IsFastfilePatchValid(string map)
 
     bool modified = false;
 
+    // if it doesnt exist, they probably dont own the map or something, we cant check something that doesnt exist.
     if (!filesystem::exists(zoneCommon))
     {
         return true;
@@ -95,6 +98,7 @@ bool GameIntegrity::IsFastfilePatchValid(string map)
     return hash == fastfile_hashes.at(mapPatch);
 }
 
+// checks for extra files in zone/Common
 bool GameIntegrity::DoExtraFilesExist()
 {
     GameHandler gh;
@@ -123,6 +127,8 @@ bool GameIntegrity::DoExtraFilesExist()
     return false;
 }
 
+// checks for specific DLL files that should not injected into bo1
+// this could range from a stealth patch to other files too
 bool GameIntegrity::IsStealthPatchDLLPresent()
 {
     Memory mem;
@@ -175,6 +181,46 @@ bool GameIntegrity::IsStealthPatchDLLPresent()
     return false;
 }
 
+// makes sure that the game values like god mode, no target, etc. are as they should be
+// currently reads solo values for now until coop is extensively tested
+bool GameIntegrity::GameValuesValid()
+{
+    Memory mem;
+    GameHandler gh;
+
+    int godMode = mem.ReadInt(gh.GetBlackOpsProcess(), 0x01A79868) & 1;
+    int noTarget = mem.ReadInt(gh.GetBlackOpsProcess(), 0x01A79868) & 4;
+    int noClip = mem.ReadInt(gh.GetBlackOpsProcess(), 0x01C0A74C);
+
+    int boxMovablePtr = mem.ReadInt(gh.GetBlackOpsProcess(), 0x026210F4);
+    int finalAddress = boxMovablePtr + 0x18;
+    int boxMovable = mem.ReadInt(gh.GetBlackOpsProcess(), finalAddress) & 16;
+
+    // check for magic_chest_movable changes
+    if (boxMovable == 16)
+    {
+        return false;
+    }
+
+    if (godMode == 1)
+    {
+        return false;
+    }
+
+    if (noTarget == 4)
+    {
+        return false;
+    }
+
+    if (noClip == 1)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+// checks the current mod file hash, its only really important for community leaderboards
 bool GameIntegrity::IsModFileValid()
 {
     GameHandler gh;
@@ -192,6 +238,7 @@ bool GameIntegrity::IsModFileValid()
     return local_md5 == actual_md5;
 }
 
+// gets the md5 hash of a file
 string GameIntegrity::GetFileMD5(string path)
 {
     ifstream inFile(path, ios::binary);

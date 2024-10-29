@@ -23,4 +23,5 @@ public:
 	string GetFileMD5(string path);
 	bool IsStealthPatchDLLPresent();
 	bool IsModFileValid();
+	bool GameValuesValid();
 };

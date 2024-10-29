@@ -12,6 +12,7 @@ const static LPCWSTR TITLE = L"BO1 Anti Cheat v1.2";
 
 const static int C_MAPADDRESS = 0x02F67B6C;
 const static int C_MODADDRESS = 0x025FE010;
+const static int C_GAMEPAUSED = 0x8902B4;
 
 const static int MAIN_MENU_ID = 5;
 
