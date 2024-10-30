@@ -181,7 +181,7 @@ bool GameIntegrity::IsStealthPatchDLLPresent()
     return false;
 }
 
-// makes sure that the game values like god mode, no target, etc. are as they should be
+// makes sure that the game values like god mode, no target, etc. are not modified
 // i believe for this to properly work in coop, it will need to be run by the host
 string GameIntegrity::LookForActiveCheatingBinds()
 {
@@ -193,7 +193,7 @@ string GameIntegrity::LookForActiveCheatingBinds()
 
     vector<string> binds_found;
 
-    // checks the value of god mode, no target and no clip for all 4 players 
+    // checks the value of god mode, demi god mode, and no target for all 4 players 
     for (int i = 0; i <= 3; i++)
     {
         int demiGodMode = mem.ReadInt(gh.GetBlackOpsProcess(), godModeAddresses[i]) & 2;
@@ -218,30 +218,28 @@ string GameIntegrity::LookForActiveCheatingBinds()
         }
     }
 
-    // host only no matter what
+    // check for magic_chest_movable changes
     int boxMovablePtr = mem.ReadInt(gh.GetBlackOpsProcess(), 0x026210F4);
     int boxMovableAddress = boxMovablePtr + 0x18;
     int boxMovable = mem.ReadInt(gh.GetBlackOpsProcess(), boxMovableAddress) & 16;
-
-    // check for magic_chest_movable changes
     if (boxMovable == 16)
     {
         binds_found.push_back("Box Moving Disabled");
     }
 
-    string cheats_found;
-
+    // format all cheating binds detected into a nice list
+    string formatted_binds_found;
     for (int i = 0; i < binds_found.size(); i++)
     {
         string bind = binds_found[i];
-        cheats_found += bind;
+        formatted_binds_found += bind;
         if (i != binds_found.size() - 1)
         {
-            cheats_found += ", ";
+            formatted_binds_found += ", ";
         }
     }
 
-    return cheats_found;
+    return formatted_binds_found;
 }
 
 // checks the current mod file hash, its only really important for community leaderboards
