@@ -220,8 +220,8 @@ string GameIntegrity::LookForActiveCheatingBinds()
 
     // host only no matter what
     int boxMovablePtr = mem.ReadInt(gh.GetBlackOpsProcess(), 0x026210F4);
-    int finalAddress = boxMovablePtr + 0x18;
-    int boxMovable = mem.ReadInt(gh.GetBlackOpsProcess(), finalAddress) & 16;
+    int boxMovableAddress = boxMovablePtr + 0x18;
+    int boxMovable = mem.ReadInt(gh.GetBlackOpsProcess(), boxMovableAddress) & 16;
 
     // check for magic_chest_movable changes
     if (boxMovable == 16)
