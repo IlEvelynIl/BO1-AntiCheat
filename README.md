@@ -26,4 +26,4 @@ If you want to verify that, you can build it from source, its virtually the same
 
 ## People who helped
 - [lveez](https://github.com/lveez) - Verification method so that the program can be open source.
-- Spacey - Helped test periodic checking of certain values in coop. (godmode, notarget, etc.)
+- Spacey - Helped test checking of certain values in coop. (godmode, notarget, etc.)
