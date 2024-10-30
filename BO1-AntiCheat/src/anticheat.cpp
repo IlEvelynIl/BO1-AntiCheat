@@ -174,8 +174,9 @@ static void AttemptIntegrityCheck()
     int map_id = gh.GetMapId();
     if (!gi.GameValuesValid() && map_id != -1 && map_id != 0)
     {
-        AddCheatsFound("One or more game values such as godmode, box movable, etc. were changed from their default values.");
-        NotifyCheatsDetected();
+        //AddCheatsFound("One or more game values such as godmode, box movable, etc. were changed from their default values.");
+        extraStatus = "One or more cheating binds have been used, beware.";
+        //NotifyCheatsDetected();
         return;
     }
 
