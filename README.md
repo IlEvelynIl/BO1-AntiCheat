@@ -18,7 +18,7 @@ The following is checked when a map is loaded/quit:
 - Checks the integrity of all community leaderboard mods.
 
 The following values for all players are checked throughout the duration of a zombies game:
-- God Mode, Demi God Mode, No Target, and Box Moving State.
+- God Mode, Demi God Mode, No Target, and Box Movable State.
 
 ## Why did my antivirus block the download?
 This is likely due to Windows Defender's sensitivity to programs without a signature. Rest assured, there's nothing harmful in the tool, hence why its open source. 
