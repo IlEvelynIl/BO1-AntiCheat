@@ -2,8 +2,6 @@
 
 #include <TlHelp32.h>
 
-#include <string>
-
 #include <psapi.h>
 
 #include <iostream>
@@ -14,6 +12,10 @@
 
 #include "../Constants.h"
 
+#include <vector>
+
+#include <string>
+
 class GameIntegrity
 {
 public:
@@ -23,5 +25,5 @@ public:
 	string GetFileMD5(string path);
 	bool IsStealthPatchDLLPresent();
 	bool IsModFileValid();
-	bool GameValuesValid();
+	string LookForActiveCheatingBinds();
 };

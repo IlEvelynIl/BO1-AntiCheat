@@ -183,35 +183,38 @@ bool GameIntegrity::IsStealthPatchDLLPresent()
 
 // makes sure that the game values like god mode, no target, etc. are as they should be
 // i believe for this to properly work in coop, it will need to be run by the host
-bool GameIntegrity::GameValuesValid()
+string GameIntegrity::LookForActiveCheatingBinds()
 {
     Memory mem;
     GameHandler gh;
 
     vector<int> godModeAddresses = { 0x01A79868, 0x01A79BB4, 0x01A79F00, 0x01A7A24C };
     vector<int> noTargetAddresses = { 0x01A79868, 0x01A79BB4, 0x01A79F00, 0x01A7A24C };
-    vector<int> noClipAddresses = { 0x01C0A74C, 0x01C0C474, 0x01C0E19C, 0x29425348 };
+
+    vector<string> binds_found;
 
     // checks the value of god mode, no target and no clip for all 4 players 
     for (int i = 0; i <= 3; i++)
     {
+        int demiGodMode = mem.ReadInt(gh.GetBlackOpsProcess(), godModeAddresses[i]) & 2;
         int godMode = mem.ReadInt(gh.GetBlackOpsProcess(), godModeAddresses[i]) & 1;
         int noTarget = mem.ReadInt(gh.GetBlackOpsProcess(), noTargetAddresses[i]) & 4;
-        int noClip = mem.ReadInt(gh.GetBlackOpsProcess(), noClipAddresses[i]);
+
+        string player = to_string(i + 1);
+
+        if (demiGodMode == 2)
+        {
+            binds_found.push_back("Demi God Mode (Player " + player + ")");
+        }
 
         if (godMode == 1)
         {
-            return false;
+            binds_found.push_back("God Mode (Player " + player + ")");
         }
 
         if (noTarget == 4)
         {
-            return false;
-        }
-
-        if (noClip == 1)
-        {
-            return false;
+            binds_found.push_back("No Target (Player " + player + ")");
         }
     }
 
@@ -223,10 +226,22 @@ bool GameIntegrity::GameValuesValid()
     // check for magic_chest_movable changes
     if (boxMovable == 16)
     {
-        return false;
+        binds_found.push_back("Box Moving Disabled");
     }
 
-    return true;
+    string cheats_found;
+
+    for (int i = 0; i < binds_found.size(); i++)
+    {
+        string bind = binds_found[i];
+        cheats_found += bind;
+        if (i != binds_found.size() - 1)
+        {
+            cheats_found += ", ";
+        }
+    }
+
+    return cheats_found;
 }
 
 // checks the current mod file hash, its only really important for community leaderboards
