@@ -9,16 +9,17 @@ Modern problems require modern solutions. While the current solution may be a go
 This tool can also be updated to verify setup patches if the community votes on allowing such in the future.
 
 ## Detection methods
-The following is checked when a map is loaded/quit:
+When a map is loaded/quit:
 
-- Modification of vanilla fastfile patches related to zombies.
-- Any extra files in the `zone/Common` folder, as they could be a form of stealth patch.
-- The integrity of `frontend_patch.ff` as that is a mod loader file and could be used to cheat on community leaderboards if changed.
+- Checks for modification of:
+   - Vanilla fastfile patches related to zombies.
+   - `frontend_patch.ff` as that is a mod loader file and could be used to cheat on community leaderboards if changed.
+   - Community leaderboard mods if they are loaded.
+- Looks for any extra files in the `zone/Common` folder, as they could be a form of stealth patch.
 - Searches for known stealth patches injected into the game.
-- Checks the integrity of all community leaderboard mods.
 
-The following values for all players are checked throughout the duration of a zombies game:
-- God Mode, Demi God Mode, No Target, and Box Movable State.
+Throughout the duration of a game with the tool open, the following states are checked for any changes:
+- God Mode, Demi God Mode, No Target, and Box Movable.
 
 ## Why did my antivirus block the download?
 This is likely due to Windows Defender's sensitivity to programs without a signature. Rest assured, there's nothing harmful in the tool, hence why its open source. 
