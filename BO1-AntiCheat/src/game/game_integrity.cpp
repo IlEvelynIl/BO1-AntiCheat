@@ -182,38 +182,46 @@ bool GameIntegrity::IsStealthPatchDLLPresent()
 }
 
 // makes sure that the game values like god mode, no target, etc. are as they should be
-// currently reads solo values for now until coop is able to be extensively tested
-// also i believe for this to properly work in coop, it will need to be run by the host
+// i believe for this to properly work in coop, it will need to be run by the host
 bool GameIntegrity::GameValuesValid()
 {
     Memory mem;
     GameHandler gh;
 
-    int godMode = mem.ReadInt(gh.GetBlackOpsProcess(), 0x01A79868) & 1;
-    int noTarget = mem.ReadInt(gh.GetBlackOpsProcess(), 0x01A79868) & 4;
-    int noClip = mem.ReadInt(gh.GetBlackOpsProcess(), 0x01C0A74C);
+    vector<int> godModeAddresses = { 0x01A79868, 0x01A79BB4, 0x01A79F00, 0x01A7A24C };
+    vector<int> noTargetAddresses = { 0x01A79868, 0x01A79BB4, 0x01A79F00, 0x01A7A24C };
+    vector<int> noClipAddresses = { 0x01C0A74C, 0x01C0C474, 0x01C0E19C, 0x29425348 };
 
+    // checks the value of god mode, no target and no clip for all 4 players 
+    for (int i = 0; i <= 3; i++)
+    {
+        int godMode = mem.ReadInt(gh.GetBlackOpsProcess(), godModeAddresses[i]) & 1;
+        int noTarget = mem.ReadInt(gh.GetBlackOpsProcess(), noTargetAddresses[i]) & 4;
+        int noClip = mem.ReadInt(gh.GetBlackOpsProcess(), noClipAddresses[i]);
+
+        if (godMode == 1)
+        {
+            return false;
+        }
+
+        if (noTarget == 4)
+        {
+            return false;
+        }
+
+        if (noClip == 1)
+        {
+            return false;
+        }
+    }
+
+    // host only no matter what
     int boxMovablePtr = mem.ReadInt(gh.GetBlackOpsProcess(), 0x026210F4);
     int finalAddress = boxMovablePtr + 0x18;
     int boxMovable = mem.ReadInt(gh.GetBlackOpsProcess(), finalAddress) & 16;
 
     // check for magic_chest_movable changes
     if (boxMovable == 16)
-    {
-        return false;
-    }
-
-    if (godMode == 1)
-    {
-        return false;
-    }
-
-    if (noTarget == 4)
-    {
-        return false;
-    }
-
-    if (noClip == 1)
     {
         return false;
     }

@@ -9,13 +9,16 @@ Modern problems require modern solutions. While the current solution may be a go
 This tool can also be updated to verify setup patches if the community votes on allowing such in the future.
 
 ## Detection methods
-A game is verified by this tool when it has performed an integrity check on a map load/quit.
+The following is checked when a map is loaded/quit:
 
-- Disallows modification of vanilla fastfile patches related to zombies.
-- Disallows any extra files in the `zone/Common` folder, as they could be a form of stealth patch.
-- Checks the integrity of `frontend_patch.ff` as that is a mod loader file and could be used to cheat on community leaderboards if changed.
+- Modification of vanilla fastfile patches related to zombies.
+- Any extra files in the `zone/Common` folder, as they could be a form of stealth patch.
+- The integrity of `frontend_patch.ff` as that is a mod loader file and could be used to cheat on community leaderboards if changed.
 - Searches for known stealth patches injected into the game.
 - Checks the integrity of all community leaderboard mods.
+
+The following values for all players are checked throughout the duration of a zombies game:
+- Godmode, No Target, No Clip, and Box Movable.
 
 ## Why did my antivirus block the download?
 This is likely due to Windows Defender's sensitivity to programs without a signature. Rest assured, there's nothing harmful in the tool, hence why its open source. 
@@ -23,3 +26,4 @@ If you want to verify that, you can build it from source, its virtually the same
 
 ## People who helped
 - [lveez](https://github.com/lveez) - Verification method so that the program can be open source.
+- Spacey - Helped test periodic values in coop.
