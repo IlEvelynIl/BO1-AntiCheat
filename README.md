@@ -4,7 +4,7 @@ An anticheat tool for Black Ops 1 Zombies to serve as an unofficial alternative 
 ![image](https://github.com/user-attachments/assets/32d74a19-f458-4220-a32d-451422137f18)
 
 ## Why?
-Modern problems require modern solutions. While the current solution may be a good way to catch cheaters one way, there are others that are not accounted for. Based a few players opinions in the community, something like this seems to be the only way to solve all of the current cheating issues, as anti cheat programs can evolve like the cheating methods themselves.
+Modern problems require modern solutions. While the current solution may be a good way to catch cheaters one way, there are others that are not accounted for. Based on a few players' opinions in the community, something like this seems to be the only way to solve all of the current cheating issues, as anti cheat programs can evolve just like the cheating methods themselves.
 
 This tool can also be updated to verify setup patches if the community votes on allowing such in the future.
 
