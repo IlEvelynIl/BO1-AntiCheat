@@ -127,6 +127,12 @@ static void AttemptIntegrityCheck()
             performed_integrity_check = true;
             Sleep(1000);
 
+            // check for any extra files, they should not be there
+            if (gi.DoExtraFilesExist())
+            {
+                AddCheatsFound("Extra files found in zone/Common, could be a stealth patch.");
+            }
+
             // check for any known stealth patch injections
             if (gi.IsStealthPatchDLLPresent())
             {
@@ -149,12 +155,6 @@ static void AttemptIntegrityCheck()
                 {
                     AddCheatsFound(map + "_patch.ff was found to be modified.");
                 }
-            }
-
-            // check for any extra files, they should not be there
-            if (gi.DoExtraFilesExist())
-            {
-                AddCheatsFound("Extra files found in zone/Common, could be a stealth patch.");
             }
 
             // if theres any cheats detected, notify them and crash bo1
