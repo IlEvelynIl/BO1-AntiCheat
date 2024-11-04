@@ -264,8 +264,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     gi.init();
 
     // when the tool is opened, check for updates
-    Updater updater;
-    updater.CheckForUpdates();
+    std::thread{ anticheat::updater::CheckForUpdates }.detach();
 
     int windowWidth = 650;
     int windowHeight = 230;

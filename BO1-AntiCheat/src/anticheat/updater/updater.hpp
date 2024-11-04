@@ -1,5 +1,7 @@
-class Updater
-{
-public:
-	void CheckForUpdates();
+#include "../../statuses.h"
+
+namespace anticheat {
+	namespace updater {
+		void CheckForUpdates();
+	}
 };
