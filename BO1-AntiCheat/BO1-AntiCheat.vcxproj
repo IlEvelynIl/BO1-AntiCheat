@@ -136,24 +136,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\game\game_integrity.cpp" />
+    <ClCompile Include="src\anticheat\integrity.cpp" />
     <ClCompile Include="src\anticheat.cpp" />
-    <ClCompile Include="src\game\game_handler.cpp" />
-    <ClCompile Include="src\utilities\md5.cpp" />
-    <ClCompile Include="src\utilities\memory.cpp" />
-    <ClCompile Include="src\utilities\verification.cpp" />
-    <ClCompile Include="src\utilities\updater.cpp" />
+    <ClCompile Include="src\game\game.cpp" />
+    <ClCompile Include="src\utils\md5.cpp" />
+    <ClCompile Include="src\utils\memory.cpp" />
+    <ClCompile Include="src\anticheat\verification\verification.cpp" />
+    <ClCompile Include="src\anticheat\updater\updater.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="src\game\game_integrity.hpp" />
+    <ClInclude Include="src\anticheat\integrity.hpp" />
     <ClInclude Include="src\statuses.h" />
-    <ClInclude Include="src\game\game_handler.hpp" />
+    <ClInclude Include="src\game\game.hpp" />
     <ClInclude Include="src\constants.h" />
-    <ClInclude Include="src\utilities\md5.h" />
-    <ClInclude Include="src\utilities\memory.hpp" />
-    <ClInclude Include="src\utilities\verification.hpp" />
-    <ClInclude Include="src\utilities\updater.hpp" />
+    <ClInclude Include="src\utils\md5.h" />
+    <ClInclude Include="src\utils\memory.hpp" />
+    <ClInclude Include="src\anticheat\verification\verification.hpp" />
+    <ClInclude Include="src\anticheat\updater\updater.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="BlackOps.ico" />

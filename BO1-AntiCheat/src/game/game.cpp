@@ -8,11 +8,11 @@
 
 #include <map>
 
-#include "game_handler.hpp"
+#include "game.hpp"
 
-#include "game_integrity.hpp"
+#include "../anticheat/integrity.hpp"
 
-#include "../utilities/memory.hpp"
+#include "../utils/memory.hpp"
 
 #include "../constants.h"
 

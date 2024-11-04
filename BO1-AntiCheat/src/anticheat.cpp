@@ -2,17 +2,17 @@
 
 #include "Constants.h"
 
-#include "game/game_handler.hpp"
+#include "game/game.hpp"
 
-#include "game/game_integrity.hpp"
+#include "anticheat/integrity.hpp"
 
 #include "statuses.h"
 
-#include "utilities/verification.hpp"
+#include "anticheat/verification/verification.hpp"
 
-#include "utilities/memory.hpp"
+#include "utils/memory.hpp"
 
-#include "utilities/updater.hpp"
+#include "anticheat/updater/updater.hpp"
 
 using namespace std;
 

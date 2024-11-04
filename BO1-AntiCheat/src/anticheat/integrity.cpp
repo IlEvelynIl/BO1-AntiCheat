@@ -1,12 +1,12 @@
-#include "../game/game_integrity.hpp"
+#include "integrity.hpp"
 
-#include "../game/game_handler.hpp"
+#include "../game/game.hpp"
 
 #include "../constants.h"
 
-#include "../utilities/md5.h"
+#include "../utils/md5.h"
 
-#include "../utilities/memory.hpp"
+#include "../utils/memory.hpp"
 
 #include <fstream>
 
