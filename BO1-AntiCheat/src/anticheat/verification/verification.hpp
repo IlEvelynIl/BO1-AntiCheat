@@ -7,10 +7,10 @@
 
 using std::string;
 
-class Verification
-{
-public:
-	void init();
-	string GetUID_1();
-	string GetUID_2();
-};
+namespace anticheat {
+	namespace verification {
+		void CalculateUIDs();
+		string GetUID_1();
+		string GetUID_2();
+	}
+}

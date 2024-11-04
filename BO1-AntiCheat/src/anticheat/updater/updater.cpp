@@ -43,7 +43,7 @@ namespace anticheat {
                                 string tag_name = utility::conversions::to_utf8string(json_response[U("tag_name")].as_string());
 
                                 if (tag_name != Constants::VERSION) {
-                                    int result = MessageBox(NULL, Statuses::NEW_UPDATE_AVAILABLE, Constants::TITLE, MB_YESNO | MB_ICONINFORMATION);
+                                    int result = MessageBox(NULL, Statuses::NEW_UPDATE_AVAILABLE, Constants::UPDATER_TITLE, MB_YESNO | MB_ICONINFORMATION);
 
                                     // when they click yes to wanting to open the download page, open the github release url
                                     if (result == IDYES) {

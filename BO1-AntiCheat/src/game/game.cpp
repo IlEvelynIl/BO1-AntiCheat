@@ -10,7 +10,9 @@
 
 #include "game.hpp"
 
-#include "../anticheat/integrity.hpp"
+#include "../anticheat/integrity/integrity.hpp"
+
+#include "../anticheat/integrity/checksums.h"
 
 #include "../utils/memory.hpp"
 
@@ -37,8 +39,7 @@ bool GameHandler::IsGameModLoaded()
 // reads the map id from memory, Furret's box tracker uses this same method for setting up the weapons list
 int GameHandler::GetMapId()
 {
-    Memory mem;
-    return mem.ReadInt(GetBlackOpsProcess(), Constants::C_MAPADDRESS);
+    return memory::ReadInt(GetBlackOpsProcess(), Constants::C_MAPADDRESS);
 }
 
 // gets the current mod name from memory
@@ -49,8 +50,7 @@ string GameHandler::GetModName()
         return "";
     }
 
-    Memory mem;
-    return mem.ReadString(GetBlackOpsProcess(), Constants::C_MODADDRESS);
+    return memory::ReadString(GetBlackOpsProcess(), Constants::C_MODADDRESS);
 }
 
 // simple check for if a mod is loaded or not
@@ -62,8 +62,6 @@ bool GameHandler::IsModLoaded()
 // checks for the game_mod.dll file in the modules list of bo1
 bool GameHandler::CheckForGameModDLL()
 {
-    Memory mem;
-    GameIntegrity gi;
     HANDLE handle = GetBlackOpsProcess();
 
     if (handle == NULL)
@@ -88,7 +86,8 @@ bool GameHandler::CheckForGameModDLL()
                     modulePath[sizeof(modulePath) - 1] = '\0';
                     string dllPath = string(modulePath);
 
-                    if (gi.GetFileMD5(dllPath) == Constants::GAME_MOD_DLL)
+                    // if we have a match then game mod is present
+                    if (anticheat::integrity::GetFileMD5(dllPath) == Checksums::GAME_MOD_DLL)
                     {
                         return true;
                     }

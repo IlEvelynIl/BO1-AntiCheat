@@ -1,18 +1,18 @@
 #include <SFML/Graphics.hpp>
 
-#include "Constants.h"
+#include "../constants.h"
 
-#include "game/game.hpp"
+#include "../game/game.hpp"
 
-#include "anticheat/integrity.hpp"
+#include "integrity/integrity.hpp"
 
-#include "statuses.h"
+#include "../statuses.h"
 
-#include "anticheat/verification/verification.hpp"
+#include "verification/verification.hpp"
 
-#include "utils/memory.hpp"
+#include "../utils/memory.hpp"
 
-#include "anticheat/updater/updater.hpp"
+#include "updater/updater.hpp"
 
 using namespace std;
 
@@ -28,11 +28,13 @@ int current_map_id = 0;
 vector<string> scannable_maps;
 vector<string> cheats_found;
 
-string gameStatus = Statuses::GAME_NOT_CONNECTED;
-string extraStatus = "";
+string main_status = Statuses::GAME_NOT_CONNECTED;
+string info_status = "";
+
+namespace gi = anticheat::integrity;
 
 // adds the maps that need to be scanned every map launch/quit
-static void init()
+static void AddScannableMaps()
 {
     scannable_maps.push_back("frontend");
     scannable_maps.push_back("common_zombie");
@@ -52,8 +54,8 @@ static void init()
 // displays the "Game not connected." message
 static void NotifyGameClosed()
 {
-    gameStatus = Statuses::GAME_NOT_CONNECTED;
-    extraStatus = "";
+    main_status = Statuses::GAME_NOT_CONNECTED;
+    info_status = "";
     initialized = false;
     performed_integrity_check = false;
 }
@@ -70,8 +72,8 @@ static void AddCheatsFound(string found_cheat)
 // this is especially good for players who may accidentally leave something in their files
 static void NotifyCheatsDetected()
 {
-    gameStatus = Statuses::CHEATING_DETECTED;
-    extraStatus = Statuses::MORE_INFO_WINDOW;
+    main_status = Statuses::CHEATING_DETECTED;
+    info_status = Statuses::MORE_INFO_WINDOW;
     notified_cheats_detected = true;
     GameHandler gl;
     gl.CloseBlackOps();
@@ -96,13 +98,12 @@ static void OnGameReopen()
     }
     initialized = false;
     cheats_found.clear();
-    extraStatus = "";
+    info_status = "";
 }
 
 // this is the magic of the tool, handles all checks performed to ensure a bo1 game is safe
 static void AttemptIntegrityCheck()
 {
-    GameIntegrity gi;
     GameHandler gh;
 
     last_map_id = current_map_id;
@@ -120,21 +121,21 @@ static void AttemptIntegrityCheck()
         bool last_map_id_valid = last_map_id != 0 && last_map_id != -1;
         if ((last_map_id_valid && current_map_id == 0) || integrity_check_override)
         {
-            gameStatus = Statuses::CHECKING_FOR_PATCHES;
-            extraStatus = "This may take a moment";
+            main_status = Statuses::CHECKING_FOR_PATCHES;
+            info_status = "This may take a moment";
 
             integrity_check_override = false;
             performed_integrity_check = true;
             Sleep(1000);
 
             // check for any extra files, they should not be there
-            if (gi.DoExtraFilesExist())
+            if (gi::DoExtraFilesExist())
             {
                 AddCheatsFound("Extra files found in zone/Common, could be a stealth patch.");
             }
 
             // check for any known stealth patch injections
-            if (gi.IsStealthPatchDLLPresent())
+            if (gi::IsStealthPatchDLLPresent())
             {
                 AddCheatsFound("A known stealth patch DLL was injected.");
             }
@@ -142,7 +143,7 @@ static void AttemptIntegrityCheck()
             // community leaderboard mods: check hashes of the currently loaded mod
             if (gh.IsGameModLoaded() && gh.IsModLoaded())
             {
-                if (!gi.IsModFileValid())
+                if (!gi::IsModFileValid())
                 {
                     AddCheatsFound("mod.ff was found to be modified.");
                 }
@@ -151,7 +152,7 @@ static void AttemptIntegrityCheck()
             // check every single fastfile patches
             for (string map : scannable_maps)
             {
-                if (!gi.IsFastfilePatchValid(map))
+                if (!gi::IsFastfilePatchValid(map))
                 {
                     AddCheatsFound(map + "_patch.ff was found to be modified.");
                 }
@@ -164,8 +165,8 @@ static void AttemptIntegrityCheck()
             }
             else // otherwise tell them they're good, but we will also tell them that the anti cheat is still gonna check during the game
             {
-                gameStatus = Statuses::NO_PATCHING_DETECTED;
-                extraStatus = Statuses::WILL_CONTINUE_SEARCH;
+                main_status = Statuses::NO_PATCHING_DETECTED;
+                info_status = Statuses::WILL_CONTINUE_SEARCH;
             }
         }
     }
@@ -174,7 +175,7 @@ static void AttemptIntegrityCheck()
     int map_id = gh.GetMapId();
     if (map_id != -1 && map_id != 0)
     {
-        string detectedBinds = gi.LookForActiveCheatingBinds();
+        string detectedBinds = gi::LookForActiveCheatingBinds();
         if (detectedBinds != "")
         {
             AddCheatsFound(detectedBinds);
@@ -185,8 +186,8 @@ static void AttemptIntegrityCheck()
 
     if (gh.GetMapId() == Constants::MAIN_MENU_ID)
     {
-        gameStatus = Statuses::GAME_CONNECTED;
-        extraStatus = Statuses::WAITING_FOR_MAP_LOAD_QUIT;
+        main_status = Statuses::GAME_CONNECTED;
+        info_status = Statuses::WAITING_FOR_MAP_LOAD_QUIT;
         performed_integrity_check = false;
     }
 }
@@ -199,8 +200,8 @@ static void CheckForBlackOpsProcess()
     if (!gh.IsGameOpen() && !cheats_detected)
     {
         NotifyGameClosed();
-        gameStatus = Statuses::GAME_NOT_CONNECTED;
-        extraStatus = "";
+        main_status = Statuses::GAME_NOT_CONNECTED;
+        info_status = "";
         gh.CheckGameMod();
         return;
     }
@@ -217,14 +218,14 @@ static void CheckForBlackOpsProcess()
         int map_id = gh.GetMapId();
         if (map_id != Constants::MAIN_MENU_ID)
         {
-            if (map_id != 0 && map_id != -1 && extraStatus != Statuses::MORE_INFO_WINDOW)
+            if (map_id != 0 && map_id != -1 && info_status != Statuses::MORE_INFO_WINDOW)
             {
-                extraStatus = Statuses::PATCHES_NOT_VERIFIED;
+                info_status = Statuses::PATCHES_NOT_VERIFIED;
             }
             else {
-                extraStatus = "";
+                info_status = "";
             }
-            gameStatus = Statuses::GAME_CONNECTED;
+            main_status = Statuses::GAME_CONNECTED;
         }
 
         gh.CheckGameMod();
@@ -253,18 +254,16 @@ static void CheckForBlackOpsProcessThread()
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 //int main()
 {
-    init();
+    AddScannableMaps();
 
     // initialize the verification uids
-    Verification v;
-    v.init();
+    anticheat::verification::CalculateUIDs();
 
     // initialize the hashes for each fastfile
-    GameIntegrity gi;
-    gi.init();
+    gi::SetupIntegrityHashes();
 
     // when the tool is opened, check for updates
-    std::thread{ anticheat::updater::CheckForUpdates }.detach();
+    anticheat::updater::CheckForUpdates();
 
     int windowWidth = 650;
     int windowHeight = 230;
@@ -291,7 +290,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
     // "BO1 Anti Cheat v(version number)" text
-    sf::Text anticheatText(Constants::TITLE, semiBoldFont, 20);
+    sf::Text anticheatText("BO1 Anti Cheat v" + Constants::VERSION, semiBoldFont, 20);
     anticheatText.setFillColor(sf::Color(255, 255, 255, 155));
 
     int padding = 20;
@@ -331,14 +330,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     verificationText.setPosition((windowWidth - verificationTextWidth) / 2, 109 + 15);
 
     // uid #1 text
-    sf::Text uid1Text(v.GetUID_1(), boldFont, 20);
+    sf::Text uid1Text(anticheat::verification::GetUID_1(), boldFont, 20);
     uid1Text.setFillColor(sf::Color::White);
 
     float uid1TextWidth = uid1Text.getGlobalBounds().width;
     uid1Text.setPosition((windowWidth - uid1TextWidth) / 2, 140 + 15);
 
     // uid #2 text
-    sf::Text uid2Text(v.GetUID_2(), boldFont, 20);
+    sf::Text uid2Text(anticheat::verification::GetUID_2(), boldFont, 20);
     uid2Text.setFillColor(sf::Color::White);
 
     float uid2TextWidth = uid2Text.getGlobalBounds().width;
@@ -349,16 +348,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     
     while (window.isOpen())
     {
-        sf::Event event;
-
         // wait for the close button to be pressed
-        while (window.pollEvent(event)) {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
         }
 
-        statusText.setString(gameStatus); // constantly set the status text
+        statusText.setString(main_status); // constantly set the status text
         float statusTextWidth = statusText.getGlobalBounds().width;
         statusText.setPosition((windowWidth - statusTextWidth) / 2, 57); // adjust position based on text width and window width
 
@@ -366,14 +365,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         if (cheats_detected)
         {
             statusText.setFillColor(sf::Color(255, 58, 58));
-        }
-        else // or we just set it back to white
-        {
+        } else { // or we just set it back to white
             statusText.setFillColor(sf::Color::White);
         }
         
         // set the extra status text
-        extraStatusText.setString(extraStatus);
+        extraStatusText.setString(info_status);
         float extraStatusTextWidth = extraStatusText.getGlobalBounds().width;
         extraStatusText.setPosition((windowWidth - extraStatusTextWidth) / 2, 90);
 
