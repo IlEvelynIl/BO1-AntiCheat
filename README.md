@@ -11,14 +11,14 @@ This tool can also be updated to verify setup patches if the community votes on 
 ## Detection methods
 When a map is loaded/quit:
 
+- Looks for any extra files in the `zone/Common` folder, as they could be a form of stealth patch.
+- Searches for known stealth patch loaders injected into the game.
 - Checks for modification of:
    - Vanilla fastfile patches related to zombies.
    - `frontend_patch.ff` as that is a mod loader file and could be used to cheat on community leaderboards if changed.
    - Community leaderboard mods if they are loaded.
-- Looks for any extra files in the `zone/Common` folder, as they could be a form of stealth patch.
-- Searches for known stealth patches injected into the game.
 
-Throughout the duration of a game with the tool open, the following states are checked for any changes:
+Throughout the duration of a game with the tool open, the following player states are checked for any changes:
 - God Mode, Demi God Mode, No Target, and Box Movable.
 
 ## Why did my antivirus block the download?
