@@ -10,6 +10,8 @@
 
 #include "game.hpp"
 
+#include "process.hpp"
+
 #include "../anticheat/integrity/integrity.hpp"
 
 #include "../anticheat/integrity/checksums.h"
@@ -26,22 +28,36 @@ bool game_mod_loaded = false;
 
 namespace game {
 
-    // acts as an initializer for the game_mod_loaded boolean
-    void CheckGameMod()
+    // reads the map id from memory, Furret's box tracker uses this same method for setting up the weapons list
+    int GetMapId()
     {
-        game_mod_loaded = CheckForGameModDLL();
+        return memory::ReadInt(process::GetBlackOpsProcess(), Constants::C_MAPADDRESS);
+    }
+
+    // gets the path to zone/Common
+    std::string GetZoneCommon()
+    {
+        return GetBlackOpsPath() + "/zone/Common/";
+    }
+
+    // gets the path to the executable thats being run
+    std::string GetBlackOpsPath()
+    {
+        std::string blackOpsPath = process::GetPathToExe();
+        std::string::size_type pos = blackOpsPath.find_last_of("\\/");
+        return blackOpsPath.substr(0, pos);
+    }
+
+    // acts as an initializer for the game_mod_loaded boolean
+    void CheckForGameMod()
+    {
+        game_mod_loaded = IsGameModPresent();
     }
 
     // just a getter for the value of game_mod_loaded
     bool IsGameModLoaded()
     {
         return game_mod_loaded;
-    }
-
-    // reads the map id from memory, Furret's box tracker uses this same method for setting up the weapons list
-    int GetMapId()
-    {
-        return memory::ReadInt(GetBlackOpsProcess(), Constants::C_MAPADDRESS);
     }
 
     // gets the current mod name from memory
@@ -52,7 +68,7 @@ namespace game {
             return "";
         }
 
-        return memory::ReadString(GetBlackOpsProcess(), Constants::C_MODADDRESS);
+        return memory::ReadString(process::GetBlackOpsProcess(), Constants::C_MODADDRESS);
     }
 
     // simple check for if a mod is loaded or not
@@ -62,9 +78,9 @@ namespace game {
     }
 
     // checks for the game_mod.dll file in the modules list of bo1
-    bool CheckForGameModDLL()
+    bool IsGameModPresent()
     {
-        HANDLE handle = GetBlackOpsProcess();
+        HANDLE handle = process::GetBlackOpsProcess();
 
         if (handle == NULL)
         {
@@ -100,95 +116,4 @@ namespace game {
 
         return false;
     }
-
-    // checks if the game is open
-    bool IsGameOpen()
-    {
-        return GetBlackOpsProcess() != NULL;
-    }
-
-    // gets the bo1 process so we can utilize it
-    HANDLE GetBlackOpsProcess()
-    {
-        DWORD pId = GetProcessIdByName(L"BlackOps.exe");
-
-        if (pId == 0) {
-            pId = GetProcessIdByName(L"BGamerT5.exe");
-        }
-
-        HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pId);
-        return hProc;
-    }
-
-    // closes the game, this is primarily gonna be used to "crash" the game
-    void CloseBlackOps()
-    {
-        if (IsGameOpen())
-        {
-            HANDLE blackOpsProcess = GetBlackOpsProcess();
-            TerminateProcess(blackOpsProcess, 0);
-            CloseHandle(blackOpsProcess);
-        }
-    }
-
-    // gets the path to zone/Common
-    std::string GetZoneCommon()
-    {
-        return GetBlackOpsPath() + "/zone/Common/";
-    }
-
-    // gets the path to the executable thats being run
-    std::string GetBlackOpsPath()
-    {
-        std::string blackOpsPath = GetPathToExe();
-        std::string::size_type pos = blackOpsPath.find_last_of("\\/");
-        return blackOpsPath.substr(0, pos);
-    }
-
-    // gets the path to the actual bo1 executable, with the .exe name included
-    std::string GetPathToExe() {
-        HANDLE hProcess = GetBlackOpsProcess();
-
-        if (hProcess == NULL) {
-            return "";
-        }
-
-        wchar_t path[MAX_PATH];
-        DWORD size = sizeof(path) / sizeof(path[0]);
-
-        if (QueryFullProcessImageName(hProcess, 0, path, &size)) {
-            int length = WideCharToMultiByte(CP_UTF8, 0, path, -1, NULL, 0, NULL, NULL);
-            std::string processPath(length, '\0');
-            WideCharToMultiByte(CP_UTF8, 0, path, -1, &processPath[0], length, NULL, NULL);
-            return processPath;
-        }
-        else {
-            return "";
-        }
-    }
-
-    // finds a process id by name
-    DWORD GetProcessIdByName(const std::wstring& procName)
-    {
-        PROCESSENTRY32 processInfo;
-        processInfo.dwSize = sizeof(processInfo);
-
-        HANDLE processesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
-        if (processesSnapshot == INVALID_HANDLE_VALUE) {
-            return 0;
-        }
-
-        if (Process32First(processesSnapshot, &processInfo)) {
-            do {
-                if (procName == processInfo.szExeFile) {
-                    CloseHandle(processesSnapshot);
-                    return processInfo.th32ProcessID;
-                }
-            } while (Process32Next(processesSnapshot, &processInfo));
-        }
-
-        CloseHandle(processesSnapshot);
-        return 0;
-    }
-
 }

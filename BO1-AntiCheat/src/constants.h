@@ -1,3 +1,5 @@
+/* Constant values that never change */
+
 #include <windows.h>
 
 #ifndef Constants

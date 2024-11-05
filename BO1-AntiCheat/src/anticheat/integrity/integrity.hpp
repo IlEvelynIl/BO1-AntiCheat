@@ -14,12 +14,14 @@
 
 namespace anticheat {
 	namespace integrity {
-		void SetupIntegrityHashes();
-		bool IsFastfilePatchValid(std::string map);
+		void Initialize();
+		bool IsFastfileValid(std::string map);
 		bool DoExtraFilesExist();
 		std::string GetFileMD5(std::string path);
-		bool IsStealthPatchDLLPresent();
+		bool IsStealthPatchInjected();
 		bool IsModFileValid();
-		std::string LookForActiveCheatingBinds();
+		std::string GetActiveCheatingBinds();
+		bool IsSuspiciousModule(HMODULE hModule, HANDLE hProcess);
+		std::string GetModifiedFastfiles();
 	} // integrity
 } // anticheat

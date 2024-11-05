@@ -139,6 +139,7 @@
     <ClCompile Include="src\anticheat\integrity\integrity.cpp" />
     <ClCompile Include="src\anticheat\anticheat.cpp" />
     <ClCompile Include="src\game\game.cpp" />
+    <ClCompile Include="src\game\process.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\utils\md5.cpp" />
     <ClCompile Include="src\utils\memory.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="src\anticheat\anticheat.hpp" />
     <ClInclude Include="src\anticheat\integrity\checksums.h" />
     <ClInclude Include="src\anticheat\integrity\integrity.hpp" />
+    <ClInclude Include="src\game\process.hpp" />
     <ClInclude Include="src\statuses.h" />
     <ClInclude Include="src\game\game.hpp" />
     <ClInclude Include="src\constants.h" />

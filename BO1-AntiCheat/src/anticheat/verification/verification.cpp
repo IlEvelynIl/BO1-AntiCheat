@@ -45,6 +45,5 @@ namespace anticheat {
 		{
 			return "UID 2: " + to_string(seed2) + " | " + to_string(init_time) + " | " + to_string(uid2);
 		}
-
 	} // verification
 } // anticheat

@@ -4,6 +4,8 @@
 
 #include "../game/game.hpp"
 
+#include "../game/process.hpp"
+
 #include "integrity/integrity.hpp"
 
 #include "../statuses.h"
@@ -25,7 +27,6 @@ bool integrity_check_override = false;
 int last_map_id = 0;
 int current_map_id = 0;
 
-vector<std::string> scannable_maps;
 vector<std::string> cheats_found;
 
 std::string main_status = Statuses::GAME_NOT_CONNECTED;
@@ -34,26 +35,11 @@ std::string info_status = "";
 namespace anticheat {
     void Initialize()
     {
-        // adds the maps that need to be scanned every map launch/quit
-        scannable_maps.push_back("frontend");
-        scannable_maps.push_back("common_zombie");
-        scannable_maps.push_back("zombie_theater");
-        scannable_maps.push_back("zombie_pentagon");
-        scannable_maps.push_back("zombietron");
-        scannable_maps.push_back("zombie_cosmodrome");
-        scannable_maps.push_back("zombie_coast");
-        scannable_maps.push_back("zombie_temple");
-        scannable_maps.push_back("zombie_moon");
-        scannable_maps.push_back("zombie_cod5_prototype");
-        scannable_maps.push_back("zombie_cod5_asylum");
-        scannable_maps.push_back("zombie_cod5_sumpf");
-        scannable_maps.push_back("zombie_cod5_factory");
-
         // initialize the verification uids
         verification::CalculateUIDs();
 
-        // initialize the hashes for each fastfile
-        integrity::SetupIntegrityHashes();
+        // initialize integrity checks
+        integrity::Initialize();
     }
 
     // displays the "Game not connected." message
@@ -90,13 +76,16 @@ namespace anticheat {
     void NotifyCheatsDetected()
     {
         cheating_detected = true;
+
+        // notify the player
         main_status = Statuses::CHEATING_DETECTED;
         info_status = Statuses::MORE_INFO_WINDOW;
         notified_cheats_detected = true;
-        game::CloseBlackOps();
+
+        // crash the game
+        game::process::CloseBlackOpsProcess();
 
         string cheats = "The following cheating methods were detected:\n";
-
         for (string cheat_found : cheats_found)
         {
             cheats += "\n- " + cheat_found;
@@ -137,7 +126,7 @@ namespace anticheat {
                 }
 
                 // check for any known stealth patch injections
-                if (integrity::IsStealthPatchDLLPresent())
+                if (integrity::IsStealthPatchInjected())
                 {
                     OnCheatFound("A known stealth patch DLL was injected.");
                 }
@@ -151,13 +140,10 @@ namespace anticheat {
                     }
                 }
 
-                // check every single fastfile patches
-                for (string map : scannable_maps)
+                string modified_fastfiles = integrity::GetModifiedFastfiles();
+                if (modified_fastfiles != "")
                 {
-                    if (!integrity::IsFastfilePatchValid(map))
-                    {
-                        OnCheatFound(map + "_patch.ff was found to be modified.");
-                    }
+                    OnCheatFound("Modified fastfiles: " + modified_fastfiles);
                 }
 
                 // if theres any cheats detected, notify them and crash bo1
@@ -177,7 +163,7 @@ namespace anticheat {
         int map_id = game::GetMapId();
         if (map_id != -1 && map_id != 0)
         {
-            string detectedBinds = integrity::LookForActiveCheatingBinds();
+            string detectedBinds = integrity::GetActiveCheatingBinds();
             if (detectedBinds != "")
             {
                 OnCheatFound(detectedBinds);
@@ -197,17 +183,17 @@ namespace anticheat {
     // waits for the game to be opened before we run any checks
     void WaitForBlackOpsProcess()
     {
-        if (!game::IsGameOpen() && !cheating_detected)
+        if (!game::process::IsGameOpen() && !cheating_detected)
         {
             OnGameClosed();
             main_status = Statuses::GAME_NOT_CONNECTED;
             info_status = "";
-            game::CheckGameMod();
+            game::CheckForGameMod();
             return;
         }
 
         // we want to be able to reuse the tool after cheats are detected
-        if (notified_cheats_detected && game::IsGameOpen())
+        if (notified_cheats_detected && game::process::IsGameOpen())
         {
             OnGameReopen();
         }
@@ -228,7 +214,7 @@ namespace anticheat {
                 main_status = Statuses::GAME_CONNECTED;
             }
 
-            game::CheckGameMod();
+            game::CheckForGameMod();
             initialized = true;
         }
 
