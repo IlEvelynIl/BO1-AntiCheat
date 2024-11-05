@@ -3,7 +3,7 @@
 #ifndef Constants
 #define Constants
 
-const static std::string VERSION = "1.31";
+const static std::string VERSION = "1.3";
 const static LPCWSTR UPDATER_TITLE = L"BO1 Anti Cheat (Updater)";
 
 // addresses
