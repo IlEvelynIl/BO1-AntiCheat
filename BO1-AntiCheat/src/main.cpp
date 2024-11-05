@@ -25,8 +25,8 @@ static void CheckForBlackOpsProcessThread()
     }
 }
 
-//int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-int main()
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+//int main()
 {
     // setup anti cheat
     anticheat::Initialize();

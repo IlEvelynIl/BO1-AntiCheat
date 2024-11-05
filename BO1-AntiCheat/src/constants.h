@@ -1,12 +1,9 @@
-/* Constant values that never change */
-
 #include <windows.h>
 
 #ifndef Constants
 #define Constants
 
-const static std::string VERSION = "1.3";
-const static LPCWSTR UPDATER_TITLE = L"BO1 Anti Cheat (Updater)";
+const static std::string VERSION = "1.4";
 
 // addresses
 const static int C_MAPADDRESS = 0x02F67B6C;
