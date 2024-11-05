@@ -19,7 +19,10 @@ When a map is loaded/quit:
    - Community leaderboard mods if they are loaded.
 
 Throughout the duration of a game with the tool open, the following player states are checked for any changes:
-- God Mode, Demi God Mode, No Target, and Box Movable.
+- God Mode
+- Demi God Mode
+- No Target
+- Box Movable
 
 ## Why did my antivirus block the download?
 This is likely due to Windows Defender's sensitivity to programs without a signature. Rest assured, there's nothing harmful in the tool, hence why its open source. 

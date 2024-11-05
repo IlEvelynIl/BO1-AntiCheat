@@ -2,6 +2,7 @@ using std::string;
 
 namespace game {
 	int GetMapId();
+	int GetGameTime();
 	std::string GetZoneCommon();
 	std::string GetBlackOpsPath();
 

@@ -6,6 +6,8 @@
 
 #include "checksums.h"
 
+#include "../../constants.h"
+
 #include "../../utils/md5.h"
 
 #include "../../utils/memory.hpp"
@@ -289,8 +291,10 @@ namespace anticheat {
             // check for magic_chest_movable changes
             int boxMovablePtr = memory::ReadInt(game::process::GetBlackOpsProcess(), 0x026210F4);
             int boxMovableAddress = boxMovablePtr + 0x18;
-            int boxMovable = memory::ReadInt(game::process::GetBlackOpsProcess(), boxMovableAddress) & 16;
-            if (boxMovable == 16)
+            int boxMovable = memory::ReadInt(game::process::GetBlackOpsProcess(), boxMovableAddress)/* & 16*/;
+            int boxMovableDisabled = game::IsGameModLoaded() ? 50759780 : 50759732;
+
+            if (boxMovable == boxMovableDisabled)
             {
                 binds_found.push_back("Box Moving Disabled");
             }

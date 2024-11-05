@@ -34,6 +34,12 @@ namespace game {
         return memory::ReadInt(process::GetBlackOpsProcess(), Constants::C_MAPADDRESS);
     }
 
+    // gets the total game time
+    int GetGameTime()
+    {
+        return memory::ReadInt(process::GetBlackOpsProcess(), Constants::C_TIMEADDRESS);
+    }
+
     // gets the path to zone/Common
     std::string GetZoneCommon()
     {

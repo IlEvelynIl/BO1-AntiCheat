@@ -62,6 +62,7 @@ namespace anticheat {
         initialized = false;
         cheats_found.clear();
         info_status = "";
+        game::CheckForGameMod();
     }
 
     // adds a cheating method to a list, this will be shown in a second window
@@ -97,6 +98,11 @@ namespace anticheat {
     // this is the magic of the tool, handles all checks performed to ensure a bo1 game is safe
     void AttemptIntegrityCheck()
     {
+        if (!game::process::IsGameOpen())
+        {
+            return;
+        }
+
         last_map_id = current_map_id;
         current_map_id = game::GetMapId();
 
@@ -161,7 +167,7 @@ namespace anticheat {
 
         // check game values such as godmode, box movable, etc.
         int map_id = game::GetMapId();
-        if (map_id != -1 && map_id != 0)
+        if (map_id != Constants::MAIN_MENU_ID && map_id != -1 && map_id != 0)
         {
             string detectedBinds = integrity::GetActiveCheatingBinds();
             if (detectedBinds != "")
