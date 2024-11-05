@@ -84,9 +84,8 @@ namespace anticheat {
         // checks a specific hash of a fastfile but only if it has "_patch.ff"
         bool IsFastfilePatchValid(string map)
         {
-            GameHandler gh;
             string mapPatch = map + "_patch.ff";
-            string zoneCommon = gh.GetZoneCommon() + mapPatch;
+            string zoneCommon = game::GetZoneCommon() + mapPatch;
 
             bool modified = false;
 
@@ -103,10 +102,9 @@ namespace anticheat {
         // checks for extra files in zone/Common
         bool DoExtraFilesExist()
         {
-            GameHandler gh;
-            string zone_common = gh.GetZoneCommon();
+            string zone_common = game::GetZoneCommon();
 
-            if (!gh.IsGameOpen())
+            if (!game::IsGameOpen())
             {
                 return false;
             }
@@ -133,8 +131,7 @@ namespace anticheat {
         // this could range from a stealth patch to other files too
         bool IsStealthPatchDLLPresent()
         {
-            GameHandler gh;
-            HANDLE handle = gh.GetBlackOpsProcess();
+            HANDLE handle = game::GetBlackOpsProcess();
 
             if (handle == NULL)
             {
@@ -186,19 +183,17 @@ namespace anticheat {
         // i believe for this to properly work in coop, it will need to be run by the host
         std::string LookForActiveCheatingBinds()
         {
-            GameHandler gh;
-
             vector<int> godModeAddresses = { 0x01A79868, 0x01A79BB4, 0x01A79F00, 0x01A7A24C };
             vector<int> noTargetAddresses = { 0x01A79868, 0x01A79BB4, 0x01A79F00, 0x01A7A24C };
 
             vector<string> binds_found;
 
-            // checks the value of god mode, demi god mode, and no target for all 4 players 
+            // checks the player states for all 4
             for (int i = 0; i <= 3; i++)
             {
-                int demiGodMode = memory::ReadInt(gh.GetBlackOpsProcess(), godModeAddresses[i]) & 2;
-                int godMode = memory::ReadInt(gh.GetBlackOpsProcess(), godModeAddresses[i]) & 1;
-                int noTarget = memory::ReadInt(gh.GetBlackOpsProcess(), noTargetAddresses[i]) & 4;
+                int demiGodMode = memory::ReadInt(game::GetBlackOpsProcess(), godModeAddresses[i]) & 2;
+                int godMode = memory::ReadInt(game::GetBlackOpsProcess(), godModeAddresses[i]) & 1;
+                int noTarget = memory::ReadInt(game::GetBlackOpsProcess(), noTargetAddresses[i]) & 4;
 
                 string player = to_string(i + 1);
 
@@ -219,9 +214,9 @@ namespace anticheat {
             }
 
             // check for magic_chest_movable changes
-            int boxMovablePtr = memory::ReadInt(gh.GetBlackOpsProcess(), 0x026210F4);
+            int boxMovablePtr = memory::ReadInt(game::GetBlackOpsProcess(), 0x026210F4);
             int boxMovableAddress = boxMovablePtr + 0x18;
-            int boxMovable = memory::ReadInt(gh.GetBlackOpsProcess(), boxMovableAddress) & 16;
+            int boxMovable = memory::ReadInt(game::GetBlackOpsProcess(), boxMovableAddress) & 16;
             if (boxMovable == 16)
             {
                 binds_found.push_back("Box Moving Disabled");
@@ -245,9 +240,8 @@ namespace anticheat {
         // checks the current mod file hash, its only really important for community leaderboards
         bool IsModFileValid()
         {
-            GameHandler gh;
-            string mod_name = gh.GetModName();
-            string mod_folder = gh.GetBlackOpsPath() + "/" + mod_name;
+            string mod_name = game::GetModName();
+            string mod_folder = game::GetBlackOpsPath() + "/" + mod_name;
             string mod_fastfile = mod_folder + "/mod.ff";
             string actual_md5 = mod_fastfile_hashes[mod_name];
             string local_md5 = GetFileMD5(mod_fastfile.c_str());

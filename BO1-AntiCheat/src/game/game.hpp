@@ -1,19 +1,19 @@
 using std::string;
 
-class GameHandler
-{
-public:
+namespace game {
+
 	void CheckGameMod();
 	int GetMapId();
 	bool IsGameOpen();
-	string GetModName();
+	std::string GetModName();
 	bool IsModLoaded();
 	bool IsGameModLoaded();
 	bool CheckForGameModDLL();
 	HANDLE GetBlackOpsProcess();
 	void CloseBlackOps();
-	string GetZoneCommon();
-	string GetBlackOpsPath();
-	string GetPathToExe();
+	std::string GetZoneCommon();
+	std::string GetBlackOpsPath();
+	std::string GetPathToExe();
 	DWORD GetProcessIdByName(const std::wstring& procName);
-};
+
+}
