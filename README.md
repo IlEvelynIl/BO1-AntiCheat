@@ -8,6 +8,11 @@ Modern problems require modern solutions. While the current solution may be a go
 
 This tool can also be updated to verify setup patches if the community votes on allowing such in the future.
 
+## Using it in your games
+If you decide to use this for your games, simply open it along side Black Ops 1 and it will automatically connect to the game.
+
+Also, it is important to display it on your stream/recording somewhere, and must be fully legible.
+
 ## Detection methods
 When a map is loaded/quit:
 
@@ -31,3 +36,5 @@ If you want to verify that, you can build it from source, its virtually the same
 ## People who helped
 - [lveez](https://github.com/lveez) - Verification method so that the program can be open source.
 - Spacey - Helped test checking of certain values in coop. (godmode, notarget, etc.)
+- Plant - Helped test some stuff out.
+- Prompt - Heavily influenced design.

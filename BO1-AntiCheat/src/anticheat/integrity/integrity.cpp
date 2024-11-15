@@ -133,7 +133,7 @@ namespace anticheat {
                 }
             }
 
-            // format all cheating binds detected into a nice list
+            // format all fastfiles that were modified into a nice list
             string formatted_fastfiles = "";
             for (int i = 0; i < modified_fastfiles.size(); i++)
             {
