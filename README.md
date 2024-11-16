@@ -16,7 +16,7 @@ Also, it is important to display it on your stream/recording somewhere, and must
 ## Detection methods
 When a map is loaded/quit:
 
-- Looks for any extra files in the `zone` folder and all subdirectories, as they could be a form of stealth patch.
+- Looks for any extra files in the `zone/Common` folder and the current language folder, as they could be a form of stealth patch.
 - Searches for known stealth patch loaders injected into the game.
 - Checks for modification of:
    - Fastfiles related to zombies in both `Common` and your current language folder.
