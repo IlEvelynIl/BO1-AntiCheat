@@ -16,10 +16,10 @@ Also, it is important to display it on your stream/recording somewhere, and must
 ## Detection methods
 When a map is loaded/quit:
 
-- Looks for any extra files in the `zone/Common` folder, as they could be a form of stealth patch.
+- Looks for any extra files in the `zone` folder and all subdirectories, as they could be a form of stealth patch.
 - Searches for known stealth patch loaders injected into the game.
 - Checks for modification of:
-   - Vanilla fastfile patches related to zombies.
+   - Fastfiles related to zombies in both `Common` and your current language folder.
    - `frontend_patch.ff` as that is a mod loader file and could be used to cheat on community leaderboards if changed.
    - Community leaderboard mods if they are loaded.
 

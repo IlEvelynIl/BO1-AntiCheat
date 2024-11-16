@@ -23,5 +23,6 @@ namespace anticheat {
 		std::string GetActiveCheatingBinds();
 		bool IsSuspiciousModule(HMODULE hModule, HANDLE hProcess);
 		std::string GetModifiedFastfiles();
+		std::string GetModifiedLangFiles();
 	} // integrity
 } // anticheat

@@ -128,7 +128,7 @@ namespace anticheat {
                 // check for any extra files, they should not be there
                 if (integrity::DoExtraFilesExist())
                 {
-                    OnCheatFound("Extra files found in zone/Common, could be a stealth patch.");
+                    OnCheatFound("Extra files found in zone, could be a stealth patch.");
                 }
 
                 // check for any known stealth patch injections
@@ -146,10 +146,18 @@ namespace anticheat {
                     }
                 }
 
+                // list off modified common files
                 string modified_fastfiles = integrity::GetModifiedFastfiles();
                 if (modified_fastfiles != "")
                 {
                     OnCheatFound("Modified fastfiles: " + modified_fastfiles);
+                }
+
+                // list off modified lang files
+                string modified_lang_files = integrity::GetModifiedLangFiles();
+                if (modified_lang_files != "")
+                {
+                    OnCheatFound("Modified lang files: " + modified_lang_files);
                 }
 
                 // if theres any cheats detected, notify them and crash bo1

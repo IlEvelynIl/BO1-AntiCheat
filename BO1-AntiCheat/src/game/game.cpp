@@ -43,7 +43,13 @@ namespace game {
     // gets the path to zone/Common
     std::string GetZoneCommon()
     {
-        return GetBlackOpsPath() + "/zone/Common/";
+        return GetBlackOpsPath() + "\\zone\\Common\\";
+    }
+
+    // gets the path to the current langauge folder
+    std::string GetZoneLanguage()
+    {
+        return GetBlackOpsPath() + "\\zone\\" + GetLanguageFolder() + "\\";
     }
 
     // gets the path to the executable thats being run
@@ -121,5 +127,42 @@ namespace game {
         }
 
         return false;
+    }
+
+    std::string GetLanguageFolder()
+    {
+        string lang = GetGameLanguage();
+
+        if (lang == "english")
+        {
+            return "English";
+        }
+        else if (lang == "japanese")
+        {
+            return "Japanese";
+        }
+        else if (lang == "french")
+        {
+            return "French";
+        }
+        else if (lang == "austrian")
+        {
+            return "German";
+        }
+        else if (lang == "italian")
+        {
+            return "Italian";
+        }
+        else if (lang == "spanish")
+        {
+            return "Spanish";
+        }
+
+        return "English";
+    }
+
+    std::string GetGameLanguage()
+    {
+        return memory::ReadString(process::GetBlackOpsProcess(), Constants::C_LANGADDRESS);
     }
 }
