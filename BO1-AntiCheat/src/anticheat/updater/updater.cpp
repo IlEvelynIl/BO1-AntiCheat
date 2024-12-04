@@ -23,7 +23,11 @@ namespace anticheat {
 
         // just simply looks at the latest github release tag and if it doesnt match then they arent up to date obviously
         void CheckForUpdates() {
-            http_client client(U("https://api.github.com/repos/IlEvelynIl/BO1-AntiCheat/releases/latest"));
+            // Configure the HTTP client with secure settings
+            http_client_config config;
+            config.set_validate_certificates(true);
+
+            http_client client(U("https://api.github.com/repos/IlEvelynIl/BO1-AntiCheat/releases/latest"), config);
             http_request request(methods::GET);
 
             try {
