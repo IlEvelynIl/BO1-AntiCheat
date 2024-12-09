@@ -17,8 +17,8 @@ const static string CHEATING_DETECTED = "A known cheating method was detected";
 const static string MORE_INFO_WINDOW = "More information can be found on the detections window";
 const static string PATCHES_NOT_VERIFIED = "Fastfiles have not been verified, but other checks will still run";
 
-const static LPCWSTR COULDNT_CHECK_UPDATES = L"There was a problem checking for updates.\nPlease try again later.";
-const static LPCWSTR COULDNT_PROCESS_UPDATE = L"There was a problem processing the update data.\nPlease try again later.";
-const static LPCWSTR NEW_UPDATE_AVAILABLE = L"A new update is available!\nWould you like to update now?";
+const static string COULDNT_CHECK_UPDATES = "There was a problem checking for updates.\nPlease try again later.";
+const static string COULDNT_PROCESS_UPDATE = "There was a problem processing the update data.\nPlease try again later.";
+const static string NEW_UPDATE_AVAILABLE = "A new update is available! Would you like to update now?";
 
 #endif

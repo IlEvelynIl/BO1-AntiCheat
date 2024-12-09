@@ -36,7 +36,7 @@ namespace anticheat {
                         return response.extract_json();
                     }
                     else {
-                        MessageBox(NULL, Statuses::COULDNT_CHECK_UPDATES, L"Error", MB_OK);
+                        MessageBoxA(NULL, Statuses::COULDNT_CHECK_UPDATES.c_str(), "Error", MB_OK);
                         return pplx::task_from_result(json::value());
                     }
                     }).then([](pplx::task<json::value> jsonTask) {
@@ -45,9 +45,11 @@ namespace anticheat {
 
                             if (json_response.has_field(U("tag_name"))) {
                                 string tag_name = utility::conversions::to_utf8string(json_response[U("tag_name")].as_string());
+                                string description = utility::conversions::to_utf8string(json_response[U("body")].as_string());
 
                                 if (tag_name != Constants::VERSION) {
-                                    int result = MessageBox(NULL, Statuses::NEW_UPDATE_AVAILABLE, L"BO1 Anti Cheat (Updater)", MB_YESNO | MB_ICONINFORMATION);
+                                    string updateMessage = Statuses::NEW_UPDATE_AVAILABLE + "\n\nWhat changed:\n" + description;
+                                    int result = MessageBoxA(NULL, updateMessage.c_str(), "BO1 Anti Cheat (Updater)", MB_YESNO | MB_ICONINFORMATION);
 
                                     // when they click yes to wanting to open the download page, open the github release url
                                     if (result == IDYES) {
@@ -57,12 +59,12 @@ namespace anticheat {
                             }
                         }
                         catch (const exception&) {
-                            MessageBox(NULL, Statuses::COULDNT_PROCESS_UPDATE, L"Error", MB_OK);
+                            MessageBoxA(NULL, Statuses::COULDNT_PROCESS_UPDATE.c_str(), "Error", MB_OK);
                         }
                         }).wait();
             }
             catch (const exception&) {
-                MessageBox(NULL, Statuses::COULDNT_CHECK_UPDATES, L"Error", MB_OK);
+                MessageBoxA(NULL, Statuses::COULDNT_CHECK_UPDATES.c_str(), "Error", MB_OK);
             }
         }
 
