@@ -62,7 +62,7 @@ namespace anticheat {
         initialized = false;
         cheats_found.clear();
         info_status = "";
-        game::CheckForGameMod();
+        game::CheckForAllowedTools();
     }
 
     // adds a cheating method to a list, this will be shown in a second window
@@ -126,9 +126,10 @@ namespace anticheat {
                 Sleep(1000);
 
                 // check for any extra files, they should not be there
-                if (integrity::DoExtraFilesExist())
+                string extra_zone_files = integrity::GetExtraFilesInZone();
+                if (extra_zone_files != "")
                 {
-                    OnCheatFound("Extra files found in zone, could be a stealth patch.");
+                    OnCheatFound("Extra files found in zone, could be a stealth patch: " + extra_zone_files);
                 }
 
                 // check for any known stealth patch injections
@@ -202,7 +203,7 @@ namespace anticheat {
             OnGameClosed();
             main_status = Statuses::GAME_NOT_CONNECTED;
             info_status = "";
-            game::CheckForGameMod();
+            game::CheckForAllowedTools();
             return;
         }
 
@@ -228,7 +229,7 @@ namespace anticheat {
                 main_status = Statuses::GAME_CONNECTED;
             }
 
-            game::CheckForGameMod();
+            game::CheckForAllowedTools();
             initialized = true;
         }
 

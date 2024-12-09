@@ -25,6 +25,7 @@
 using namespace std;
 
 bool game_mod_loaded = false;
+bool custom_fx_loaded = false;
 
 namespace game {
 
@@ -61,9 +62,10 @@ namespace game {
     }
 
     // acts as an initializer for the game_mod_loaded boolean
-    void CheckForGameMod()
+    void CheckForAllowedTools()
     {
         game_mod_loaded = IsGameModPresent();
+        custom_fx_loaded = IsCustomFxToolPresent();
     }
 
     // just a getter for the value of game_mod_loaded
@@ -118,6 +120,50 @@ namespace game {
 
                         // if we have a match then game mod is present
                         if (anticheat::integrity::GetFileMD5(dllPath) == Checksums::GAME_MOD_DLL)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    bool IsCustomFxToolLoaded()
+    {
+        return custom_fx_loaded;
+    }
+
+    bool IsCustomFxToolPresent()
+    {
+        HANDLE handle = process::GetBlackOpsProcess();
+
+        if (handle == NULL)
+        {
+            return false;
+        }
+
+        vector<HMODULE> hMods(1024);
+        DWORD cbNeeded;
+
+        if (EnumProcessModulesEx(handle, hMods.data(), hMods.size() * sizeof(HMODULE), &cbNeeded, LIST_MODULES_ALL)) {
+            size_t moduleCount = cbNeeded / sizeof(HMODULE);
+            for (size_t i = 0; i < moduleCount; i++) {
+                TCHAR szModName[MAX_PATH];
+                MODULEINFO modInfo;
+
+                if (GetModuleFileNameEx(handle, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
+                    if (GetModuleInformation(handle, hMods[i], &modInfo, sizeof(modInfo))) {
+                        char modulePath[MAX_PATH];
+                        size_t convertedChars = 0;
+                        wcstombs_s(&convertedChars, modulePath, szModName, sizeof(modulePath));
+                        modulePath[sizeof(modulePath) - 1] = '\0';
+                        std::string dllPath = std::string(modulePath);
+
+                        // if we have a match then custom fx is present
+                        if (anticheat::integrity::GetFileMD5(dllPath) == Checksums::CUSTOM_FX_DLL)
                         {
                             return true;
                         }

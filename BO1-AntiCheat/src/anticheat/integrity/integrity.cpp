@@ -331,7 +331,14 @@ namespace anticheat {
                 "code_pre_gfx_mp.ff", "common.ff", "common_mp.ff",
                 "common_zombie.ff", "common_zombie_patch.ff", "creek_1.ff",
                 "cuba.ff", "flashpoint.ff", "frontend.ff",
-                "frontend_patch.ff" /* game_mod related */, "fullahead.ff", "hue_city.ff",
+                
+                /* game_mod related */
+                "frontend_patch.ff",
+
+                /* Custom-FX Tool */
+                "custom_fx.ff", 
+                
+                "fullahead.ff", "hue_city.ff",
                 "int_escape.ff", "khe_sanh.ff", "kowloon.ff",
                 "mp_area51.ff", "mp_array.ff", "mp_berlinwall2.ff",
                 "mp_cairo.ff", "mp_cosmodrome.ff", "mp_cracked.ff",
@@ -622,14 +629,15 @@ namespace anticheat {
         }
 
         // checks for extra files in zone/Common & the language folder
-        bool DoExtraFilesExist()
+        std::string GetExtraFilesInZone()
         {
+            vector<string> extra_zone_files;
             string zone_common = game::GetZoneCommon();
             string zone_language = game::GetZoneLanguage();
 
             if (!game::process::IsGameOpen())
             {
-                return false;
+                return "";
             }
 
             // check zone/Common for any different files
@@ -642,16 +650,41 @@ namespace anticheat {
                     continue;
                 }
 
+                // we don't want custom_fx to be there if the tool isnt being used
+                if (fileName == "custom_fx.ff" && !game::IsCustomFxToolLoaded())
+                {
+                    extra_zone_files.push_back("custom_fx.ff");
+                    continue;
+                }
+
+                // we don't want frontend_patch to be there if its modified
+                if (fileName == "frontend_patch.ff" && !IsFastfileValid("zone\\Common\\frontend_patch.ff"))
+                {
+                    extra_zone_files.push_back("frontend_patch.ff");
+                    continue;
+                }
+
                 if (find(valid_common_files.begin(), valid_common_files.end(), fileName) == valid_common_files.end())
                 {
-                    return true;
+                    extra_zone_files.push_back(fileName);
                 }
             }
 
             // if for some reason they dont have the language installed
             if (!filesystem::exists(zone_language))
             {
-                return false;
+                string formatted_extra_files = "";
+                for (int i = 0; i < extra_zone_files.size(); i++)
+                {
+                    string extra_file = extra_zone_files[i];
+                    formatted_extra_files += extra_file;
+                    if (i != extra_zone_files.size() - 1)
+                    {
+                        formatted_extra_files += ", ";
+                    }
+                }
+
+                return formatted_extra_files;
             }
 
             // get the proper list of files to check against
@@ -695,11 +728,22 @@ namespace anticheat {
 
                 if (find(lang_folder_files.begin(), lang_folder_files.end(), fileName) == lang_folder_files.end())
                 {
-                    return true;
+                    extra_zone_files.push_back(fileName);
                 }
             }
 
-            return false;
+            string formatted_extra_files = "";
+            for (int i = 0; i < extra_zone_files.size(); i++)
+            {
+                string extra_file = extra_zone_files[i];
+                formatted_extra_files += extra_file;
+                if (i != extra_zone_files.size() - 1)
+                {
+                    formatted_extra_files += ", ";
+                }
+            }
+
+            return formatted_extra_files;
         }
 
         // checks for specific DLL files that should not injected into bo1

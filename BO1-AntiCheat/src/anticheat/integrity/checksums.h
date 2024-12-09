@@ -163,4 +163,7 @@ const static string REMIX_MOD = "0eab4b4bb87c07a2bcf5343cc41377ad";
 const static string FIRSTROOMS_MOD = "6f1c4a8bccad34e5ec783a5f16a55663";
 const static string SONG_TIMING_MOD = "2962c5e032598b5888ae97df18313d76";
 
+// custom fx loader
+const static string CUSTOM_FX_DLL = "05ce5a9fb7b9dedb4616b9016df7d317";
+
 #endif

@@ -7,12 +7,17 @@ namespace game {
 	std::string GetZoneLanguage();
 	std::string GetBlackOpsPath();
 
+	void CheckForAllowedTools();
+
 	// game mod
-	void CheckForGameMod();
 	bool IsGameModLoaded();
 	bool IsGameModPresent();
 	std::string GetModName();
 	bool IsModLoaded();
+
+	// custom fx tool
+	bool IsCustomFxToolLoaded();
+	bool IsCustomFxToolPresent();
 
 	std::string GetLanguageFolder();
 	std::string GetGameLanguage();

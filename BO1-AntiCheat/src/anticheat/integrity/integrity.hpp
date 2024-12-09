@@ -16,7 +16,7 @@ namespace anticheat {
 	namespace integrity {
 		void Initialize();
 		bool IsFastfileValid(std::string map);
-		bool DoExtraFilesExist();
+		std::string GetExtraFilesInZone();
 		std::string GetFileMD5(std::string path);
 		bool IsStealthPatchInjected();
 		bool IsModFileValid();
