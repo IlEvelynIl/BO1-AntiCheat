@@ -38,12 +38,12 @@ namespace anticheat {
 
 		string GetUID_1()
 		{
-			return "UID 1: " + to_string(seed1) + " | " + to_string(init_time) + " | " + to_string(uid1);
+			return to_string(seed1) + " | " + to_string(init_time) + " | " + to_string(uid1);
 		}
 
 		string GetUID_2()
 		{
-			return "UID 2: " + to_string(seed2) + " | " + to_string(init_time) + " | " + to_string(uid2);
+			return to_string(seed2) + " | " + to_string(init_time) + " | " + to_string(uid2);
 		}
 	} // verification
 } // anticheat

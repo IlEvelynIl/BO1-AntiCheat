@@ -120,6 +120,7 @@ namespace anticheat {
             {
                 main_status = Statuses::CHECKING_FOR_PATCHES;
                 info_status = "This may take a moment";
+                verification::CalculateUIDs();
 
                 integrity_check_override = false;
                 performed_integrity_check = true;

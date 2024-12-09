@@ -144,6 +144,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         float extraStatusTextWidth = extraStatusText.getGlobalBounds().width;
         extraStatusText.setPosition((windowWidth - extraStatusTextWidth) / 2, 90);
 
+        // uid #1 text
+        uid1Text.setString(anticheat::verification::GetUID_1());
+        float uid1TextWidth = uid1Text.getGlobalBounds().width;
+        uid1Text.setPosition((windowWidth - uid1TextWidth) / 2, 140 + 15);
+
+        // uid #2 text
+        uid2Text.setString(anticheat::verification::GetUID_2());
+        float uid2TextWidth = uid2Text.getGlobalBounds().width;
+        uid2Text.setPosition((windowWidth - uid2TextWidth) / 2, 165 + 15);
+
         // draw everything to the window
         window.clear(sf::Color(10, 10, 10));
         window.draw(anticheatText);
