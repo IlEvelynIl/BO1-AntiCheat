@@ -160,10 +160,12 @@ namespace game {
                         size_t convertedChars = 0;
                         wcstombs_s(&convertedChars, modulePath, szModName, sizeof(modulePath));
                         modulePath[sizeof(modulePath) - 1] = '\0';
+
                         std::string dllPath = std::string(modulePath);
+                        std::string dllhash = anticheat::integrity::GetFileMD5(dllPath);
 
                         // if we have a match then custom fx is present
-                        if (anticheat::integrity::GetFileMD5(dllPath) == Checksums::CUSTOM_FX_DLL)
+                        if (dllhash == Checksums::CUSTOM_FX_DLL || dllhash == "05ce5a9fb7b9dedb4616b9016df7d317")
                         {
                             return true;
                         }
