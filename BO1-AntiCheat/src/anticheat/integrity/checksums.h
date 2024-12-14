@@ -164,6 +164,6 @@ const static string FIRSTROOMS_MOD = "6f1c4a8bccad34e5ec783a5f16a55663";
 const static string SONG_TIMING_MOD = "2962c5e032598b5888ae97df18313d76";
 
 // custom fx loader
-const static string CUSTOM_FX_DLL = "120e7a6200134de2d00dff3223ad63bc";
+const static string CUSTOM_FX_DLL = "3ef2292ee0104810a585d3088a284318";
 
 #endif

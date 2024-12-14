@@ -41,6 +41,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), L"BO1 Anti Cheat", sf::Style::Titlebar | sf::Style::Close);
     window.setFramerateLimit(10);
 
+    // remove minimize button
+    HWND hwnd = window.getSystemHandle();
+    LONG style = GetWindowLong(hwnd, GWL_STYLE);
+    style &= ~WS_MINIMIZEBOX;
+    SetWindowLong(hwnd, GWL_STYLE, style);
+    SetWindowPos(hwnd, NULL, 0, 0, 0, 0,
+        SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+
     // attempt to load the window icon, this can be changed by players if they want
     sf::Image icon;
     if (!icon.loadFromFile("main/icon.png"))
