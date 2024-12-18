@@ -1,5 +1,5 @@
 # BO1-AntiCheat
-A tool for Black Ops 1 Zombies specifically designed to catch people cheating.
+A tool for competitive Black Ops 1 Zombies specifically designed to catch people cheating.
 
 ![image](https://github.com/user-attachments/assets/500d7426-96c0-4cd9-9d22-e137a2f3cac5)
 
