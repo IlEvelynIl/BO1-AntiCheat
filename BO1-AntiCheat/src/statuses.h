@@ -15,7 +15,7 @@ const static string NO_PATCHING_DETECTED = "No known patching methods detected";
 const static string WILL_CONTINUE_SEARCH = "The anti cheat will keep scanning for cheats during the game";
 const static string CHEATING_DETECTED = "A known cheating method was detected";
 const static string MORE_INFO_WINDOW = "More information can be found on the detections window";
-const static string PATCHES_NOT_VERIFIED = "Fastfiles have not been verified, but other checks will still run";
+const static string PATCHES_CHECKED_AFTER_MAP_LOAD = "Patching checks were run after the map was loaded";
 
 const static string COULDNT_CHECK_UPDATES = "There was a problem checking for updates.\nPlease try again later.";
 const static string COULDNT_PROCESS_UPDATE = "There was a problem processing the update data.\nPlease try again later.";

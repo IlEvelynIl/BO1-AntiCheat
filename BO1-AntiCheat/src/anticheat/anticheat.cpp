@@ -109,6 +109,8 @@ namespace anticheat {
             performed_integrity_check = false;
         }
 
+        bool ff_checking_after_map_load = integrity_check_override && info_status == Statuses::PATCHES_CHECKED_AFTER_MAP_LOAD;
+
         // only check when the map is being loaded/quit
         if (!performed_integrity_check)
         {
@@ -117,6 +119,7 @@ namespace anticheat {
             {
                 main_status = Statuses::CHECKING_FOR_PATCHES;
                 info_status = "This may take a moment";
+
                 verification::CalculateUIDs();
 
                 integrity_check_override = false;
@@ -167,7 +170,14 @@ namespace anticheat {
                 else // otherwise tell them they're good, but we will also tell them that the anti cheat is still gonna check during the game
                 {
                     main_status = Statuses::NO_PATCHING_DETECTED;
-                    info_status = Statuses::WILL_CONTINUE_SEARCH;
+                    if (!ff_checking_after_map_load)
+                    {
+                        info_status = Statuses::WILL_CONTINUE_SEARCH;
+                    }
+                    else
+                    {
+                        info_status = Statuses::PATCHES_CHECKED_AFTER_MAP_LOAD;
+                    }
                 }
             }
         }
@@ -217,20 +227,14 @@ namespace anticheat {
             int map_id = game::GetMapId();
             if (map_id != Constants::MAIN_MENU_ID)
             {
-                if (map_id != 0 && map_id != -1 && info_status != Statuses::MORE_INFO_WINDOW)
-                {
-                    info_status = Statuses::PATCHES_NOT_VERIFIED;
-                }
-                else {
-                    info_status = "";
-                }
-
+                info_status = "";
                 main_status = Statuses::GAME_CONNECTED;
 
                 // check for patching methods mid game
                 if (map_id != 0 && map_id != -1)
                 {
                     integrity_check_override = true;
+                    info_status = Statuses::PATCHES_CHECKED_AFTER_MAP_LOAD;
                 }
             }
 
