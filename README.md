@@ -1,7 +1,7 @@
 # BO1-AntiCheat
 A tool for competitive Black Ops 1 Zombies specifically designed to catch people cheating.
 
-![image](https://github.com/user-attachments/assets/500d7426-96c0-4cd9-9d22-e137a2f3cac5)
+![image](https://github.com/user-attachments/assets/eb939b13-54d8-4664-b017-f7ff66a6e4dc)
 
 ## Why?
 Modern problems require modern solutions. While the current solution may be a good way to catch cheaters one way, there are others that are not accounted for. Based on a few players' opinions in the community, something like this seems to be the only way to solve all of the current cheating issues, as anti cheat programs can evolve just like the cheating methods themselves.
