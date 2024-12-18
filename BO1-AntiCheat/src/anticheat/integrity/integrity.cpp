@@ -828,17 +828,16 @@ namespace anticheat {
         // i believe for this to properly work in coop, it will need to be run by the host
         std::string GetActiveCheatingBinds()
         {
-            vector<int> godModeAddresses = { 0x01A79868, 0x01A79BB4, 0x01A79F00, 0x01A7A24C };
-            vector<int> noTargetAddresses = { 0x01A79868, 0x01A79BB4, 0x01A79F00, 0x01A7A24C };
+            vector<int> playerStats = { 0x01A79868, 0x01A79BB4, 0x01A79F00, 0x01A7A24C };
 
             vector<string> binds_found;
 
             // checks the player states for all 4
             for (int i = 0; i <= 3; i++)
             {
-                int demiGodMode = memory::ReadInt(game::process::GetBlackOpsProcess(), godModeAddresses[i]) & 2;
-                int godMode = memory::ReadInt(game::process::GetBlackOpsProcess(), godModeAddresses[i]) & 1;
-                int noTarget = memory::ReadInt(game::process::GetBlackOpsProcess(), noTargetAddresses[i]) & 4;
+                int demiGodMode = memory::ReadInt(game::process::GetBlackOpsProcess(), playerStats[i]) & 2;
+                int godMode = memory::ReadInt(game::process::GetBlackOpsProcess(), playerStats[i]) & 1;
+                int noTarget = memory::ReadInt(game::process::GetBlackOpsProcess(), playerStats[i]) & 4;
 
                 string player = to_string(i + 1);
 

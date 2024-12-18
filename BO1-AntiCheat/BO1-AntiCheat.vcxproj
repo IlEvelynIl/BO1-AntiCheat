@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\anticheat\integrity\config.cpp" />
     <ClCompile Include="src\anticheat\integrity\integrity.cpp" />
     <ClCompile Include="src\anticheat\anticheat.cpp" />
     <ClCompile Include="src\game\game.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\anticheat\anticheat.hpp" />
     <ClInclude Include="src\anticheat\integrity\checksums.h" />
+    <ClInclude Include="src\anticheat\integrity\config.hpp" />
     <ClInclude Include="src\anticheat\integrity\integrity.hpp" />
     <ClInclude Include="src\game\process.hpp" />
     <ClInclude Include="src\statuses.h" />
