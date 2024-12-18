@@ -858,17 +858,6 @@ namespace anticheat {
                 }
             }
 
-            // check for magic_chest_movable changes
-            int boxMovablePtr = memory::ReadInt(game::process::GetBlackOpsProcess(), 0x026210F4);
-            int boxMovableAddress = boxMovablePtr + 0x18;
-            int boxMovable = memory::ReadInt(game::process::GetBlackOpsProcess(), boxMovableAddress)/* & 16*/;
-            int boxMovableDisabled = game::IsGameModLoaded() ? 50759780 : 50759732;
-
-            if (boxMovable == boxMovableDisabled)
-            {
-                binds_found.push_back("Box Moving Disabled");
-            }
-
             // format all cheating binds detected into a nice list
             string formatted_binds_found;
             for (int i = 0; i < binds_found.size(); i++)
