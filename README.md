@@ -1,5 +1,5 @@
 # BO1-AntiCheat
-An anticheat tool for Black Ops 1 Zombies to serve as an unofficial alternative to the showing files rule.
+A tool for Black Ops 1 Zombies specifically designed to catch people cheating.
 
 ![image](https://github.com/user-attachments/assets/500d7426-96c0-4cd9-9d22-e137a2f3cac5)
 
@@ -29,7 +29,6 @@ Throughout the duration of a game with the tool open, the following player state
 - God Mode
 - Demi God Mode
 - No Target
-- Box Movable
 
 ## Why did my antivirus block the download?
 This is likely due to Windows Defender's sensitivity to programs without a signature. Rest assured, there's nothing harmful in the tool, hence why its open source. 
