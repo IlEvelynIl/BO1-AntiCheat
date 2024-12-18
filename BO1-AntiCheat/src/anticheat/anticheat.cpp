@@ -83,9 +83,6 @@ namespace anticheat {
         info_status = Statuses::MORE_INFO_WINDOW;
         notified_cheats_detected = true;
 
-        // crash the game
-        game::process::CloseBlackOpsProcess();
-
         string cheats = "The following cheating methods were detected:\n";
         for (string cheat_found : cheats_found)
         {
@@ -227,7 +224,14 @@ namespace anticheat {
                 else {
                     info_status = "";
                 }
+
                 main_status = Statuses::GAME_CONNECTED;
+
+                // check for patching methods mid game
+                if (map_id != 0 && map_id != -1)
+                {
+                    integrity_check_override = true;
+                }
             }
 
             game::CheckForAllowedTools();
