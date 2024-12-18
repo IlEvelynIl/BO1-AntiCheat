@@ -71,8 +71,7 @@ namespace anticheat {
         cheats_found.push_back(cheating_method);
     }
 
-    // crashes bo1 when a cheating method is found,
-    // also pops up the second window that explains what was found
+    // pops up the second window that explains what was found
     // this is especially good for players who may accidentally leave something in their files
     void NotifyCheatsDetected()
     {
