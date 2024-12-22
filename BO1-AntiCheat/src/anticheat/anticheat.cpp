@@ -189,7 +189,7 @@ namespace anticheat {
             string cheatingCommands = integrity::config::GetCheatingCommands();
             if (cheatingCommands != "")
             {
-                AddCheatFound("Cheating commands found in the config: " + cheatingCommands);
+                AddCheatFound("Disallowed commands in the config: " + cheatingCommands);
                 NotifyCheatsDetected();
                 return;
             }

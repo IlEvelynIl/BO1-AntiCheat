@@ -7,7 +7,6 @@ using namespace std;
 namespace anticheat {
 	void Initialize();
 	void OnGameClosed();
-	void OnGameReopen();
 	void AttemptIntegrityCheck();
 	void AddCheatFound(std::string cheating_method);
 	void NotifyCheatsDetected();

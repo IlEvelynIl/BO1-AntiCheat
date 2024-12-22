@@ -26,6 +26,10 @@ namespace anticheat {
 			std::string GetCheatingCommands()
 			{
 				std::string config_path = game::GetBlackOpsPath() + "\\players\\config.cfg";
+				if (game::IsGameModLoaded() && game::IsModLoaded())
+				{
+					config_path = game::GetBlackOpsPath() + "\\players\\" + game::GetModName() + "\\config.cfg";
+				}
 				
 				// check if the config exists
 				if (!filesystem::exists(config_path))
