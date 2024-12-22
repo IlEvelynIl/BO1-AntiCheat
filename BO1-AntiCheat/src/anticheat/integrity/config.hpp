@@ -1,9 +1,15 @@
 #include <string>
+#include <vector>
+#include <fstream>
+#include <algorithm>
+#include <cctype>
 
 namespace anticheat {
-	namespace config {
-		void InitBadCommands();
-		bool CheckConfigForBadCommands(); // read every map start
-		bool CheckConsoleForBadCommands(); // read every 50ms
-	}
-}
+	namespace integrity {
+		namespace config {
+			void Initialize();
+			std::string GetCheatingCommands();
+			bool CheckConsoleForBadCommands(); // read every 50ms
+		} // config
+	} // integrity
+} // anticheat

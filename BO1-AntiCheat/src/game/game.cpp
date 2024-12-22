@@ -22,23 +22,24 @@
 
 #include <vector>
 
+#include "../utils/files.hpp"
+
 using namespace std;
 
 bool game_mod_loaded = false;
-bool custom_fx_loaded = false;
 
 namespace game {
 
     // reads the map id from memory, Furret's box tracker uses this same method for setting up the weapons list
     int GetMapId()
     {
-        return memory::ReadInt(process::GetBlackOpsProcess(), Constants::C_MAPADDRESS);
+        return utils::memory::ReadInt(process::GetBlackOpsProcess(), Constants::C_MAPADDRESS);
     }
 
     // gets the total game time
     int GetGameTime()
     {
-        return memory::ReadInt(process::GetBlackOpsProcess(), Constants::C_TIMEADDRESS);
+        return utils::memory::ReadInt(process::GetBlackOpsProcess(), Constants::C_TIMEADDRESS);
     }
 
     // gets the path to zone/Common
@@ -65,7 +66,6 @@ namespace game {
     void CheckForAllowedTools()
     {
         game_mod_loaded = IsGameModPresent();
-        custom_fx_loaded = IsCustomFxToolPresent();
     }
 
     // just a getter for the value of game_mod_loaded
@@ -82,7 +82,7 @@ namespace game {
             return "";
         }
 
-        return memory::ReadString(process::GetBlackOpsProcess(), Constants::C_MODADDRESS);
+        return utils::memory::ReadString(process::GetBlackOpsProcess(), Constants::C_MODADDRESS);
     }
 
     // simple check for if a mod is loaded or not
@@ -119,7 +119,7 @@ namespace game {
                         std::string dllPath = std::string(modulePath);
 
                         // if we have a match then game mod is present
-                        if (anticheat::integrity::GetFileMD5(dllPath) == Checksums::GAME_MOD_DLL)
+                        if (utils::files::GetMD5(dllPath) == Checksums::GAME_MOD_DLL)
                         {
                             return true;
                         }
@@ -129,11 +129,6 @@ namespace game {
         }
 
         return false;
-    }
-
-    bool IsCustomFxToolLoaded()
-    {
-        return custom_fx_loaded;
     }
 
     bool IsCustomFxToolPresent()
@@ -162,10 +157,10 @@ namespace game {
                         modulePath[sizeof(modulePath) - 1] = '\0';
 
                         std::string dllPath = std::string(modulePath);
-                        std::string dllhash = anticheat::integrity::GetFileMD5(dllPath);
+                        std::string dllhash = utils::files::GetMD5(dllPath);
 
                         // if we have a match then custom fx is present
-                        if (dllhash == Checksums::CUSTOM_FX_DLL || dllhash == "05ce5a9fb7b9dedb4616b9016df7d317")
+                        if (dllhash == Checksums::CUSTOM_FX_DLL)
                         {
                             return true;
                         }
@@ -211,6 +206,6 @@ namespace game {
 
     std::string GetGameLanguage()
     {
-        return memory::ReadString(process::GetBlackOpsProcess(), Constants::C_LANGADDRESS);
+        return utils::memory::ReadString(process::GetBlackOpsProcess(), Constants::C_LANGADDRESS);
     }
 }

@@ -6,15 +6,11 @@ using namespace std;
 
 namespace anticheat {
 	void Initialize();
-
-	void AddScannableMaps();
 	void OnGameClosed();
 	void OnGameReopen();
-
 	void AttemptIntegrityCheck();
-	void OnCheatFound(std::string cheating_method);
+	void AddCheatFound(std::string cheating_method);
 	void NotifyCheatsDetected();
-
 	void WaitForBlackOpsProcess();
 
 	bool CheatingDetected();

@@ -17,10 +17,9 @@ namespace anticheat {
 		void Initialize();
 		bool IsFastfileValid(std::string map);
 		std::string GetExtraFilesInZone();
-		std::string GetFileMD5(std::string path);
 		bool IsStealthPatchInjected();
 		bool IsModFileValid();
-		std::string GetActiveCheatingBinds();
+		std::string GetModifiedPlayerStates();
 		bool IsSuspiciousModule(HMODULE hModule, HANDLE hProcess);
 		std::string GetModifiedFastfiles();
 		std::string GetModifiedLangFiles();

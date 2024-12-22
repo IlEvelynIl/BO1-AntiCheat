@@ -16,6 +16,8 @@
 
 #include "updater/updater.hpp"
 
+#include "integrity/config.hpp"
+
 using namespace std;
 
 bool initialized = false;
@@ -40,6 +42,9 @@ namespace anticheat {
 
         // initialize integrity checks
         integrity::Initialize();
+
+        // set which config binds are not allowed
+        integrity::config::Initialize();
     }
 
     // displays the "Game not connected." message
@@ -51,22 +56,8 @@ namespace anticheat {
         performed_integrity_check = false;
     }
 
-    // specifically makes it so that we dont have to restart the anti cheat when cheats were previously detected
-    void OnGameReopen()
-    {
-        notified_cheats_detected = false;
-        if (cheating_detected)
-        {
-            cheating_detected = false;
-        }
-        initialized = false;
-        cheats_found.clear();
-        info_status = "";
-        game::CheckForAllowedTools();
-    }
-
     // adds a cheating method to a list, this will be shown in a second window
-    void OnCheatFound(string cheating_method)
+    void AddCheatFound(string cheating_method)
     {
         cheats_found.push_back(cheating_method);
     }
@@ -94,7 +85,7 @@ namespace anticheat {
     // this is the magic of the tool, handles all checks performed to ensure a bo1 game is safe
     void AttemptIntegrityCheck()
     {
-        if (!game::process::IsGameOpen())
+        if (!game::process::IsGameOpen() || cheating_detected)
         {
             return;
         }
@@ -123,19 +114,20 @@ namespace anticheat {
 
                 integrity_check_override = false;
                 performed_integrity_check = true;
-                Sleep(1000);
+
+                Sleep(1000); // puts us in the loading screen so they cant edit the files
 
                 // check for any extra files, they should not be there
                 string extra_zone_files = integrity::GetExtraFilesInZone();
                 if (extra_zone_files != "")
                 {
-                    OnCheatFound("Extra files found in zone, could be a stealth patch: " + extra_zone_files);
+                    AddCheatFound("Extra files found in zone, could be a stealth patch: " + extra_zone_files);
                 }
 
                 // check for any known stealth patch injections
                 if (integrity::IsStealthPatchInjected())
                 {
-                    OnCheatFound("A known stealth patch DLL was injected.");
+                    AddCheatFound("A known stealth patch DLL was injected.");
                 }
 
                 // community leaderboard mods: check hashes of the currently loaded mod
@@ -143,7 +135,7 @@ namespace anticheat {
                 {
                     if (!integrity::IsModFileValid())
                     {
-                        OnCheatFound("mod.ff was found to be modified.");
+                        AddCheatFound("mod.ff was found to be modified.");
                     }
                 }
 
@@ -151,14 +143,14 @@ namespace anticheat {
                 string modified_fastfiles = integrity::GetModifiedFastfiles();
                 if (modified_fastfiles != "")
                 {
-                    OnCheatFound("Modified fastfiles: " + modified_fastfiles);
+                    AddCheatFound("Modified fastfiles: " + modified_fastfiles);
                 }
 
                 // list off modified lang files
                 string modified_lang_files = integrity::GetModifiedLangFiles();
                 if (modified_lang_files != "")
                 {
-                    OnCheatFound("Modified lang files: " + modified_lang_files);
+                    AddCheatFound("Modified lang files: " + modified_lang_files);
                 }
 
                 // if theres any cheats detected, notify them and crash bo1
@@ -185,10 +177,19 @@ namespace anticheat {
         int map_id = game::GetMapId();
         if (map_id != Constants::MAIN_MENU_ID && map_id != -1 && map_id != 0)
         {
-            string detectedBinds = integrity::GetActiveCheatingBinds();
-            if (detectedBinds != "")
+            string playerStates = integrity::GetModifiedPlayerStates();
+            if (playerStates != "")
             {
-                OnCheatFound(detectedBinds);
+                AddCheatFound(playerStates);
+                NotifyCheatsDetected();
+                return;
+            }
+
+            // check config but only if its been modified
+            string cheatingCommands = integrity::config::GetCheatingCommands();
+            if (cheatingCommands != "")
+            {
+                AddCheatFound("Cheating commands found in the config: " + cheatingCommands);
                 NotifyCheatsDetected();
                 return;
             }
@@ -212,12 +213,6 @@ namespace anticheat {
             info_status = "";
             game::CheckForAllowedTools();
             return;
-        }
-
-        // we want to be able to reuse the tool after cheats are detected
-        if (notified_cheats_detected && game::process::IsGameOpen())
-        {
-            OnGameReopen();
         }
 
         // this checks for certain things once, think of it as an "OnGameOpen"

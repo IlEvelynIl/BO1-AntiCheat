@@ -8,9 +8,9 @@
 
 #include "../../constants.h"
 
-#include "../../utils/md5.h"
-
 #include "../../utils/memory.hpp"
+
+#include "../../utils/files.hpp"
 
 #include <fstream>
 
@@ -540,7 +540,7 @@ namespace anticheat {
                 return true;
             }
 
-            string hash = GetFileMD5(zoneFile);
+            string hash = utils::files::GetMD5(zoneFile);
             return hash == fastfile_hashes.at(fastfile);
         }
 
@@ -651,7 +651,7 @@ namespace anticheat {
                 }
 
                 // we don't want custom_fx to be there if the tool isnt being used
-                if (fileName == "custom_fx.ff" && !game::IsCustomFxToolLoaded())
+                if (fileName == "custom_fx.ff" && !game::IsCustomFxToolPresent())
                 {
                     extra_zone_files.push_back("custom_fx.ff");
                     continue;
@@ -778,7 +778,7 @@ namespace anticheat {
             string mod_folder = game::GetBlackOpsPath() + "/" + mod_name;
             string mod_fastfile = mod_folder + "/mod.ff";
             string actual_md5 = mod_fastfile_hashes[mod_name];
-            string local_md5 = GetFileMD5(mod_fastfile.c_str());
+            string local_md5 = utils::files::GetMD5(mod_fastfile.c_str());
 
             if (actual_md5 == "" || !filesystem::exists(mod_fastfile))
             {
@@ -804,7 +804,7 @@ namespace anticheat {
 
                     // Check against suspicious_modules
                     for (const std::string& dllHash : suspicious_modules) {
-                        if (GetFileMD5(dllPath) == dllHash) {
+                        if (utils::files::GetMD5(dllPath) == dllHash) {
                             return true; // MD5 match found
                         }
                     }
@@ -826,7 +826,7 @@ namespace anticheat {
 
         // makes sure that the game values like god mode, no target, etc. are not modified
         // i believe for this to properly work in coop, it will need to be run by the host
-        std::string GetActiveCheatingBinds()
+        std::string GetModifiedPlayerStates()
         {
             vector<int> playerStats = { 0x01A79868, 0x01A79BB4, 0x01A79F00, 0x01A7A24C };
 
@@ -835,9 +835,9 @@ namespace anticheat {
             // checks the player states for all 4
             for (int i = 0; i <= 3; i++)
             {
-                int demiGodMode = memory::ReadInt(game::process::GetBlackOpsProcess(), playerStats[i]) & 2;
-                int godMode = memory::ReadInt(game::process::GetBlackOpsProcess(), playerStats[i]) & 1;
-                int noTarget = memory::ReadInt(game::process::GetBlackOpsProcess(), playerStats[i]) & 4;
+                int demiGodMode = utils::memory::ReadInt(game::process::GetBlackOpsProcess(), playerStats[i]) & 2;
+                int godMode = utils::memory::ReadInt(game::process::GetBlackOpsProcess(), playerStats[i]) & 1;
+                int noTarget = utils::memory::ReadInt(game::process::GetBlackOpsProcess(), playerStats[i]) & 4;
 
                 string player = to_string(i + 1);
 
@@ -870,34 +870,6 @@ namespace anticheat {
             }
 
             return formatted_binds_found;
-        }
-
-        // gets the md5 hash of a file
-        std::string GetFileMD5(string path)
-        {
-            ifstream inFile(path, ios::binary);
-
-            if (!inFile) {
-                return "";
-            }
-
-            inFile.seekg(0, ios::end);
-            long length = inFile.tellg();
-            inFile.seekg(0, ios::beg);
-
-            if (length <= 0) {
-                return "";
-            }
-
-            vector<char> fileData(length);
-            inFile.read(fileData.data(), length);
-
-            if (!inFile) {
-                return "";
-            }
-
-            string hash = md5(fileData.data(), length);
-            return hash.c_str();
         }
     } // integrity
 } // anticheat
