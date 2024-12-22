@@ -20,13 +20,17 @@ namespace anticheat {
 				cheating_commands.push_back("cl_noprint");
 				cheating_commands.push_back("magic_chest_movable");
 				cheating_commands.push_back("ai_disableSpawn");
+				cheating_commands.push_back("difficultyEasy");
+				cheating_commands.push_back("difficultyMedium");
+				cheating_commands.push_back("difficultyHard");
+				cheating_commands.push_back("difficultyFu");
 			}
 
 			// reads the config for cheating commands every map load
 			std::string GetCheatingCommands()
 			{
 				std::string config_path = game::GetBlackOpsPath() + "\\players\\config.cfg";
-				if (game::IsGameModLoaded() && game::IsModLoaded())
+				if (game::IsModLoaded())
 				{
 					config_path = game::GetBlackOpsPath() + "\\players\\" + game::GetModName() + "\\config.cfg";
 				}
@@ -77,12 +81,6 @@ namespace anticheat {
 						bool contains_command = utils::strings::Contains(line_lower, command);
 						if (contains_command)
 						{
-							// bo1 has this in here by default, nothing we can do there
-							if (command == "magic_chest_movable" && line_lower._Starts_with("seta"))
-							{
-								continue;
-							}
-
 							config_commands.push_back(command);
 						}
 					}

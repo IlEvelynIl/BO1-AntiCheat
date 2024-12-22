@@ -88,6 +88,10 @@ namespace game {
     // simple check for if a mod is loaded or not
     bool IsModLoaded()
     {
+        if (!IsGameModLoaded())
+        {
+            return false;
+        }
         return GetModName() != "";
     }
 
