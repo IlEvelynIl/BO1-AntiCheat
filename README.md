@@ -24,12 +24,14 @@ When a map is loaded/quit:
    - Fastfiles related to zombies in both `Common` and your current language folder.
    - `frontend_patch.ff` as that is a mod loader file and could be used to cheat on community leaderboards if changed.
    - Community leaderboard mods if they are loaded.
-- Searches your config for commands that can be used for cheating.
 
-Throughout the duration of a game with the tool open, the following player states are checked for any changes:
-- God Mode
-- Demi God Mode
-- No Target
+Throughout the duration of a game with the tool open:
+- Searches your config when modified for commands that can be used for cheating.
+
+- The following player states are checked for any changes:
+   - God Mode
+   - Demi God Mode
+   - No Target
 
 ## Why did my antivirus block the download?
 This is likely due to Windows Defender's sensitivity to programs without a signature. Rest assured, there's nothing harmful in the tool, hence why its open source. 
