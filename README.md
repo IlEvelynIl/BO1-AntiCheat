@@ -13,6 +13,8 @@ If you decide to use this for your games, simply open it along side Black Ops 1 
 
 Also, it is important to display it on your stream/recording somewhere, and must be fully legible.
 
+For coop games, only the host will need to use the tool.
+
 You may also notice that there is not a minimize button, this is on purpose to prevent confusion with OBS not picking it up. Just let the program sit behind the game.
 
 ## Detection methods
