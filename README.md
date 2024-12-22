@@ -26,7 +26,11 @@ When a map is loaded/quit:
    - Community leaderboard mods if they are loaded.
 
 Throughout the duration of a game with the tool open:
-- Searches your config when modified for commands that can be used for cheating.
+- Searches your config when modified for commands that can be used for cheating:
+   - Health Regen Speed
+   - Box Movable
+   - No Print
+   - AI Disable Spawn
 
 - The following player states are checked for any changes:
    - God Mode
