@@ -79,7 +79,7 @@ namespace anticheat {
             cheats += "\n- " + cheat_found;
         }
 
-        MessageBoxA(NULL, cheats.c_str(), "BO1 Anti Cheat (Detections)", MB_OK);
+        MessageBoxA(NULL, cheats.c_str(), "BO1 Anti Cheat (Detections)", MB_OK | MB_ICONERROR);
     }
 
     // this is the magic of the tool, handles all checks performed to ensure a bo1 game is safe
@@ -175,7 +175,7 @@ namespace anticheat {
 
         // check game values such as godmode, box movable, etc.
         int map_id = game::GetMapId();
-        if (map_id != Constants::MAIN_MENU_ID && map_id != -1 && map_id != 0)
+        if (map_id != -1 && map_id != 0)
         {
             string playerStates = integrity::GetModifiedPlayerStates();
             if (playerStates != "")
