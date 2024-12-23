@@ -163,7 +163,8 @@ const static string REMIX_MOD = "0eab4b4bb87c07a2bcf5343cc41377ad";
 const static string FIRSTROOMS_MOD = "6f1c4a8bccad34e5ec783a5f16a55663";
 const static string SONG_TIMING_MOD = "2962c5e032598b5888ae97df18313d76";
 
-// custom fx loader
+// custom fx loader, anytime that tool gets updated just update these hashes
 const static string CUSTOM_FX_DLL = "3ef2292ee0104810a585d3088a284318";
+const static string CUSTOM_FX_STEAM_API_DLL = "a271d5d225f2c8ce472daee828fe9c63";
 
 #endif

@@ -651,7 +651,7 @@ namespace anticheat {
                 }
 
                 // we don't want custom_fx to be there if the tool isnt being used
-                if (fileName == "custom_fx.ff" && !game::IsCustomFxToolPresent())
+                if (fileName == "custom_fx.ff" && !game::IsCustomFxToolLoaded())
                 {
                     extra_zone_files.push_back("custom_fx.ff");
                     continue;

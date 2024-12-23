@@ -27,6 +27,9 @@
 using namespace std;
 
 bool game_mod_loaded = false;
+bool custom_fx_loaded = false;
+
+namespace fs = std::filesystem;
 
 namespace game {
 
@@ -66,6 +69,7 @@ namespace game {
     void CheckForAllowedTools()
     {
         game_mod_loaded = IsGameModPresent();
+        custom_fx_loaded = IsCustomFxToolPresent();
     }
 
     // just a getter for the value of game_mod_loaded
@@ -144,36 +148,28 @@ namespace game {
             return false;
         }
 
-        vector<HMODULE> hMods(1024);
-        DWORD cbNeeded;
+        string game_folder = game::GetBlackOpsPath();
+        string fx_steam_api = game_folder + "\\steam_api.dll";
+        string fx_loader = game_folder + "\\blackops-fx.dll";
 
-        if (EnumProcessModulesEx(handle, hMods.data(), hMods.size() * sizeof(HMODULE), &cbNeeded, LIST_MODULES_ALL)) {
-            size_t moduleCount = cbNeeded / sizeof(HMODULE);
-            for (size_t i = 0; i < moduleCount; i++) {
-                TCHAR szModName[MAX_PATH];
-                MODULEINFO modInfo;
+        // check for both steam_api.dll and blackops-fx.dll
+        if (fs::exists(fx_steam_api) && fs::exists(fx_loader))
+        {
+            string steam_api_hash = utils::files::GetMD5(fx_steam_api);
+            string fx_dll_hash = utils::files::GetMD5(fx_loader);
 
-                if (GetModuleFileNameEx(handle, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
-                    if (GetModuleInformation(handle, hMods[i], &modInfo, sizeof(modInfo))) {
-                        char modulePath[MAX_PATH];
-                        size_t convertedChars = 0;
-                        wcstombs_s(&convertedChars, modulePath, szModName, sizeof(modulePath));
-                        modulePath[sizeof(modulePath) - 1] = '\0';
-
-                        std::string dllPath = std::string(modulePath);
-                        std::string dllhash = utils::files::GetMD5(dllPath);
-
-                        // if we have a match then custom fx is present
-                        if (dllhash == Checksums::CUSTOM_FX_DLL)
-                        {
-                            return true;
-                        }
-                    }
-                }
+            if (steam_api_hash == Checksums::CUSTOM_FX_STEAM_API_DLL && fx_dll_hash == Checksums::CUSTOM_FX_DLL)
+            {
+                return true;
             }
         }
 
         return false;
+    }
+
+    bool IsCustomFxToolLoaded()
+    {
+        return custom_fx_loaded;
     }
 
     std::string GetLanguageFolder()
