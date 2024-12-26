@@ -111,6 +111,7 @@ namespace anticheat {
 				// read the console text from the address
 				// also note that the memory omits the first character
 				// but they have to type in a slash to put those in anyhow, so yeah.
+				return false;
 			}
 		} // config
 	} // integrity

@@ -3,7 +3,7 @@
 #ifndef Constants
 #define Constants
 
-const static std::string VERSION = "1.12";
+const static std::string VERSION = "1.13";
 
 // addresses
 const static int C_MAPADDRESS = 0x02F67B6C;
