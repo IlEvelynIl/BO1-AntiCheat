@@ -2,6 +2,6 @@
 
 namespace anticheat {
 	namespace updater {
-		void CheckForUpdates();
+		std::string GetAvailableUpdates();
 	}
 };

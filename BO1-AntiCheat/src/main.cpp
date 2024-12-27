@@ -6,6 +6,14 @@
 
 #include "anticheat/settings/settings.hpp"
 
+#include "anticheat/resources/bo1_png_data.h"
+
+#include "anticheat/resources/icon_png_data.h"
+
+#include "anticheat/resources/bold_font_data.h"
+
+#include "anticheat/resources/semibold_font_data.h"
+
 #include "utils/strings.hpp"
 
 #include "constants.h"
@@ -161,9 +169,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // setup anti cheat
     anticheat::Initialize();
 
-    // when the tool is opened, check for updates
-    anticheat::updater::CheckForUpdates();
-
     // load the settings
     anticheat::settings::LoadSettings();
 
@@ -175,51 +180,176 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     // attempt to load the main_window icon, this can be changed by players if they want
     sf::Image icon;
-    if (!icon.loadFromFile("main/icon.png"))
+    if (!icon.loadFromMemory(anticheat::resources::icon_png, anticheat::resources::icon_png_len))
     {
-        MessageBoxA(NULL, "Could not load \"icon.png\".", "BO1-AntiCheat", MB_OK | MB_ICONERROR);
+        MessageBoxA(NULL, "Could not load asset \"icon_png\".", "BO1-AntiCheat", MB_OK | MB_ICONERROR);
         return -1;
     }
 
     // load fonts
-    sf::Font boldFont, semiBoldFont;
-    if (!boldFont.loadFromFile("main/Bold.ttf") || !semiBoldFont.loadFromFile("main/SemiBold.ttf"))
+    sf::Font boldFont, semi_bold_font;
+    if (!boldFont.loadFromMemory(anticheat::resources::bold_ttf, anticheat::resources::bold_ttf_len)
+        || !semi_bold_font.loadFromMemory(anticheat::resources::semi_bold_ttf, anticheat::resources::semi_bold_ttf_len))
     {
-        MessageBoxA(NULL, "Could not load \"Bold.ttf\" or \"SemiBold.ttf\".", "BO1-AntiCheat", MB_OK | MB_ICONERROR);
+        MessageBoxA(NULL, "Could not load asset \"bold_ttf\" or \"semi_bold_ttf\".", "BO1-AntiCheat", MB_OK | MB_ICONERROR);
         return -1;
     }
 
+    // BO1 image
+    sf::Texture blackOpsLogo;
+    if (!blackOpsLogo.loadFromMemory(anticheat::resources::bo1_png, anticheat::resources::bo1_png_len)) {
+        MessageBoxA(NULL, "Could not load asset \"bo1_png\".", "BO1-AntiCheat", MB_OK | MB_ICONERROR);
+        return -1;
+    }
+    blackOpsLogo.setSmooth(true);
+
     // "BO1 Anti Cheat v(version number)" text
-    sf::Text anticheatText("BO1 Anti Cheat v" + Constants::VERSION, semiBoldFont, 21);
+    sf::Text anticheatText("BO1 Anti Cheat v" + Constants::VERSION, semi_bold_font, 21);
     anticheatText.setFillColor(sf::Color(255, 255, 255, 155));
 
     int padding = 20;
     float anticheatTextWidth = anticheatText.getGlobalBounds().width;
     anticheatText.setPosition(((main_window_width - anticheatTextWidth) / 2) + padding, 21);
 
-    // BO1 image
-    sf::Texture blackOpsLogo;
-    if (!blackOpsLogo.loadFromFile("main/bo1.png")) {
-        MessageBoxA(NULL, "Could not load \"bo1.png\".", "BO1-AntiCheat", MB_OK | MB_ICONERROR);
-        return -1;
-    }
-    blackOpsLogo.setSmooth(true);
+    // bo1 image
     sf::Sprite bo1Sprite(blackOpsLogo);
     bo1Sprite.setPosition(anticheatText.getGlobalBounds().left - (padding + 19), 18);
 
     // status msg text
-    sf::Text statusText("", semiBoldFont, 25);
+    sf::Text statusText("", semi_bold_font, 25);
     statusText.setFillColor(sf::Color::White);
 
     // second status text
-    sf::Text extraStatusText("", semiBoldFont, 15);
+    sf::Text extraStatusText("", semi_bold_font, 15);
     extraStatusText.setFillColor(sf::Color(255, 255, 255, 155));
 
     // watermark text
-    sf::Text watermarkText("Created with <3 by IlEvelynIl", semiBoldFont, 15);
+    sf::Text watermarkText("Created with <3 by IlEvelynIl", semi_bold_font, 15);
     watermarkText.setFillColor(sf::Color::White);
     float watermarkTextWidth = watermarkText.getGlobalBounds().width;
     watermarkText.setPosition((main_window_width - watermarkText.getGlobalBounds().width) / 2, 120);
+
+    // updates window
+    std::string available_updates = anticheat::updater::GetAvailableUpdates();
+    bool updates_window_closed = false;
+    if (!available_updates.empty())
+    {
+        int updates_window_width = 650;
+        int updates_window_height = 350;
+        std::string wrapped_changes = WrapText(available_updates, semi_bold_font, 15, updates_window_width - 30);
+
+        sf::RenderWindow updates_window(sf::VideoMode(updates_window_width, updates_window_height), L"BO1 Anti Cheat", sf::Style::Titlebar | sf::Style::Close);
+        updates_window.setFramerateLimit(10);
+        updates_window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
+        // header
+        sf::Text updates_header("New Update Available!", semi_bold_font, 25);
+        updates_header.setFillColor(sf::Color::White);
+        updates_header.setPosition((main_window_width - updates_header.getGlobalBounds().width) / 2, 55);
+
+        // what changed
+        sf::Text changes_text(wrapped_changes, semi_bold_font, 15);
+        changes_text.setFillColor(sf::Color::White);
+        changes_text.setPosition((updates_window_width - changes_text.getGlobalBounds().width) / 2, 120);
+
+        // "Update" button
+        sf::RectangleShape updateButton(sf::Vector2f(100, 35));
+        updateButton.setOutlineThickness(2);
+        updateButton.setOutlineColor(sf::Color::White);
+        updateButton.setFillColor(sf::Color::Transparent);
+        updateButton.setPosition((updates_window_width - 240) / 2, updates_window_height - 60);
+
+        sf::Text updateButtonText("Update", semi_bold_font, 18);
+        updateButtonText.setFillColor(sf::Color::White);
+        float updateButtonTextWidth = updateButtonText.getGlobalBounds().width;
+        float updateButtonTextHeight = updateButtonText.getGlobalBounds().height;
+        updateButtonText.setPosition(
+            updateButton.getPosition().x + (updateButton.getSize().x - updateButtonTextWidth) / 2,
+            updateButton.getPosition().y + (updateButton.getSize().y - updateButtonTextHeight) / 2 - 5
+        );
+
+        // "Ignore" button
+        sf::RectangleShape ignoreUpdateButton(sf::Vector2f(100, 35));
+        ignoreUpdateButton.setOutlineThickness(2);
+        ignoreUpdateButton.setOutlineColor(sf::Color::White);
+        ignoreUpdateButton.setFillColor(sf::Color::Transparent);
+        ignoreUpdateButton.setPosition((updates_window_width + 40) / 2, updates_window_height - 60);
+
+        sf::Text ignoreButtonText("Ignore", semi_bold_font, 18);
+        ignoreButtonText.setFillColor(sf::Color::White);
+        float ignoreButtonTextWidth = ignoreButtonText.getGlobalBounds().width;
+        float ignoreButtonTextHeight = ignoreButtonText.getGlobalBounds().height;
+        ignoreButtonText.setPosition(
+            ignoreUpdateButton.getPosition().x + (ignoreUpdateButton.getSize().x - ignoreButtonTextWidth) / 2,
+            ignoreUpdateButton.getPosition().y + (ignoreUpdateButton.getSize().y - ignoreButtonTextHeight) / 2 - 5
+        );
+
+        while (updates_window.isOpen())
+        {
+            sf::Event event;
+            while (updates_window.pollEvent(event))
+            {
+                if (event.type == sf::Event::Closed) {
+                    updates_window.close();
+                    updates_window_closed = true;
+                }
+
+                // Check for mouse click on the Yes button
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+                {
+                    sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+                    if (updateButton.getGlobalBounds().contains(mousePos))
+                    {
+                        ShellExecute(NULL, L"open", L"https://github.com/IlEvelynIl/BO1-AntiCheat/releases/latest", NULL, NULL, SW_SHOWNORMAL);
+                        debuggerThreadRunning = false;
+                        checkDebuggerThread.join();
+                        anticheat::settings::SaveSettings(false);
+                        return 0;
+                    }
+
+                    // Check for mouse click on the No button
+                    if (ignoreUpdateButton.getGlobalBounds().contains(mousePos))
+                    {
+                        updates_window.close();
+                    }
+                }
+            }
+
+            // hover effect for the ok button
+            sf::Vector2i mousePosition = sf::Mouse::getPosition(updates_window);
+            if (updateButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                updateButton.setFillColor(sf::Color(255, 255, 255));
+                updateButtonText.setFillColor(sf::Color::Black);
+            }
+            else {
+                updateButton.setFillColor(sf::Color::Transparent);
+                updateButtonText.setFillColor(sf::Color::White);
+            }
+
+            if (ignoreUpdateButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                ignoreUpdateButton.setFillColor(sf::Color(255, 255, 255));
+                ignoreButtonText.setFillColor(sf::Color::Black);
+            }
+            else {
+                ignoreUpdateButton.setFillColor(sf::Color::Transparent);
+                ignoreButtonText.setFillColor(sf::Color::White);
+            }
+
+            anticheatText.setPosition(((updates_window_width - anticheatTextWidth) / 2) + padding, 21);
+            bo1Sprite.setPosition(anticheatText.getGlobalBounds().left - (padding + 19), 18);
+
+            updates_window.clear(sf::Color(5, 5, 5));
+            updates_window.draw(anticheatText);
+            updates_window.draw(bo1Sprite);
+            updates_window.draw(updates_header);
+            updates_window.draw(changes_text);
+            updates_window.draw(updateButton);
+            updates_window.draw(updateButtonText);
+            updates_window.draw(ignoreUpdateButton);
+            updates_window.draw(ignoreButtonText);
+            updates_window.display();
+        }
+    }
 
     // make sure players are aware of the rules with the tool
     bool rules_window_closed = false;
@@ -230,21 +360,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         int rules_window_height = 325;
 
         std::string rules = "Before using this tool, be sure to follow these guidelines, or your game could be dismissed:\n\n" + Constants::RULES;
-        std::string wrappedRules = WrapText(rules, semiBoldFont, 15, rules_window_width - 30);
+        std::string wrappedRules = WrapText(rules, semi_bold_font, 15, rules_window_width - 30);
 
         sf::RenderWindow rules_window(sf::VideoMode(rules_window_width, rules_window_height), L"BO1 Anti Cheat", sf::Style::Titlebar | sf::Style::Close);
         rules_window.setFramerateLimit(10);
         rules_window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
         // header
-        sf::Text rulesHeader("Anti Cheat Guidelines", semiBoldFont, 25);
+        sf::Text rulesHeader("Anti Cheat Guidelines", semi_bold_font, 25);
         rulesHeader.setFillColor(sf::Color::White);
 
         float rulesHeaderWidth = rulesHeader.getGlobalBounds().width;
         rulesHeader.setPosition((main_window_width - rulesHeaderWidth) / 2, 55);
 
         // rules text
-        sf::Text rulesText(wrappedRules, semiBoldFont, 15);
+        sf::Text rulesText(wrappedRules, semi_bold_font, 15);
         rulesText.setFillColor(sf::Color::White);
 
         float rulesTextWidth = rulesText.getGlobalBounds().width;
@@ -258,7 +388,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         okButton.setPosition((rules_window_width - okButton.getSize().x) / 2, rules_window_height - 60);
 
         // ok button text
-        sf::Text okText("OK", semiBoldFont, 18);
+        sf::Text okText("OK", semi_bold_font, 18);
         okText.setFillColor(sf::Color::White);
         float okTextWidth = okText.getGlobalBounds().width;
         float okTextHeight = okText.getGlobalBounds().height;
@@ -316,6 +446,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // if the rules window was closed, they must wanna close the whole program
     if (rules_window_closed)
     {
+        debuggerThreadRunning = false;
+        checkDebuggerThread.join();
+        anticheat::settings::SaveSettings(false);
         return 0;
     }
 

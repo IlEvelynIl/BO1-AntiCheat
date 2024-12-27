@@ -155,6 +155,10 @@
     <ClInclude Include="src\anticheat\integrity\checksums.h" />
     <ClInclude Include="src\anticheat\integrity\config.hpp" />
     <ClInclude Include="src\anticheat\integrity\integrity.hpp" />
+    <ClInclude Include="src\anticheat\resources\bo1_png_data.h" />
+    <ClInclude Include="src\anticheat\resources\bold_font_data.h" />
+    <ClInclude Include="src\anticheat\resources\icon_png_data.h" />
+    <ClInclude Include="src\anticheat\resources\semibold_font_data.h" />
     <ClInclude Include="src\game\process.hpp" />
     <ClInclude Include="src\statuses.h" />
     <ClInclude Include="src\game\game.hpp" />
