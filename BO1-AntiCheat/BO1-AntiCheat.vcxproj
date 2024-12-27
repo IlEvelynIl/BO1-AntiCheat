@@ -145,8 +145,8 @@
     <ClCompile Include="src\utils\files.cpp" />
     <ClCompile Include="src\utils\md5.cpp" />
     <ClCompile Include="src\utils\memory.cpp" />
-    <ClCompile Include="src\anticheat\verification\verification.cpp" />
     <ClCompile Include="src\anticheat\updater\updater.cpp" />
+    <ClCompile Include="src\anticheat\settings\settings.cpp" />
     <ClCompile Include="src\utils\strings.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,8 +162,8 @@
     <ClInclude Include="src\utils\files.hpp" />
     <ClInclude Include="src\utils\md5.h" />
     <ClInclude Include="src\utils\memory.hpp" />
-    <ClInclude Include="src\anticheat\verification\verification.hpp" />
     <ClInclude Include="src\anticheat\updater\updater.hpp" />
+    <ClInclude Include="src\anticheat\settings\settings.hpp" />
     <ClInclude Include="src\utils\strings.hpp" />
   </ItemGroup>
   <ItemGroup>

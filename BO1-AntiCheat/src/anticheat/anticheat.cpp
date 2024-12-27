@@ -10,8 +10,6 @@
 
 #include "../statuses.h"
 
-#include "verification/verification.hpp"
-
 #include "../utils/memory.hpp"
 
 #include "updater/updater.hpp"
@@ -37,9 +35,6 @@ std::string info_status = "";
 namespace anticheat {
     void Initialize()
     {
-        // initialize the verification uids
-        verification::CalculateUIDs();
-
         // initialize integrity checks
         integrity::Initialize();
 
@@ -51,7 +46,7 @@ namespace anticheat {
     void OnGameClosed()
     {
         main_status = Statuses::GAME_NOT_CONNECTED;
-        info_status = "";
+        info_status = Statuses::WAITING_FOR_GAME_TO_OPEN;
         initialized = false;
         performed_integrity_check = false;
     }
@@ -109,8 +104,6 @@ namespace anticheat {
             {
                 main_status = Statuses::CHECKING_FOR_PATCHES;
                 info_status = "This may take a moment";
-
-                verification::CalculateUIDs();
 
                 integrity_check_override = false;
                 performed_integrity_check = true;
@@ -210,7 +203,7 @@ namespace anticheat {
         {
             OnGameClosed();
             main_status = Statuses::GAME_NOT_CONNECTED;
-            info_status = "";
+            info_status = Statuses::WAITING_FOR_GAME_TO_OPEN;
             game::CheckForAllowedTools();
             return;
         }
@@ -221,7 +214,7 @@ namespace anticheat {
             int map_id = game::GetMapId();
             if (map_id != Constants::MAIN_MENU_ID)
             {
-                info_status = "";
+                info_status = "Not in a map";
                 main_status = Statuses::GAME_CONNECTED;
 
                 // check for patching methods mid game

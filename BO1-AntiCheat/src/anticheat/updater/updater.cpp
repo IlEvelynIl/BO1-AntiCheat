@@ -61,7 +61,7 @@ namespace anticheat {
                         catch (const exception&) {
                             MessageBoxA(NULL, Statuses::COULDNT_PROCESS_UPDATE.c_str(), "Error", MB_OK);
                         }
-                        }).wait();
+                    }).wait();
             }
             catch (const exception&) {
                 MessageBoxA(NULL, Statuses::COULDNT_CHECK_UPDATES.c_str(), "Error", MB_OK);

@@ -139,6 +139,9 @@ namespace game {
         return false;
     }
 
+    // this checks if the custom fx tool is present in the game
+    // most players that ive spoken to have agreed that this tool should be allowed
+    // if players
     bool IsCustomFxToolPresent()
     {
         HANDLE handle = process::GetBlackOpsProcess();
@@ -149,14 +152,16 @@ namespace game {
         }
 
         string game_folder = game::GetBlackOpsPath();
-        string fx_steam_api = game_folder + "\\steam_api.dll";
-        string fx_loader = game_folder + "\\blackops-fx.dll";
+        string steam_api = game_folder + "\\steam_api.dll";
+        string fx_tool = game_folder + "\\blackops-fx.dll";
 
-        // check for both steam_api.dll and blackops-fx.dll
-        if (fs::exists(fx_steam_api) && fs::exists(fx_loader))
+        // check for a match on both steam_api.dll and blackops-fx.dll
+        // every install of black ops requires a steam_api.dll file
+        // so we can just check those hashes and see if they match up
+        if (fs::exists(steam_api) && fs::exists(fx_tool))
         {
-            string steam_api_hash = utils::files::GetMD5(fx_steam_api);
-            string fx_dll_hash = utils::files::GetMD5(fx_loader);
+            string steam_api_hash = utils::files::GetMD5(steam_api);
+            string fx_dll_hash = utils::files::GetMD5(fx_tool);
 
             if (steam_api_hash == Checksums::CUSTOM_FX_STEAM_API_DLL && fx_dll_hash == Checksums::CUSTOM_FX_DLL)
             {

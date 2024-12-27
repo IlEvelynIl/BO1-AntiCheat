@@ -3,12 +3,13 @@
 #ifndef Constants
 #define Constants
 
-const static std::string VERSION = "1.13";
+const static std::string VERSION = "2.0";
+const static std::string RULES = "- You must show the BO1-AntiCheat.exe file properties.\n- You must show yourself opening the tool.\n- If possible, display the tool on your stream/recording.";
 
 // addresses
 const static int C_MAPADDRESS = 0x02F67B6C;
 const static int C_TIMEADDRESS = 0x01A79870;
-const static int C_MODADDRESS = 0x025FE010;
+const static int C_MODADDRESS = 0x025FE010; // only on game_mod
 const static int C_LANGADDRESS = 0x0276C0D0;
 const static int C_GAMEPAUSED = 0x8902B4;
 
