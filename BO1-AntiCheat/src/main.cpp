@@ -357,9 +357,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (utils::strings::ToLower(display_rules) == "true")
     {
         int rules_window_width = 650;
-        int rules_window_height = 325;
+        int rules_window_height = 350;
 
-        std::string rules = "Before using this tool, be sure to follow these guidelines, or your game could be dismissed:\n\n" + Constants::RULES;
+        std::string rules = "Before using this tool, be sure to follow these guidelines, or your game could be dismissed:\n\n" + Constants::RULES + "\n\nYou can stop this from appearing by editing the config file.";
         std::string wrappedRules = WrapText(rules, semi_bold_font, 15, rules_window_width - 30);
 
         sf::RenderWindow rules_window(sf::VideoMode(rules_window_width, rules_window_height), L"BO1 Anti Cheat", sf::Style::Titlebar | sf::Style::Close);
