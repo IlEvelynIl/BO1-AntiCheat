@@ -7,7 +7,8 @@ Modern problems require modern solutions. While the current solution may be a go
 This tool can also be updated to verify setup patches if the community votes on allowing such in the future.
 
 ## Using it in your games
-- If you decide to use this for your games, open it along side Black Ops 1 and it will automatically connect to the game. Make sure to follow the guidelines
+If you decide to use this for your games, open it along side Black Ops 1 and it will automatically connect to the game.
+- Make sure to follow the guidelines below, or your could be dismissed.
 - For coop games, only the host will need to use the tool.
 - You may notice that there is not a minimize button, this is on purpose to prevent confusion with OBS not picking it up. Just let the program sit behind the game or another monitor.
 
