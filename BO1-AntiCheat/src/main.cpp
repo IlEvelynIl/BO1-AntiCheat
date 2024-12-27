@@ -351,41 +351,41 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         }
     }
 
-    // make sure players are aware of the rules with the tool
-    bool rules_window_closed = false;
-    std::string display_rules = anticheat::settings::GetValue("DisplayRules");
-    if (utils::strings::ToLower(display_rules) == "true")
+    // make sure players are aware of the guidelines with the tool
+    bool guidelines_window_closed = false;
+    std::string display_guidelines = anticheat::settings::GetValue("DisplayGuidelines");
+    if (utils::strings::ToLower(display_guidelines) == "true")
     {
-        int rules_window_width = 650;
-        int rules_window_height = 350;
+        int guidelines_window_width = 650;
+        int guidelines_window_height = 350;
 
-        std::string rules = "Before using this tool, be sure to follow these guidelines, or your game could be dismissed:\n\n" + Constants::RULES + "\n\nYou can stop this from appearing by editing the config file.";
-        std::string wrappedRules = WrapText(rules, semi_bold_font, 15, rules_window_width - 30);
+        std::string guidelines = "Before using this tool, be sure to follow these guidelines, or your game could be dismissed:\n\n" + Constants::GUIDELINES + "\n\nYou can stop this from appearing by editing the config file.";
+        std::string wrappedguidelines = WrapText(guidelines, semi_bold_font, 15, guidelines_window_width - 30);
 
-        sf::RenderWindow rules_window(sf::VideoMode(rules_window_width, rules_window_height), L"BO1 Anti Cheat", sf::Style::Titlebar | sf::Style::Close);
-        rules_window.setFramerateLimit(10);
-        rules_window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+        sf::RenderWindow guidelines_window(sf::VideoMode(guidelines_window_width, guidelines_window_height), L"BO1 Anti Cheat", sf::Style::Titlebar | sf::Style::Close);
+        guidelines_window.setFramerateLimit(10);
+        guidelines_window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
         // header
-        sf::Text rulesHeader("Anti Cheat Guidelines", semi_bold_font, 25);
-        rulesHeader.setFillColor(sf::Color::White);
+        sf::Text guidelinesHeader("Anti Cheat Guidelines", semi_bold_font, 25);
+        guidelinesHeader.setFillColor(sf::Color::White);
 
-        float rulesHeaderWidth = rulesHeader.getGlobalBounds().width;
-        rulesHeader.setPosition((main_window_width - rulesHeaderWidth) / 2, 55);
+        float guidelinesHeaderWidth = guidelinesHeader.getGlobalBounds().width;
+        guidelinesHeader.setPosition((main_window_width - guidelinesHeaderWidth) / 2, 55);
 
-        // rules text
-        sf::Text rulesText(wrappedRules, semi_bold_font, 15);
-        rulesText.setFillColor(sf::Color::White);
+        // guidelines text
+        sf::Text guidelinesText(wrappedguidelines, semi_bold_font, 15);
+        guidelinesText.setFillColor(sf::Color::White);
 
-        float rulesTextWidth = rulesText.getGlobalBounds().width;
-        rulesText.setPosition((rules_window_width - rulesTextWidth) / 2, 120);
+        float guidelinesTextWidth = guidelinesText.getGlobalBounds().width;
+        guidelinesText.setPosition((guidelines_window_width - guidelinesTextWidth) / 2, 120);
 
         // OK button setup with outline and hover effect
         sf::RectangleShape okButton(sf::Vector2f(100, 35));
         okButton.setOutlineThickness(2);
         okButton.setOutlineColor(sf::Color::White); // outline color
         okButton.setFillColor(sf::Color::Transparent); // initially transparent
-        okButton.setPosition((rules_window_width - okButton.getSize().x) / 2, rules_window_height - 60);
+        okButton.setPosition((guidelines_window_width - okButton.getSize().x) / 2, guidelines_window_height - 60);
 
         // ok button text
         sf::Text okText("OK", semi_bold_font, 18);
@@ -397,14 +397,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             okButton.getPosition().y + (okButton.getSize().y - okTextHeight) / 2 - 5
         );
 
-        while (rules_window.isOpen())
+        while (guidelines_window.isOpen())
         {
             sf::Event event;
-            while (rules_window.pollEvent(event))
+            while (guidelines_window.pollEvent(event))
             {
                 if (event.type == sf::Event::Closed) {
-                    rules_window.close();
-                    rules_window_closed = true;
+                    guidelines_window.close();
+                    guidelines_window_closed = true;
                 }
 
                 // Check for mouse click on the OK button
@@ -413,13 +413,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                     sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
                     if (okButton.getGlobalBounds().contains(mousePos))
                     {
-                        rules_window.close();
+                        guidelines_window.close();
                     }
                 }
             }
 
             // hover effect for the ok button
-            sf::Vector2i mousePosition = sf::Mouse::getPosition(rules_window);
+            sf::Vector2i mousePosition = sf::Mouse::getPosition(guidelines_window);
             if (okButton.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                 okButton.setFillColor(sf::Color(255, 255, 255));
                 okText.setFillColor(sf::Color::Black);
@@ -429,22 +429,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 okText.setFillColor(sf::Color::White);
             }
 
-            anticheatText.setPosition(((rules_window_width - anticheatTextWidth) / 2) + padding, 21);
+            anticheatText.setPosition(((guidelines_window_width - anticheatTextWidth) / 2) + padding, 21);
             bo1Sprite.setPosition(anticheatText.getGlobalBounds().left - (padding + 19), 18);
 
-            rules_window.clear(sf::Color(5, 5, 5));
-            rules_window.draw(anticheatText);
-            rules_window.draw(bo1Sprite);
-            rules_window.draw(rulesHeader);
-            rules_window.draw(rulesText);
-            rules_window.draw(okButton);
-            rules_window.draw(okText);
-            rules_window.display();
+            guidelines_window.clear(sf::Color(5, 5, 5));
+            guidelines_window.draw(anticheatText);
+            guidelines_window.draw(bo1Sprite);
+            guidelines_window.draw(guidelinesHeader);
+            guidelines_window.draw(guidelinesText);
+            guidelines_window.draw(okButton);
+            guidelines_window.draw(okText);
+            guidelines_window.display();
         }
     }
 
-    // if the rules window was closed, they must wanna close the whole program
-    if (rules_window_closed)
+    // if the guidelines window was closed, they must wanna close the whole program
+    if (guidelines_window_closed)
     {
         debuggerThreadRunning = false;
         checkDebuggerThread.join();

@@ -29,7 +29,7 @@ namespace anticheat {
 			// if we're saving the default settings, just write to the file
 			if (_default)
 			{
-				file << "DisplayRules=True\n";
+				file << "DisplayGuidelines=True\n";
 			}
 			else
 			{
