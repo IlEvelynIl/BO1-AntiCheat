@@ -14,7 +14,7 @@ If you decide to use this for your games, open it along side Black Ops 1 and it 
 
 ## Guidelines
 Since this tool is open source, below are some easy to follow guidelines that you must follow, the community has to verify that you are actually using it.
-- You must show the BO1-AntiCheat.exe file properties.
+- You must show the `BO1-AntiCheat.exe` file properties.
 - You must show yourself opening the tool.
 - Display the tool on your stream/recording.
 
