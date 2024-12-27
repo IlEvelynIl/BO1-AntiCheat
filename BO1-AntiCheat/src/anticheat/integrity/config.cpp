@@ -24,6 +24,9 @@ namespace anticheat {
 				cheating_commands.push_back("difficultyMedium");
 				cheating_commands.push_back("difficultyHard");
 				cheating_commands.push_back("difficultyFu");
+				cheating_commands.push_back("difficultyFu");
+				cheating_commands.push_back("zombie_taunt_freq");
+				cheating_commands.push_back("zombie_reachin_freq");
 			}
 
 			// reads the config for cheating commands every map load
@@ -76,6 +79,13 @@ namespace anticheat {
 					for (size_t i = 0; i < cheating_commands.size(); i++)
 					{
 						std::string command = cheating_commands[i];
+
+						// specific check for the zombie_taunt_freq
+						// this is in the default config and should not flag
+						if (command == "zombie_taunt_freq" && line_lower == "seta zombie_taunt_freq \"10\"")
+						{
+							continue;
+						}
 
 						// check for a lowercase match on lowercase lines
 						bool contains_command = utils::strings::Contains(line_lower, command);
