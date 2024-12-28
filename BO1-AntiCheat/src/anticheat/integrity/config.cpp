@@ -20,13 +20,27 @@ namespace anticheat {
 				cheating_commands.push_back("cl_noprint");
 				cheating_commands.push_back("magic_chest_movable");
 				cheating_commands.push_back("ai_disableSpawn");
+
+				// changes the health regen via the campaign difficulty
+				// can be changed mid game
 				cheating_commands.push_back("difficultyEasy");
 				cheating_commands.push_back("difficultyMedium");
 				cheating_commands.push_back("difficultyHard");
 				cheating_commands.push_back("difficultyFu");
 				cheating_commands.push_back("difficultyFu");
+
+				// changes how often they taunt after ripping a board off
+				// this effectively changes how fast they rip off the boards
 				cheating_commands.push_back("zombie_taunt_freq");
+
+				// changes how often they reach through a window
 				cheating_commands.push_back("zombie_reachin_freq");
+
+				// forces a certain gun from the box
+				cheating_commands.push_back("scr_force_weapon");
+
+				// forces a certain random effect from a qed
+				cheating_commands.push_back("scr_force_quantum_bomb_result");
 			}
 
 			// reads the config for cheating commands every map load
@@ -79,13 +93,6 @@ namespace anticheat {
 					for (size_t i = 0; i < cheating_commands.size(); i++)
 					{
 						std::string command = cheating_commands[i];
-
-						// specific check for the zombie_taunt_freq
-						// this is in the default config and should not flag
-						if (command == "zombie_taunt_freq" && line_lower == "seta zombie_taunt_freq \"10\"")
-						{
-							continue;
-						}
 
 						// check for a lowercase match on lowercase lines
 						bool contains_command = utils::strings::Contains(line_lower, command);
