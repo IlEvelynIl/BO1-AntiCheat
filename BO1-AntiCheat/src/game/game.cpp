@@ -36,13 +36,27 @@ namespace game {
     // reads the map id from memory, Furret's box tracker uses this same method for setting up the weapons list
     int GetMapId()
     {
-        return utils::memory::ReadInt(process::GetBlackOpsProcess(), Constants::C_MAPADDRESS);
+        HANDLE handle = process::GetBlackOpsProcess();
+        if (handle == NULL || handle == INVALID_HANDLE_VALUE) {
+            return -1;
+        }
+
+        int mapId = utils::memory::ReadInt(handle, Constants::C_MAPADDRESS);
+        CloseHandle(handle);
+        return mapId;
     }
 
     // gets the total game time
     int GetGameTime()
     {
-        return utils::memory::ReadInt(process::GetBlackOpsProcess(), Constants::C_TIMEADDRESS);
+        HANDLE handle = process::GetBlackOpsProcess();
+        if (handle == NULL || handle == INVALID_HANDLE_VALUE) {
+            return -1;
+        }
+
+        int gameTime = utils::memory::ReadInt(handle, Constants::C_TIMEADDRESS);
+        CloseHandle(handle);
+        return gameTime;
     }
 
     // gets the path to zone/Common
@@ -81,12 +95,18 @@ namespace game {
     // gets the current mod name from memory
     std::string GetModName()
     {
-        if (!game_mod_loaded)
-        {
+        if (!game_mod_loaded) {
             return "";
         }
 
-        return utils::memory::ReadString(process::GetBlackOpsProcess(), Constants::C_MODADDRESS);
+        HANDLE handle = process::GetBlackOpsProcess();
+        if (handle == NULL || handle == INVALID_HANDLE_VALUE) {
+            return "";
+        }
+
+        std::string modName = utils::memory::ReadString(handle, Constants::C_MODADDRESS);
+        CloseHandle(handle);
+        return modName;
     }
 
     // simple check for if a mod is loaded or not
@@ -103,9 +123,7 @@ namespace game {
     bool IsGameModPresent()
     {
         HANDLE handle = process::GetBlackOpsProcess();
-
-        if (handle == NULL)
-        {
+        if (handle == NULL || handle == INVALID_HANDLE_VALUE) {
             return false;
         }
 
@@ -129,6 +147,7 @@ namespace game {
                         // if we have a match then game mod is present
                         if (utils::files::GetMD5(dllPath) == Checksums::GAME_MOD_DLL)
                         {
+                            CloseHandle(handle);
                             return true;
                         }
                     }
@@ -136,18 +155,15 @@ namespace game {
             }
         }
 
+        CloseHandle(handle);
         return false;
     }
 
     // this checks if the custom fx tool is present in the game
-    // most players that ive spoken to have agreed that this tool should be allowed
-    // if players
     bool IsCustomFxToolPresent()
     {
         HANDLE handle = process::GetBlackOpsProcess();
-
-        if (handle == NULL)
-        {
+        if (handle == NULL || handle == INVALID_HANDLE_VALUE) {
             return false;
         }
 
@@ -165,10 +181,12 @@ namespace game {
 
             if (steam_api_hash == Checksums::CUSTOM_FX_STEAM_API_DLL && fx_dll_hash == Checksums::CUSTOM_FX_DLL)
             {
+                CloseHandle(handle);
                 return true;
             }
         }
 
+        CloseHandle(handle);
         return false;
     }
 
@@ -211,6 +229,13 @@ namespace game {
 
     std::string GetGameLanguage()
     {
-        return utils::memory::ReadString(process::GetBlackOpsProcess(), Constants::C_LANGADDRESS);
+        HANDLE handle = process::GetBlackOpsProcess();
+        if (handle == NULL || handle == INVALID_HANDLE_VALUE) {
+            return "";
+        }
+
+        std::string lang = utils::memory::ReadString(handle, Constants::C_LANGADDRESS);
+        CloseHandle(handle);
+        return lang;
     }
 }

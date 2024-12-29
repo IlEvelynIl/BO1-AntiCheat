@@ -1,15 +1,12 @@
 #include "process.hpp"
 
 #include <windows.h>
-
 #include <string>
-
 #include <TlHelp32.h>
-
 #include <psapi.h>
 
 namespace game {
-	namespace process {
+    namespace process {
         // gets the bo1 process so we can utilize it
         HANDLE GetBlackOpsProcess()
         {
@@ -19,41 +16,49 @@ namespace game {
                 pId = GetProcessIdByName(L"BGamerT5.exe");
             }
 
-            HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pId);
-            return hProc;
+            HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pId);
+            if (handle == NULL || handle == INVALID_HANDLE_VALUE)
+            {
+                return NULL;
+            }
+
+            return handle;
         }
 
         // checks if the game is open
         bool IsGameOpen()
         {
-            HANDLE hProcess = GetBlackOpsProcess();
-            if (hProcess != NULL) {
-                CloseHandle(hProcess);
-                return true;
+            HANDLE handle = GetBlackOpsProcess();
+            bool isOpen = (handle != NULL && handle != INVALID_HANDLE_VALUE);
+
+            if (isOpen) {
+                CloseHandle(handle);
             }
-            return false;
+            return isOpen;
         }
 
         // gets the path to the actual bo1 executable, with the .exe name included
         std::string GetPathToExe() {
-            HANDLE hProcess = GetBlackOpsProcess();
+            HANDLE handle = GetBlackOpsProcess();
 
-            if (hProcess == NULL) {
+            if (handle == NULL || handle == INVALID_HANDLE_VALUE) {
                 return "";
             }
 
             wchar_t path[MAX_PATH];
-            DWORD size = sizeof(path) / sizeof(path[0]);
+            DWORD size = MAX_PATH;
 
-            if (QueryFullProcessImageName(hProcess, 0, path, &size)) {
-                int length = WideCharToMultiByte(CP_UTF8, 0, path, -1, NULL, 0, NULL, NULL);
-                std::string processPath(length, '\0');
-                WideCharToMultiByte(CP_UTF8, 0, path, -1, &processPath[0], length, NULL, NULL);
-                return processPath;
+            std::string processPath;
+            if (QueryFullProcessImageName(handle, 0, path, &size)) {
+                int length = WideCharToMultiByte(CP_UTF8, 0, path, -1, nullptr, 0, nullptr, nullptr);
+                if (length > 0) {
+                    processPath.resize(length - 1);
+                    WideCharToMultiByte(CP_UTF8, 0, path, -1, processPath.data(), length, nullptr, nullptr);
+                }
             }
-            else {
-                return "";
-            }
+
+            CloseHandle(handle);
+            return processPath;
         }
 
         // finds a process id by name
@@ -63,7 +68,7 @@ namespace game {
             processInfo.dwSize = sizeof(processInfo);
 
             HANDLE processesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
-            if (processesSnapshot == INVALID_HANDLE_VALUE) {
+            if (processesSnapshot == NULL || processesSnapshot == INVALID_HANDLE_VALUE) {
                 return 0;
             }
 
@@ -79,5 +84,6 @@ namespace game {
             CloseHandle(processesSnapshot);
             return 0;
         }
-	} // process
+
+    } // process
 } // game

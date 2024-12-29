@@ -11,82 +11,42 @@ using namespace std;
 namespace utils {
     namespace memory {
         int ReadInt(HANDLE processHandle, int address) {
-            if (address == -1)
-            {
+            if (address == -1 || processHandle == nullptr) {
                 return -1;
             }
 
             int buffer = 0;
-            SIZE_T NumberOfBytesToRead = sizeof(buffer);
-            SIZE_T NumberOfBytesActuallyRead;
-            bool success = ReadProcessMemory(processHandle, (LPCVOID)address, &buffer, NumberOfBytesToRead, &NumberOfBytesActuallyRead);
+            SIZE_T bytesRead = 0;
+            bool success = ReadProcessMemory(processHandle, (LPCVOID)address, &buffer, sizeof(buffer), &bytesRead);
 
-            if (!success || NumberOfBytesActuallyRead != NumberOfBytesToRead)
-            {
+            if (!success || bytesRead != sizeof(buffer)) {
                 return -1;
             }
 
             return buffer;
         }
 
-        bool WriteInt(HANDLE processHandle, int address, int value)
-        {
-            if (address == -1)
-            {
-                return false;
+        std::string ReadString(HANDLE processHandle, int address) {
+            if (address == -1 || processHandle == nullptr) {
+                return "";
             }
 
-            bool success = WriteProcessMemory(processHandle, (LPVOID)address, &value, sizeof(value), NULL);
-            if (!success) {
-                return false;
-            }
+            char buffer = 0;
+            string result;
+            SIZE_T bytesRead = 0;
 
-            return true;
-        }
-
-        char* ReadString(HANDLE processHandle, int address) {
-            std::string text = "";
-
-            if (address == -1) {
-                return &text[0];
-            }
-
-            char buffer = !0;
-            char* stringToRead = new char[128];
-            SIZE_T NumberOfBytesToRead = sizeof(buffer);
-            SIZE_T NumberOfBytesActuallyRead;
-            int i = 0;
-
-            while (buffer != 0) {
-                bool success = ReadProcessMemory(processHandle, (LPCVOID)address, &buffer, NumberOfBytesToRead, &NumberOfBytesActuallyRead);
-                if (!success || NumberOfBytesActuallyRead != NumberOfBytesToRead)
-                {
-                    return &text[0];
+            // Read string byte-by-byte until null terminator
+            while (true) {
+                bool success = ReadProcessMemory(processHandle, (LPCVOID)address, &buffer, sizeof(buffer), &bytesRead);
+                if (!success || bytesRead != sizeof(buffer) || buffer == 0) {
+                    break;
                 }
 
-                stringToRead[i] = buffer;
-                i++;
+                result.push_back(buffer);
                 address++;
             }
 
-            return stringToRead;
-        }
-
-        bool WriteString(HANDLE processHandle, int address, string value)
-        {
-            if (address == -1)
-            {
-                return false;
-            }
-
-            int length = value.length() + 1;
-            bool success = WriteProcessMemory(processHandle, (LPVOID)address, value.c_str(), length, NULL);
-
-            if (!success) {
-                return false;
-            }
-
-            return true;
+            return result;
         }
     } // memory
 } // utils
