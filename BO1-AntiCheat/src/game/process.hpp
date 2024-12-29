@@ -7,7 +7,6 @@ namespace game {
 	namespace process {
 		HANDLE GetBlackOpsProcess();
 		bool IsGameOpen();
-		void CloseBlackOpsProcess();
 		std::string GetPathToExe();
 		DWORD GetProcessIdByName(const std::wstring& procName);
 	} // process

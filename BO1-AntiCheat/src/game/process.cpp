@@ -27,31 +27,11 @@ namespace game {
         bool IsGameOpen()
         {
             HANDLE hProcess = GetBlackOpsProcess();
-            if (hProcess == NULL) {
-                return false;
+            if (hProcess != NULL) {
+                CloseHandle(hProcess);
+                return true;
             }
-
-            DWORD exitCode;
-            if (GetExitCodeProcess(hProcess, &exitCode)) {
-                if (exitCode == STILL_ACTIVE) {
-                    return true;
-                }
-            }
-
-            // If we can't get the exit code or the process has exited
-            CloseHandle(hProcess);
             return false;
-        }
-
-        // closes the game, this is primarily gonna be used to "crash" the game
-        void CloseBlackOpsProcess()
-        {
-            if (IsGameOpen())
-            {
-                HANDLE blackOpsProcess = GetBlackOpsProcess();
-                TerminateProcess(blackOpsProcess, 0);
-                CloseHandle(blackOpsProcess);
-            }
         }
 
         // gets the path to the actual bo1 executable, with the .exe name included
