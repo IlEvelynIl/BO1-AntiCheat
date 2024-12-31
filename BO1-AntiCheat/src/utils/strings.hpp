@@ -9,5 +9,6 @@ namespace utils {
 		std::string ToLower(std::string str);
 		bool Contains(std::string& str, std::string& sub);
 		bool ContainsIgnoreCase(const std::string& str, const std::string& substring);
+		std::string GetCurrentEpoch();
 	} // strings
 } // utils

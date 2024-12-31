@@ -176,7 +176,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     thread checkDebuggerThread(CheckForDebugger);
 
     int main_window_width = 650;
-    int main_window_height = 155;
+    int main_window_height = 159;
 
     // attempt to load the main_window icon, this can be changed by players if they want
     sf::Image icon;
@@ -226,8 +226,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // watermark text
     sf::Text watermarkText("Created with <3 by IlEvelynIl", semi_bold_font, 15);
     watermarkText.setFillColor(sf::Color::White);
-    float watermarkTextWidth = watermarkText.getGlobalBounds().width;
-    watermarkText.setPosition((main_window_width - watermarkText.getGlobalBounds().width) / 2, 120);
+    watermarkText.setPosition((main_window_width - watermarkText.getGlobalBounds().width) / 2, 110);
 
     // updates window
     std::string available_updates = anticheat::updater::GetAvailableUpdates();
@@ -250,7 +249,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         // what changed
         sf::Text changes_text(wrapped_changes, semi_bold_font, 15);
         changes_text.setFillColor(sf::Color::White);
-        changes_text.setPosition((updates_window_width - changes_text.getGlobalBounds().width) / 2, 120);
+        changes_text.setPosition((updates_window_width - changes_text.getGlobalBounds().width) / 2, 115);
 
         // "Update" button
         sf::RectangleShape updateButton(sf::Vector2f(100, 35));
@@ -457,6 +456,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     anticheatText.setPosition(((main_window_width - anticheatTextWidth) / 2) + padding, 21);
 
+    // add some "dynamicness" to it
+    sf::Text epochTime(utils::strings::GetCurrentEpoch(), semi_bold_font, 11);
+    epochTime.setFillColor(sf::Color::White);
+    epochTime.setPosition((main_window_width - epochTime.getGlobalBounds().width) / 2, 139);
+
     // create the main_window
     sf::RenderWindow main_window(sf::VideoMode(main_window_width, main_window_height), L"BO1 Anti Cheat", sf::Style::Titlebar | sf::Style::Close);
     main_window.setFramerateLimit(10);
@@ -487,7 +491,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         statusText.setString(anticheat::GetMainStatus()); // constantly set the status text
         float statusTextWidth = statusText.getGlobalBounds().width;
-        statusText.setPosition((main_window_width - statusTextWidth) / 2, 57); // adjust position based on text width and main_window width
+        statusText.setPosition((main_window_width - statusTextWidth) / 2, 55); // adjust position based on text width and main_window width
 
         // if cheats have been detected then set it to a red/pink color
         if (anticheat::CheatingDetected())
@@ -501,7 +505,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         // set the extra status text
         extraStatusText.setString(anticheat::GetInfoStatus());
         float extraStatusTextWidth = extraStatusText.getGlobalBounds().width;
-        extraStatusText.setPosition((main_window_width - extraStatusTextWidth) / 2, 90);
+        extraStatusText.setPosition((main_window_width - extraStatusTextWidth) / 2, 87);
+
+        // display current epoch
+        epochTime.setString(utils::strings::GetCurrentEpoch());
+        epochTime.setPosition((main_window_width - epochTime.getGlobalBounds().width) / 2, 135);
 
         // draw everything to the main_window
         main_window.clear(sf::Color(5, 5, 5));
@@ -510,6 +518,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         main_window.draw(statusText);
         main_window.draw(extraStatusText);
         main_window.draw(watermarkText);
+        main_window.draw(epochTime);
         main_window.display();
     }
 
