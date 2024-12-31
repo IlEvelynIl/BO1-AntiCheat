@@ -17,30 +17,19 @@ namespace anticheat {
 			// tell the anticheat what commands to look for
 			void Initialize()
 			{
-				cheating_commands.push_back("cl_noprint");
-				cheating_commands.push_back("magic_chest_movable");
-				cheating_commands.push_back("ai_disableSpawn");
-
-				// changes the health regen via the campaign difficulty
-				// can be changed mid game
-				cheating_commands.push_back("difficultyEasy");
-				cheating_commands.push_back("difficultyMedium");
-				cheating_commands.push_back("difficultyHard");
-				cheating_commands.push_back("difficultyFu");
-				cheating_commands.push_back("difficultyFu");
-
-				// changes how often they taunt after ripping a board off
-				// this effectively changes how fast they rip off the boards
-				cheating_commands.push_back("zombie_taunt_freq");
-
-				// changes how often they reach through a window
-				cheating_commands.push_back("zombie_reachin_freq");
-
-				// forces a certain gun from the box
-				cheating_commands.push_back("scr_force_weapon");
-
-				// forces a certain random effect from a qed
-				cheating_commands.push_back("scr_force_quantum_bomb_result");
+				cheating_commands = {
+					"cl_noprint",
+					"magic_chest_movable",
+					"ai_disableSpawn",
+					"difficultyEasy",
+					"difficultyMedium",
+					"difficultyHard",
+					"difficultyFu",
+					"zombie_taunt_freq",
+					"zombie_reachin_freq",
+					"scr_force_weapon",
+					"scr_force_quantum_bomb_result"
+				};
 			}
 
 			// reads the config for cheating commands every map load
