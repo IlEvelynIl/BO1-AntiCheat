@@ -3,7 +3,7 @@
 #ifndef Constants
 #define Constants
 
-const static std::string VERSION = "2.2.0";
+const static std::string VERSION = "2.2.1";
 const static std::string GUIDELINES = "- Show the BO1-AntiCheat.exe file properties.\n- Show yourself opening the tool.\n- Display the tool on your stream/recording.";
 
 // addresses
