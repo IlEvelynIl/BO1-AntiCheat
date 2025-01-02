@@ -120,7 +120,7 @@ namespace game {
     bool IsGameModPresent()
     {
         HANDLE handle = process::GetBlackOpsProcess();
-        if (!process::IsGameOpen()) {
+        if (handle == NULL || handle == INVALID_HANDLE_VALUE) {
             return false;
         }
 

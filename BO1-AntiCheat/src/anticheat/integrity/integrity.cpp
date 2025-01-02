@@ -897,7 +897,6 @@ namespace anticheat {
                 }
             }
 
-
             return formatted_binds_found;
         }
     } // integrity
