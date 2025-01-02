@@ -799,11 +799,6 @@ namespace anticheat {
                         }
                     }
 
-                    // Check for specific image size of the original stealth_patch.dll file
-                    if (modInfo.SizeOfImage == 327680) {
-                        return true;
-                    }
-
                     // Check for suspicious module names
                     if (dllPath.find("stealth_patch") != std::string::npos) {
                         return true;
