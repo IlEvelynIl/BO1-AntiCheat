@@ -5,36 +5,45 @@
 #include <TlHelp32.h>
 #include <psapi.h>
 
+HANDLE hGameProcess = NULL;
+
 namespace game {
     namespace process {
         // gets the bo1 process so we can utilize it
         HANDLE GetBlackOpsProcess()
         {
-            DWORD pId = GetProcessIdByName(L"BlackOps.exe");
+            if (hGameProcess != NULL)
+            {
+                DWORD exitCode = 0;
+                if (GetExitCodeProcess(hGameProcess, &exitCode) && exitCode == STILL_ACTIVE)
+                {
+                    return hGameProcess;
+                }
 
-            if (pId == 0) {
+                // If the cached process handle is invalid, clean it up
+                CloseHandle(hGameProcess);
+                hGameProcess = NULL;
+            }
+
+            DWORD pId = GetProcessIdByName(L"BlackOps.exe");
+            if (pId == 0)
+            {
                 pId = GetProcessIdByName(L"BGamerT5.exe");
             }
 
-            HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pId);
-            if (handle == NULL || handle == INVALID_HANDLE_VALUE)
+            if (pId != 0)
             {
-                return NULL;
+                hGameProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pId);
             }
 
-            return handle;
+            return hGameProcess;
         }
 
         // checks if the game is open
         bool IsGameOpen()
         {
             HANDLE handle = GetBlackOpsProcess();
-            bool isOpen = (handle != NULL && handle != INVALID_HANDLE_VALUE);
-
-            if (isOpen) {
-                CloseHandle(handle);
-            }
-            return isOpen;
+            return handle != NULL && handle != INVALID_HANDLE_VALUE;
         }
 
         // gets the path to the actual bo1 executable, with the .exe name included
@@ -57,7 +66,6 @@ namespace game {
                 }
             }
 
-            CloseHandle(handle);
             return processPath;
         }
 

@@ -540,6 +540,11 @@ namespace anticheat {
                 return true;
             }
 
+            if (!game::process::IsGameOpen())
+            {
+                return false;
+            }
+
             string hash = utils::files::GetMD5(zoneFile);
             return hash == fastfile_hashes.at(fastfile);
         }
@@ -664,6 +669,12 @@ namespace anticheat {
                     continue;
                 }
 
+                // could cause a problem mid check if the game is closed suddenly
+                if (!game::process::IsGameOpen())
+                {
+                    return "";
+                }
+
                 if (find(valid_common_files.begin(), valid_common_files.end(), fileName) == valid_common_files.end())
                 {
                     extra_zone_files.push_back(fileName);
@@ -726,6 +737,12 @@ namespace anticheat {
                     continue;
                 }
 
+                // could cause a problem mid check if the game is closed suddenly
+                if (!game::process::IsGameOpen())
+                {
+                    return "";
+                }
+
                 if (find(lang_folder_files.begin(), lang_folder_files.end(), fileName) == lang_folder_files.end())
                 {
                     extra_zone_files.push_back(fileName);
@@ -767,6 +784,12 @@ namespace anticheat {
             if (EnumProcessModulesEx(handle, hMods.data(), hMods.size() * sizeof(HMODULE), &cbNeeded, LIST_MODULES_ALL)) {
                 size_t moduleCount = cbNeeded / sizeof(HMODULE);
                 for (size_t i = 0; i < moduleCount; i++) {
+                    // could cause a problem mid check if the game is closed suddenly
+                    if (!game::process::IsGameOpen())
+                    {
+                        return false;
+                    }
+
                     if (IsSuspiciousModule(hMods[i], handle)) {
                         result = true;
                         break;
@@ -774,8 +797,6 @@ namespace anticheat {
                 }
             }
 
-            // Ensure handle is always closed, even if we exit early
-            CloseHandle(handle);
             return result;
         }
 
@@ -877,7 +898,6 @@ namespace anticheat {
             }
 
 
-            CloseHandle(handle);
             return formatted_binds_found;
         }
     } // integrity

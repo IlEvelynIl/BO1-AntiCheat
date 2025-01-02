@@ -42,7 +42,6 @@ namespace game {
         }
 
         int mapId = utils::memory::ReadInt(handle, Constants::C_MAPADDRESS);
-        CloseHandle(handle);
         return mapId;
     }
 
@@ -55,7 +54,6 @@ namespace game {
         }
 
         int gameTime = utils::memory::ReadInt(handle, Constants::C_TIMEADDRESS);
-        CloseHandle(handle);
         return gameTime;
     }
 
@@ -105,7 +103,6 @@ namespace game {
         }
 
         std::string modName = utils::memory::ReadString(handle, Constants::C_MODADDRESS);
-        CloseHandle(handle);
         return modName;
     }
 
@@ -123,7 +120,7 @@ namespace game {
     bool IsGameModPresent()
     {
         HANDLE handle = process::GetBlackOpsProcess();
-        if (handle == NULL || handle == INVALID_HANDLE_VALUE) {
+        if (!process::IsGameOpen()) {
             return false;
         }
 
@@ -147,7 +144,6 @@ namespace game {
                         // if we have a match then game mod is present
                         if (utils::files::GetMD5(dllPath) == Checksums::GAME_MOD_DLL)
                         {
-                            CloseHandle(handle);
                             return true;
                         }
                     }
@@ -155,7 +151,6 @@ namespace game {
             }
         }
 
-        CloseHandle(handle);
         return false;
     }
 
@@ -163,7 +158,7 @@ namespace game {
     bool IsCustomFxToolPresent()
     {
         HANDLE handle = process::GetBlackOpsProcess();
-        if (handle == NULL || handle == INVALID_HANDLE_VALUE) {
+        if (!process::IsGameOpen()) {
             return false;
         }
 
@@ -181,12 +176,10 @@ namespace game {
 
             if (steam_api_hash == Checksums::CUSTOM_FX_STEAM_API_DLL && fx_dll_hash == Checksums::CUSTOM_FX_DLL)
             {
-                CloseHandle(handle);
                 return true;
             }
         }
 
-        CloseHandle(handle);
         return false;
     }
 
@@ -235,7 +228,6 @@ namespace game {
         }
 
         std::string lang = utils::memory::ReadString(handle, Constants::C_LANGADDRESS);
-        CloseHandle(handle);
         return lang;
     }
 }
