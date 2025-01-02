@@ -77,27 +77,18 @@ static void CheckForDebugger()
 {
     while (debuggerThreadRunning)
     {
-        // check for debugger
-        if (IsDebuggerPresent())
-        {
-            ExitProcess(1);
-        }
-
         // check for remote debugger
         BOOL isDebuggerAttached = FALSE;
-        if (CheckRemoteDebuggerPresent(GetCurrentProcess(), &isDebuggerAttached) && isDebuggerAttached)
-        {
-            ExitProcess(1);
-        }
+        if (IsDebuggerPresent() || // basic debuggers
 
-        // check for hardware breakpoints via debug registers
-        if (HasDebugRegisters())
-        {
-            ExitProcess(1);
-        }
+            // remote debuggers
+            (CheckRemoteDebuggerPresent(GetCurrentProcess(), &isDebuggerAttached) && isDebuggerAttached) ||
 
-        // check PEB flags for debugging indicators
-        if (CheckPEBFlags())
+            // check for hardware breakpoints via debug registers
+            HasDebugRegisters() ||
+
+            // PEB flags for debugging indicators
+            CheckPEBFlags())
         {
             ExitProcess(1);
         }

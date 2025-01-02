@@ -12,23 +12,27 @@ namespace anticheat {
 	namespace integrity {
 		namespace config {
 			int last_config_size = 0;
-			std::vector<std::string> cheating_commands;
+			std::map<std::string, std::string> cheating_commands;
 
-			// tell the anticheat what commands to look for
+			// tells the anticheat the commands to search for and how to search for them.
+			//	types:
+			//		all = any instance on any line
+			//		bind = only lines that start with "bind"
+			//		seta = only lines that start with "seta"
 			void Initialize()
 			{
 				cheating_commands = {
-					"cl_noprint",
-					"magic_chest_movable",
-					"ai_disableSpawn",
-					"difficultyEasy",
-					"difficultyMedium",
-					"difficultyHard",
-					"difficultyFu",
-					"zombie_taunt_freq",
-					"zombie_reachin_freq",
-					"scr_force_weapon",
-					"scr_force_quantum_bomb_result"
+					make_pair("cl_noprint", "all"),
+					make_pair("magic_chest_movable", "all"),
+					make_pair("ai_disableSpawn", "all"),
+					make_pair("difficultyEasy", "all"),
+					make_pair("difficultyMedium", "all"),
+					make_pair("difficultyHard", "all"),
+					make_pair("difficultyFu", "all"),
+					make_pair("zombie_taunt_freq", "all"),
+					make_pair("zombie_reachin_freq", "all"),
+					make_pair("scr_force_weapon", "all"),
+					make_pair("scr_force_quantum_bomb_result", "all")
 				};
 			}
 
@@ -78,16 +82,38 @@ namespace anticheat {
 				while (std::getline(file, line)) {
 					std::string line_lower = utils::strings::ToLower(line);
 
-					// go through the commands that are considered cheating
-					for (size_t i = 0; i < cheating_commands.size(); i++)
+					for (const auto& [key, value] : cheating_commands)
 					{
-						std::string command = cheating_commands[i];
-
-						// check for a lowercase match on lowercase lines
+						std::string command = key;
+						std::string type = value;
 						bool contains_command = utils::strings::Contains(line_lower, command);
-						if (contains_command)
+
+						// handle every instance
+						if (type == "all")
 						{
-							config_commands.push_back(command);
+							if (contains_command)
+							{
+								config_commands.push_back(command);
+								continue;
+							}
+						}
+						// bind only instances
+						else if (type == "bind" && utils::strings::StartsWith(line_lower, "bind"))
+						{
+							if (contains_command)
+							{
+								config_commands.push_back(command);
+								continue;
+							}
+						}
+						// seta only instances
+						else if (type == "seta" && utils::strings::StartsWith(line_lower, "seta"))
+						{
+							if (contains_command)
+							{
+								config_commands.push_back(command);
+								continue;
+							}
 						}
 					}
 				}

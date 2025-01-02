@@ -22,6 +22,13 @@ namespace utils {
 		{
 			return ToLower(str).find(ToLower(sub)) != std::string::npos;
 		}
+
+		bool StartsWith(const std::string& str, const std::string& prefix)
+		{
+			if (prefix.size() > str.size())
+				return false;
+			return std::equal(prefix.begin(), prefix.end(), str.begin());
+		}
 		
 		std::string GetCurrentEpoch()
 		{
