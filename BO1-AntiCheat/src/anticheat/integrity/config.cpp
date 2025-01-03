@@ -31,6 +31,21 @@ namespace anticheat {
 
 				ConfigDvar cg_hudDamageIconTime = { "cg_hudDamageIconTime", "seta cg_hudDamageIconTime \"2000\"" };
 
+				ConfigDvar grenadeBounceRestitutionMax = { "grenadeBounceRestitutionMax" };
+				ConfigDvar grenadeBumpFreq = { "grenadeBumpFreq" };
+				ConfigDvar grenadeBumpMag = { "grenadeBumpMag" };
+				ConfigDvar grenadeBumpMax = { "grenadeBumpMax" };
+				ConfigDvar grenadeCurveMax = { "grenadeCurveMax" };
+				ConfigDvar grenadeFrictionHigh = { "grenadeFrictionHigh" };
+				ConfigDvar grenadeFrictionLow = { "grenadeFrictionLow" };
+				ConfigDvar grenadeFrictionMaxThresh = { "grenadeFrictionMaxThresh" };
+				ConfigDvar grenadeRestThreshold = { "grenadeRestThreshold" };
+				ConfigDvar grenadeRollingEnabled = { "grenadeRollingEnabled" };
+				ConfigDvar grenadeWobbleFreq = { "grenadeWobbleFreq" };
+				ConfigDvar grenadeWobbleFwdMag = { "grenadeWobbleFwdMag" };
+				ConfigDvar grenadeWobbleSideDamp = { "grenadeWobbleSideDamp" };
+				ConfigDvar grenadeWobbleSideMag = { "grenadeWobbleSideMag" };
+
 				cheating_commands = {
 					cl_noprint,
 					magic_chest_movable,
@@ -43,7 +58,21 @@ namespace anticheat {
 					zombie_reachin_freq,
 					scr_force_weapon,
 					scr_force_quantum_bomb_result,
-					cg_hudDamageIconTime
+					cg_hudDamageIconTime,
+					grenadeBounceRestitutionMax,
+					grenadeBumpFreq,
+					grenadeBumpMag,
+					grenadeBumpMax,
+					grenadeCurveMax,
+					grenadeFrictionHigh,
+					grenadeFrictionLow,
+					grenadeFrictionMaxThresh,
+					grenadeRestThreshold,
+					grenadeRollingEnabled,
+					grenadeWobbleFreq,
+					grenadeWobbleFwdMag,
+					grenadeWobbleSideDamp,
+					grenadeWobbleSideMag
 				};
 			}
 
