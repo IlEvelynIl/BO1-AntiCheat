@@ -12,8 +12,6 @@
 
 #include "../utils/memory.hpp"
 
-#include "updater/updater.hpp"
-
 #include "integrity/config.hpp"
 
 using namespace std;

@@ -12,27 +12,38 @@ namespace anticheat {
 	namespace integrity {
 		namespace config {
 			int last_config_size = 0;
-			std::map<std::string, std::string> cheating_commands;
+			std::vector<ConfigDvar> cheating_commands;
 
 			// tells the anticheat the commands to search for and how to search for them.
-			//	types:
-			//		all = any instance on any line
-			//		bind = only lines that start with "bind"
-			//		seta = only lines that start with "seta"
 			void Initialize()
 			{
+				ConfigDvar cl_noprint = { "cl_noprint" };
+				ConfigDvar magic_chest_movable = { "magic_chest_movable" };
+				ConfigDvar ai_disableSpawn = { "ai_disableSpawn" };
+				ConfigDvar difficultyEasy = { "difficultyEasy" };
+				ConfigDvar difficultyMedium = { "difficultyMedium" };
+				ConfigDvar difficultyHard = { "difficultyHard" };
+				ConfigDvar difficultyFu = { "difficultyFu" };
+				ConfigDvar zombie_taunt_freq = { "zombie_taunt_freq" };
+				ConfigDvar zombie_reachin_freq = { "zombie_reachin_freq" };
+				ConfigDvar scr_force_weapon = { "scr_force_weapon" };
+				ConfigDvar scr_force_quantum_bomb_result = { "scr_force_quantum_bomb_result" };
+
+				ConfigDvar cg_hudDamageIconTime = { "cg_hudDamageIconTime", "seta cg_hudDamageIconTime \"2000\"" };
+
 				cheating_commands = {
-					make_pair("cl_noprint", "all"),
-					make_pair("magic_chest_movable", "all"),
-					make_pair("ai_disableSpawn", "all"),
-					make_pair("difficultyEasy", "all"),
-					make_pair("difficultyMedium", "all"),
-					make_pair("difficultyHard", "all"),
-					make_pair("difficultyFu", "all"),
-					make_pair("zombie_taunt_freq", "all"),
-					make_pair("zombie_reachin_freq", "all"),
-					make_pair("scr_force_weapon", "all"),
-					make_pair("scr_force_quantum_bomb_result", "all")
+					cl_noprint,
+					magic_chest_movable,
+					ai_disableSpawn,
+					difficultyEasy,
+					difficultyMedium,
+					difficultyHard,
+					difficultyFu,
+					zombie_taunt_freq,
+					zombie_reachin_freq,
+					scr_force_weapon,
+					scr_force_quantum_bomb_result,
+					cg_hudDamageIconTime
 				};
 			}
 
@@ -82,37 +93,25 @@ namespace anticheat {
 				while (std::getline(file, line)) {
 					std::string line_lower = utils::strings::ToLower(line);
 
-					for (const auto& [key, value] : cheating_commands)
+					for (ConfigDvar dvar : cheating_commands)
 					{
-						std::string command = key;
-						std::string type = value;
-						bool contains_command = utils::strings::Contains(line_lower, command);
+						std::string dvar_name = dvar.name;
+						std::string dvar_name_lower = utils::strings::ToLower(dvar.name);
+						bool contains_command = utils::strings::Contains(line_lower, dvar_name_lower);
 
-						// handle every instance
-						if (type == "all")
+						if (contains_command)
 						{
-							if (contains_command)
+							// we have to make sure the default values arent tampered with:
+							if (dvar.expected_line != "")
 							{
-								config_commands.push_back(command);
-								continue;
+								if (line_lower != utils::strings::ToLower(dvar.expected_line))
+								{
+									config_commands.push_back(dvar_name + " (Value changed)");
+								}
 							}
-						}
-						// bind only instances
-						else if (type == "bind" && utils::strings::StartsWith(line_lower, "bind"))
-						{
-							if (contains_command)
-							{
-								config_commands.push_back(command);
-								continue;
-							}
-						}
-						// seta only instances
-						else if (type == "seta" && utils::strings::StartsWith(line_lower, "seta"))
-						{
-							if (contains_command)
-							{
-								config_commands.push_back(command);
-								continue;
+							// for lines that should not exist at all
+							else {
+								config_commands.push_back(dvar_name);
 							}
 						}
 					}
